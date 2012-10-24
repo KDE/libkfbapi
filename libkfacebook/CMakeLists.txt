@@ -77,39 +77,40 @@ set_target_properties(kfacebook PROPERTIES VERSION ${KFACEBOOK_LIB_VERSION} SOVE
 install(TARGETS kfacebook ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install( FILES
-  libkfacebook_export.h
+  alleventslistjob.h
+  allnoteslistjob.h
+  allpostslistjob.h
+  appinfo.h
   authenticationdialog.h
-  userinfojob.h
-  userinfo.h
+  commentinfo.h
+  eventjob.h
+  eventinfo.h
+  eventslistjob.h
+  facebookjobs.h
   friendlistjob.h
   friendjob.h
-  photojob.h
-  eventslistjob.h
-  eventinfo.h
-  util.h
-  alleventslistjob.h
-  eventjob.h
+  getcommentsjob.h
+  getlikesjob.h
+  libkfacebook_export.h
+  likeinfo.h
+  listjobbase.h
   noteinfo.h
   noteslistjob.h
-  allnoteslistjob.h
   notejob.h
   noteaddjob.h
-  facebookjobs.h
+  notificationinfo.h
+  notificationslistjob.h
+  notificationsmarkreadjob.h
   pagedlistjob.h
-  listjobbase.h
+  photojob.h
   postinfo.h
   postjob.h
   postaddjob.h
   postslistjob.h
   propertyinfo.h
-  appinfo.h
-  commentinfo.h
-  likeinfo.h
-  getlikesjob.h
-  getcommentsjob.h
-  notificationinfo.h
-  notificationslistjob.h
-  notificationsmarkreadjob.h
+  userinfojob.h
+  userinfo.h
+  util.h
   #connectioninfo.h
   #connectionslistjob.h
 
