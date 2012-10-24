@@ -113,5 +113,5 @@ install( FILES
   #connectioninfo.h
   #connectionslistjob.h
 
- DESTINATION ${INCLUDE_INSTALL_DIR}/kfacebook COMPONENT Devel
+ DESTINATION ${INCLUDE_INSTALL_DIR}/libkfacebook COMPONENT Devel
 )
