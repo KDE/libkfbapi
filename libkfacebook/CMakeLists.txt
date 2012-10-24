@@ -6,8 +6,6 @@ include_directories(
   ${Boost_INCLUDE_DIR}
 )
 
-
-
 set(kfacebook_SRCS 
   allpostslistjob.cpp
   authenticationdialog.cpp
@@ -75,11 +73,10 @@ else(KDEPIM_44_COMPAT)
   target_link_libraries(kfacebook ${KDEPIMLIBS_KCALCORE_LIBS})
 endif(KDEPIM_44_COMPAT)
 
-set_target_properties(kfacebook PROPERTIES VERSION ${LIB_VERSION} SOVERSION ${LIB_SOVERSION})
+set_target_properties(kfacebook PROPERTIES VERSION ${KFACEBOOK_LIB_VERSION} SOVERSION ${KFACEBOOK_LIB_SOVERSION})
 install(TARGETS kfacebook ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install( FILES
-
   libkfacebook_export.h
   authenticationdialog.h
   userinfojob.h

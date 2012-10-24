@@ -1,7 +1,10 @@
 project(kfacebook)
 
-set(LIB_VERSION "1.0")
-set(LIB_SOVERSION "1")
+set(KFACEBOOK_VERSION_MAJOR 1)
+set(KFACEBOOK_VERSION_MINOR 0)
+set(KFACEBOOK_VERSION_RELEASE 0)
+set(KFACEBOOK_LIB_VERSION "1.0")
+set(KFACEBOOK_LIB_SOVERSION "1")
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 find_package(KDE4 REQUIRED)
@@ -26,8 +29,29 @@ macro_log_feature(QJSON_FOUND "QJSON" "Qt library for handling JSON data" "http:
 
 configure_file(config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 
+# pkg-config
+if (NOT WIN32)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/LibKFacebook.pc.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/LibKFacebook.pc
+                  @ONLY)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LibKFacebook.pc
+          DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
+endif(NOT WIN32)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/LibKFacebookConfig.cmake.in
+               ${CMAKE_CURRENT_BINARY_DIR}/LibKFacebookConfig.cmake
+               @ONLY
+)
+
+# this file is used by to check if the installed version can be used.
+macro_write_basic_cmake_version_file(${CMAKE_CURRENT_BINARY_DIR}/LibKFacebookConfigVersion.cmake
+                                     ${KFACEBOOK_VERSION_MAJOR} ${KFACEBOOK_VERSION_MINOR} ${KFACEBOOK_VERSION_RELEASE})
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LibKFacebookConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/LibKFacebookConfigVersion.cmake
+        DESTINATION ${LIB_INSTALL_DIR}/cmake/LibKFacebook)
+
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
-add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
+add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}
