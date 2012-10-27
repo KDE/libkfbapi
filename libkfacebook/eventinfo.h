@@ -20,8 +20,8 @@
 #ifndef KFACEBOOK_EVENTINFO_H
 #define KFACEBOOK_EVENTINFO_H
 
-#include <config.h>
 #include "libkfacebook_export.h"
+#include "config.h"
 
 #include <KDateTime>
 #include <QObject>
