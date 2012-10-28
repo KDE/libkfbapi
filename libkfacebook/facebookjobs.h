@@ -25,6 +25,7 @@
 #include "libkfacebook_export.h"
 
 #include <KJob>
+#include <KUrl>
 
 #include <QStringList>
 #include <QPointer>
@@ -46,7 +47,6 @@ public:
      * @param path The path after https://graphs.facebook.com
      * @param accessToken The accessToken to access our data on facebook
      * */
-    explicit FacebookJob(const QString &accessToken);
     FacebookJob(const QString &path, const QString &accessToken, QObject *parent = 0);
 
     /** Add a query item to the list */
@@ -62,6 +62,8 @@ protected:
 
     /** Check for a return error and set the appropiate error messags */
     void handleError(const QVariant &data);
+
+    KUrl m_url;
 
     QString m_accessToken;         /** Facebook Access token */
     QString m_path;                /** path after https://graph.facebook.com/ */
@@ -113,7 +115,6 @@ class LIBKFACEBOOK_EXPORT FacebookGetJob : public FacebookJob
     Q_OBJECT
 
 public:
-    explicit FacebookGetJob(const QString &accessToken);
     FacebookGetJob(const QString &path, const QString &accessToken, QObject *parent = 0);
 
     /** Set the fields the job should retrieve from facebook */

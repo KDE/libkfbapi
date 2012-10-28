@@ -38,11 +38,16 @@ FacebookJob::FacebookJob(const QString &path, const QString &accessToken, QObjec
 {
     Q_ASSERT(m_path.startsWith('/'));
     setCapabilities(KJob::Killable);
-}
 
-FacebookJob::FacebookJob(const QString &accessToken)
-    : m_accessToken(accessToken)
-{
+    m_url.setProtocol("https");
+    m_url.setHost("graph.facebook.com");
+    m_url.setPath(m_path);
+    m_url.addQueryItem("access_token", m_accessToken);
+
+    foreach (const QueryItem &item, m_queryItems) {
+        m_url.addQueryItem(item.first, item.second);
+    }
+
 }
 
 void FacebookJob::addQueryItem(const QString &key, const QString &value)
@@ -89,19 +94,8 @@ FacebookAddJob::FacebookAddJob(const QString &path, const QString &accessToken, 
 
 void FacebookAddJob::start()
 {
-    KUrl url;
-    url.setProtocol("https");
-    url.setHost("graph.facebook.com");
-    url.setPath(m_path);
-
-    url.addQueryItem("access_token", m_accessToken);
-
-    foreach (const QueryItem &item, m_queryItems) {
-        url.addQueryItem(item.first, item.second);
-    }
-
-    kDebug() << "Starting add: " << url;
-    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), url, KIO::HideProgressInfo);
+    kDebug() << "Starting add: " << m_url;
+    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), m_url, KIO::HideProgressInfo);
     m_job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     job->start();
@@ -150,16 +144,10 @@ FacebookDeleteJob::FacebookDeleteJob(const QString &id, const QString &accessTok
 
 void FacebookDeleteJob::start()
 {
-    KUrl url;
-    url.setProtocol("https");
-    url.setHost("graph.facebook.com");
-    url.setPath(m_path);
+    m_url.addQueryItem("method", "delete");
 
-    url.addQueryItem("access_token", m_accessToken);
-    url.addQueryItem("method", "delete");
-
-    kDebug() << "Starting delete: " << url;
-    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), url, KIO::HideProgressInfo);
+    kDebug() << "Starting delete: " << m_url;
+    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), m_url, KIO::HideProgressInfo);
     m_job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     job->start();
@@ -185,11 +173,6 @@ void FacebookDeleteJob::jobFinished(KJob *job)
 /*
  * Facebook get job
  */
-FacebookGetJob::FacebookGetJob(const QString &path, const QString &accessToken)
-    : FacebookJob(path, accessToken)
-{
-}
-
 FacebookGetJob::FacebookGetJob(const QString &path, const QString &accessToken, QObject *parent)
     : FacebookJob(path, accessToken, parent)
 {
@@ -208,28 +191,17 @@ void FacebookGetJob::setFields(const QStringList &fields)
 void FacebookGetJob::start()
 {
     Q_ASSERT(m_ids.isEmpty() ^ m_path.isEmpty());
-    KUrl url;
-    url.setProtocol("https");
-    url.setHost("graph.facebook.com");
-    if (!m_path.isEmpty()) {
-        url.setPath(m_path);
-    } else {
-        url.setPath("/");
-        url.addQueryItem("ids", m_ids.join(","));
-    }
 
-    url.addQueryItem("access_token", m_accessToken);
+    if (!m_ids.isEmpty()) {
+        m_url.addQueryItem("ids", m_ids.join(","));
+    }
 
     if (!m_fields.isEmpty()) {
-        url.addQueryItem("fields", m_fields.join(","));
+        m_url.addQueryItem("fields", m_fields.join(","));
     }
 
-    foreach (const QueryItem &item, m_queryItems) {
-        url.addQueryItem(item.first, item.second);
-    }
-
-    kDebug() << "Starting query" << url;
-    KIO::StoredTransferJob * const job = KIO::storedGet(url, KIO::Reload, KIO::HideProgressInfo);
+    kDebug() << "Starting query" << m_url;
+    KIO::StoredTransferJob * const job = KIO::storedGet(m_url, KIO::Reload, KIO::HideProgressInfo);
     m_job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     job->start();
