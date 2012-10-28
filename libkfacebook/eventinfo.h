@@ -29,23 +29,27 @@
 #ifndef KDEPIM_44_COMPAT
 #include <KCalCore/Event>
 #include <KCalCore/Attendee>
+#else
+#include <boost/shared_ptr.hpp>
+#include <KCal/Event>
+#include <KCal/Attendee>
+#endif
+
+namespace KFacebook {
+
+#ifndef KDEPIM_44_COMPAT
 typedef KCalCore::Event Event;
 typedef KCalCore::Attendee Attendee;
 typedef KCalCore::Event::Ptr EventPtr;
 typedef KCalCore::Incidence::Ptr IncidencePtr;
 typedef KCalCore::Attendee::Ptr AttendeePtr;
 #else
-#include <boost/shared_ptr.hpp>
-#include <KCal/Event>
-#include <KCal/Attendee>
 typedef KCal::Event Event;
 typedef KCal::Attendee Attendee;
 typedef boost::shared_ptr<KCal::Event> EventPtr;
 typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 typedef KCal::Attendee* AttendeePtr;
 #endif
-
-namespace KFacebook {
 
 /**
 * An attendee to an event
