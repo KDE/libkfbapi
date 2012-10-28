@@ -33,7 +33,7 @@ class LIBKFACEBOOK_EXPORT AuthenticationDialog : public KDialog
 {
   Q_OBJECT
 public:
-    AuthenticationDialog(QWidget *parent);
+    explicit AuthenticationDialog(QWidget *parent);
     void setAppId(const QString &appId);
     void setPermissions(const QStringList &permissions);
     void start();

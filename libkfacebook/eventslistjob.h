@@ -29,7 +29,7 @@ class LIBKFACEBOOK_EXPORT EventsListJob : public ListJobBase
 {
   Q_OBJECT
 public:
-    EventsListJob(const QString &accessToken, QObject *parent = 0);
+    explicit EventsListJob(const QString &accessToken, QObject *parent = 0);
     QList<EventInfoPtr> events() const;
     int numEntries() const;
 

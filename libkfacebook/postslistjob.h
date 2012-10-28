@@ -29,7 +29,7 @@ class LIBKFACEBOOK_EXPORT PostsListJob : public ListJobBase
 {
   Q_OBJECT
 public:
-    PostsListJob(const QString &accessToken, QObject *parent = 0);
+    explicit PostsListJob(const QString &accessToken, QObject *parent = 0);
     PostsListJob(const QString &userId, const QString &accessToken, QObject *parent = 0);
     QList<PostInfoPtr> posts() const;
     int numEntries() const;

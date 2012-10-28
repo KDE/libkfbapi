@@ -29,7 +29,7 @@ class LIBKFACEBOOK_EXPORT NotesListJob : public ListJobBase
 {
   Q_OBJECT
 public:
-    NotesListJob(const QString &accessToken, QObject *parent = 0);
+    explicit NotesListJob(const QString &accessToken, QObject *parent = 0);
     QList<NoteInfoPtr> notes() const;
     int numEntries() const;
 
