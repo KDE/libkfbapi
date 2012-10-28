@@ -31,7 +31,7 @@ class LIBKFACEBOOK_EXPORT GetLikesJob : public FacebookGetJob
     Q_OBJECT
 
 public:
-    GetLikesJob(const QString &postId, const QString &accessToken);
+    GetLikesJob(const QString &postId, const QString &accessToken, QObject *parent = 0);
 
     uint likeCount();
     bool userLikes();

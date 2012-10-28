@@ -21,8 +21,8 @@
 
 using namespace KFacebook;
 
-NotificationsMarkReadJob::NotificationsMarkReadJob(const QString &notificationId, const QString &accessToken)
-    : FacebookAddJob("/" + notificationId, accessToken)
+NotificationsMarkReadJob::NotificationsMarkReadJob(const QString &notificationId, const QString &accessToken, QObject *parent)
+    : FacebookAddJob("/" + notificationId, accessToken, parent)
 {
     addQueryItem("unread", 0);
 }

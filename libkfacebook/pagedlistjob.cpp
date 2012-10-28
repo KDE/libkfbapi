@@ -25,8 +25,9 @@
 
 using namespace KFacebook;
 
-PagedListJob::PagedListJob(const QString &accessToken)
-    : m_accessToken(accessToken)
+PagedListJob::PagedListJob(const QString &accessToken, QObject *parent)
+    : KJob(parent),
+      m_accessToken(accessToken)
 {
 }
 

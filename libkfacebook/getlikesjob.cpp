@@ -21,8 +21,8 @@
 
 using namespace KFacebook;
 
-GetLikesJob::GetLikesJob(const QString &postId, const QString &accessToken)
-    : FacebookGetJob("/fql", accessToken),
+GetLikesJob::GetLikesJob(const QString &postId, const QString &accessToken, QObject *parent)
+    : FacebookGetJob("/fql", accessToken, parent),
       m_likeCount(0),
       m_userLikes(false),
       m_canLike(true)

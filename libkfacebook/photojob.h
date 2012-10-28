@@ -44,7 +44,7 @@ public:
     *                 profile picture.
     * @param accessToken The facebook access token to retrieve this data.
     */
-    PhotoJob(const QString &friendId, const QString &accessToken);
+    PhotoJob(const QString &friendId, const QString &accessToken, QObject *parent = 0);
 
     /**
     * @return The profile picture as a QImage.

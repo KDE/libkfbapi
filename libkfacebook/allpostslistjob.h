@@ -31,7 +31,7 @@ class LIBKFACEBOOK_EXPORT AllPostsListJob  : public PagedListJob
 {
     Q_OBJECT
 public:
-    AllPostsListJob(const QString &accessToken);
+    AllPostsListJob(const QString &accessToken, QObject *parent = 0);
     QList<PostInfoPtr> allPosts() const;
 
 protected:

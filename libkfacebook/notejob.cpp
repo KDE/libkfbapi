@@ -25,13 +25,13 @@
 
 using namespace KFacebook;
 
-NoteJob::NoteJob(const QString &noteId, const QString &accessToken)
-    : FacebookGetIdJob(noteId, accessToken)
+NoteJob::NoteJob(const QString &noteId, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(noteId, accessToken, parent)
 {
 }
 
-NoteJob::NoteJob(const QStringList &noteIds, const QString &accessToken)
-    : FacebookGetIdJob(noteIds, accessToken)
+NoteJob::NoteJob(const QStringList &noteIds, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(noteIds, accessToken, parent)
 {
 }
 

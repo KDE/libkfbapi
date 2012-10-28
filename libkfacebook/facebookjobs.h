@@ -1,5 +1,6 @@
 /* Copyright 2010, 2011 Thomas McGuire <mcguire@kde.org>
    Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
+   Copyright 2012 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -45,8 +46,8 @@ public:
      * @param path The path after https://graphs.facebook.com
      * @param accessToken The accessToken to access our data on facebook
      * */
-    FacebookJob(const QString &path, const QString &accessToken);
     explicit FacebookJob(const QString &accessToken);
+    FacebookJob(const QString &path, const QString &accessToken, QObject *parent = 0);
 
     /** Add a query item to the list */
     void addQueryItem(const QString &key, const QString &value);
@@ -80,7 +81,7 @@ class LIBKFACEBOOK_EXPORT FacebookAddJob : public FacebookJob
     Q_OBJECT
 
 public:
-    FacebookAddJob(const QString &path, const QString &accessToken);
+    FacebookAddJob(const QString &path, const QString &accessToken, QObject *parent = 0);
 
     virtual void start();
 
@@ -96,7 +97,7 @@ class LIBKFACEBOOK_EXPORT FacebookDeleteJob : public FacebookJob
     Q_OBJECT
 
 public:
-    FacebookDeleteJob(const QString &id, const QString &accessToken);
+    FacebookDeleteJob(const QString &id, const QString &accessToken, QObject *parent = 0);
 
     virtual void start();
 
@@ -112,8 +113,8 @@ class LIBKFACEBOOK_EXPORT FacebookGetJob : public FacebookJob
     Q_OBJECT
 
 public:
-    FacebookGetJob(const QString &path, const QString &accessToken);
     explicit FacebookGetJob(const QString &accessToken);
+    FacebookGetJob(const QString &path, const QString &accessToken, QObject *parent = 0);
 
     /** Set the fields the job should retrieve from facebook */
     void setFields(const QStringList &fields);
@@ -149,7 +150,7 @@ public:
      * @param ids A list of ids to retrieve from facebook.
      * @param accessToken The access token to retrieve data from facebook.
      */
-    FacebookGetIdJob(const QStringList &ids, const QString &accessToken);
+    FacebookGetIdJob(const QStringList &ids, const QString &accessToken, QObject *parent = 0);
 
     /**
      * @brief Constructor to retrieve a single item from facebook.
@@ -157,7 +158,7 @@ public:
      * @param id The id of the item to retrieve from facebook.
      * @param accessToken The access token to retrieve the data from facebook.
      */
-    FacebookGetIdJob(const QString &id, const QString &accessToken);
+    FacebookGetIdJob(const QString &id, const QString &accessToken, QObject *parent = 0);
 
 protected:
     /**

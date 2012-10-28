@@ -25,8 +25,8 @@
 
 using namespace KFacebook;
 
-AllEventsListJob::AllEventsListJob(const QString &accessToken)
-  : PagedListJob(accessToken)
+AllEventsListJob::AllEventsListJob(const QString &accessToken, QObject *parent)
+  : PagedListJob(accessToken, parent)
 {
 }
 

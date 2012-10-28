@@ -39,7 +39,7 @@ public:
     * @param eventIds The list of ids of the notes to retrieve.
     * @param accessToken The access token to access the notes on facebook.
     */
-    EventJob(const QStringList &eventIds, const QString &accessToken);
+    EventJob(const QStringList &eventIds, const QString &accessToken, QObject *parent = 0);
 
     /**
     * @brief Constructor to create a job that retrieves a single note from
@@ -48,7 +48,7 @@ public:
     * @param eventId The id of the note to retrieve.
     * @param accessToken The access token to access the note on facebook.
     */
-    EventJob(const QString &eventId, const QString &accessToken);
+    EventJob(const QString &eventId, const QString &accessToken, QObject *parent = 0);
 
     /**
     * @brief Return a list of pointers to EventInfo objects that have been

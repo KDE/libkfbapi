@@ -39,7 +39,7 @@ public:
     * @param postIds A list of ids of posts to retrieve.
     * @param accessToken The token to access data on facebook.
     */
-    PostJob(const QStringList &postIds, const QString &accessToken);
+    PostJob(const QStringList &postIds, const QString &accessToken, QObject *parent = 0);
 
     /**
     * @brief Contrust a postjob to retrieve a single post from facebook.
@@ -47,7 +47,7 @@ public:
     * @param postId The id of the post to retrieve.
     * @param accessToken The token to accesss data on facebook.
     */
-    PostJob(const QString &postId, const QString &accessToken);
+    PostJob(const QString &postId, const QString &accessToken, QObject *parent = 0);
 
     /**
     * @brief Return a list of all the posts that his job has retrieved

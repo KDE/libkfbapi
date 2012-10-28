@@ -39,7 +39,7 @@ public:
     * @param noteIds A list of ids of notes to retrieve.
     * @param accessToken The token to access data on facebook.
     */
-    NoteJob(const QStringList &noteIds, const QString &accessToken);
+    NoteJob(const QStringList &noteIds, const QString &accessToken, QObject *parent = 0);
 
     /**
     * @brief Contrust a notejob to retrieve a single note from facebook.
@@ -47,7 +47,7 @@ public:
     * @param noteId The id of the note to retrieve.
     * @param accessToken The token to accesss data on facebook.
     */
-    NoteJob(const QString &noteId, const QString &accessToken);
+    NoteJob(const QString &noteId, const QString &accessToken, QObject *parent = 0);
 
     /**
     * @brief Return a list of all the notes that his job has retrieved

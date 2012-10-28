@@ -23,8 +23,8 @@
 
 using namespace KFacebook;
 
-NotesListJob::NotesListJob(const QString &accessToken)
-    : ListJobBase("/me/notes", accessToken)
+NotesListJob::NotesListJob(const QString &accessToken, QObject *parent)
+    : ListJobBase("/me/notes", accessToken, parent)
 {
 }
 

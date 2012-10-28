@@ -23,8 +23,8 @@
 
 using namespace KFacebook;
 
-FriendListJob::FriendListJob(const QString &accessToken)
-    : FacebookGetJob("/me/friends", accessToken)
+FriendListJob::FriendListJob(const QString &accessToken, QObject *parent)
+    : FacebookGetJob("/me/friends", accessToken, parent)
 {
 }
 

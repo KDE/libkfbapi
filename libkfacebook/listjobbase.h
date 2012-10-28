@@ -30,7 +30,7 @@ class LIBKFACEBOOK_EXPORT ListJobBase : public FacebookGetJob
 {
     Q_OBJECT
 public:
-    ListJobBase(const QString &path, const QString &accessToken, bool multiQuery = true);
+    ListJobBase(const QString &path, const QString &accessToken, bool multiQuery = true, QObject *parent = 0);
     virtual int numEntries() const = 0;
 
     QString previousItems() const;

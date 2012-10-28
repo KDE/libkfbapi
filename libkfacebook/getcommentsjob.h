@@ -32,7 +32,7 @@ class LIBKFACEBOOK_EXPORT GetCommentsJob : public FacebookGetJob
     Q_OBJECT
 
 public:
-    GetCommentsJob(const QString &postId, const QString &accessToken);
+    GetCommentsJob(const QString &postId, const QString &accessToken, QObject *parent = 0);
 
     uint commentCount();
 

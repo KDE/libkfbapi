@@ -40,7 +40,7 @@ public:
     * @param message The actual content of the post.
     * @param accessToken The accessToken to add content to facebook
     */
-    PostAddJob(const QString &message, const QString &accessToken);
+    PostAddJob(const QString &message, const QString &accessToken, QObject *parent = 0);
     void abort();
 };
 

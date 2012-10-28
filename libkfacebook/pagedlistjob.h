@@ -36,7 +36,7 @@ class LIBKFACEBOOK_EXPORT PagedListJob : public KJob
 {
     Q_OBJECT
 public:
-    PagedListJob(const QString &accessToken);
+    PagedListJob(const QString &accessToken, QObject *parent = 0);
 
     void setLowerLimit(const KDateTime &lowerLimit);
     virtual void start();

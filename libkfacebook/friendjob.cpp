@@ -25,14 +25,14 @@
 
 using namespace KFacebook;
 
-FriendJob::FriendJob(const QString &friendId, const QString &accessToken)
-    : FacebookGetIdJob(friendId, accessToken)
+FriendJob::FriendJob(const QString &friendId, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(friendId, accessToken, parent)
 {
     setFields(friendFields());
 }
 
-FriendJob::FriendJob(const QStringList &friendIds, const QString &accessToken)
-    : FacebookGetIdJob(friendIds, accessToken)
+FriendJob::FriendJob(const QStringList &friendIds, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(friendIds, accessToken, parent)
 {
     setFields(friendFields());
     setIds(friendIds);

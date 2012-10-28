@@ -23,8 +23,8 @@
 
 using namespace KFacebook;
 
-ListJobBase::ListJobBase(const QString &path, const QString &accessToken, bool multiQuery)
-    : FacebookGetJob(path, accessToken)
+ListJobBase::ListJobBase(const QString &path, const QString &accessToken, bool multiQuery, QObject *parent)
+    : FacebookGetJob(path, accessToken, parent)
 {
     m_multiQuery = multiQuery;
 }

@@ -21,8 +21,8 @@
 
 using namespace KFacebook;
 
-NoteAddJob::NoteAddJob(const QString &subject,const QString &message, const QString &accessToken)
-    : FacebookAddJob("/me/notes", accessToken)
+NoteAddJob::NoteAddJob(const QString &subject,const QString &message, const QString &accessToken, QObject *parent)
+    : FacebookAddJob("/me/notes", accessToken, parent)
 {
     addQueryItem("subject", subject);
     addQueryItem("message", message);

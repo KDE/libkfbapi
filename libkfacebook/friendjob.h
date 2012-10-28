@@ -38,7 +38,7 @@ public:
     * @param friendIds A list of ids of the friends you want to retrieve from facebook.
     * @param accessToken The access token to retrieve the data from facebook.
     */
-    FriendJob(const QStringList &friendIds, const QString &accessToken);
+    FriendJob(const QStringList &friendIds, const QString &accessToken, QObject *parent = 0);
 
     /**
     * @brief Constructor to retrieve a single friend from facebook.
@@ -46,7 +46,7 @@ public:
     * @param friendId The id of the friend you want to retrieve data from.
     * @param accessToken The access token to retrieve the data from facebook.
     */
-    FriendJob(const QString &friendId, const QString &accessToken);
+    FriendJob(const QString &friendId, const QString &accessToken, QObject *parent = 0);
 
     /**
     * @return A list of pointers to UserInfo objects of all the users (friends)

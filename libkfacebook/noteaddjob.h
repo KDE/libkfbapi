@@ -41,7 +41,7 @@ public:
     * @param message The actual content of the note.
     * @param accessToken The accessToken to add content to facebook
     */
-    NoteAddJob(const QString &subject,const QString &message, const QString &accessToken);
+    NoteAddJob(const QString &subject,const QString &message, const QString &accessToken, QObject *parent = 0);
 };
 
 }

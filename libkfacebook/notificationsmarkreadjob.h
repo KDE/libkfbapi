@@ -38,7 +38,7 @@ public:
     * @param id The notification id
     * @param accessToken The accessToken to add content to facebook
     */
-    NotificationsMarkReadJob(const QString &notificationId, const QString &accessToken);
+    NotificationsMarkReadJob(const QString &notificationId, const QString &accessToken, QObject *parent = 0);
     void abort();
 };
 

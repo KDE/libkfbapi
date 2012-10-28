@@ -30,7 +30,7 @@ class LIBKFACEBOOK_EXPORT AllEventsListJob : public PagedListJob
 {
     Q_OBJECT
 public:
-    explicit AllEventsListJob(const QString &accessToken);
+    explicit AllEventsListJob(const QString &accessToken, QObject *parent = 0);
     QList< EventInfoPtr > allEvents() const;
 
 protected:

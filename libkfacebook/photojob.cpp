@@ -24,8 +24,8 @@
 
 using namespace KFacebook;
 
-PhotoJob::PhotoJob(const QString &friendId, const QString &accessToken)
-  : FacebookGetJob("/" + friendId + "/picture", accessToken)
+PhotoJob::PhotoJob(const QString &friendId, const QString &accessToken, QObject *parent)
+  : FacebookGetJob("/" + friendId + "/picture", accessToken, parent)
 {
     addQueryItem("type", "large");
 }

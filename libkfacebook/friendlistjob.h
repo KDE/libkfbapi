@@ -30,7 +30,7 @@ class LIBKFACEBOOK_EXPORT FriendListJob : public FacebookGetJob
 {
     Q_OBJECT
 public:
-    FriendListJob(const QString &accessToken);
+    FriendListJob(const QString &accessToken, QObject *parent = 0);
     QList<UserInfoPtr> friends() const;
 
 protected:

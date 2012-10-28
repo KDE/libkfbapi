@@ -25,8 +25,8 @@
 
 using namespace KFacebook;
 
-AllNotesListJob::AllNotesListJob(const QString &accessToken)
-  : PagedListJob(accessToken)
+AllNotesListJob::AllNotesListJob(const QString &accessToken, QObject *parent)
+  : PagedListJob(accessToken, parent)
 {
 }
 

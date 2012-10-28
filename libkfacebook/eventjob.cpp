@@ -25,14 +25,14 @@
 
 using namespace KFacebook;
 
-EventJob::EventJob(const QString &eventId, const QString &accessToken)
-    : FacebookGetIdJob(eventId, accessToken)
+EventJob::EventJob(const QString &eventId, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(eventId, accessToken, parent)
 {
     setFields(eventFields());
 }
 
-EventJob::EventJob(const QStringList &eventIds, const QString &accessToken)
-  : FacebookGetIdJob(eventIds, accessToken)
+EventJob::EventJob(const QStringList &eventIds, const QString &accessToken, QObject *parent)
+  : FacebookGetIdJob(eventIds, accessToken, parent)
 {
     setFields(eventFields());
 }

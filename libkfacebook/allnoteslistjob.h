@@ -30,7 +30,7 @@ class LIBKFACEBOOK_EXPORT AllNotesListJob : public PagedListJob
 {
     Q_OBJECT
 public:
-    explicit AllNotesListJob(const QString &accessToken);
+    explicit AllNotesListJob(const QString &accessToken, QObject *parent = 0);
     QList<NoteInfoPtr> allNotes() const;
 
 protected:

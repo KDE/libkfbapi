@@ -21,8 +21,8 @@
 
 using namespace KFacebook;
 
-PostAddJob::PostAddJob(const QString &message, const QString &accessToken)
-    : FacebookAddJob("/me/feed", accessToken)
+PostAddJob::PostAddJob(const QString &message, const QString &accessToken, QObject *parent)
+    : FacebookAddJob("/me/feed", accessToken, parent)
 {
     addQueryItem("message", message);
 }

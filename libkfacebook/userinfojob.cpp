@@ -23,14 +23,14 @@
 
 using namespace KFacebook;
 
-UserInfoJob::UserInfoJob(const QString &accessToken)
-    : FacebookGetJob("/me", accessToken)
+UserInfoJob::UserInfoJob(const QString &accessToken, QObject *parent)
+    : FacebookGetJob("/me", accessToken, parent)
 {
     setFields(QStringList() << "name");
 }
 
-UserInfoJob::UserInfoJob(const QString &userId, const QString &accessToken)
-    : FacebookGetJob("/" + userId, accessToken)
+UserInfoJob::UserInfoJob(const QString &userId, const QString &accessToken, QObject *parent)
+    : FacebookGetJob("/" + userId, accessToken, parent)
 {
 }
 

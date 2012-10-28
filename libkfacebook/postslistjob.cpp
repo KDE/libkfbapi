@@ -23,13 +23,13 @@
 
 using namespace KFacebook;
 
-PostsListJob::PostsListJob(const QString &accessToken)
-  : ListJobBase("/me/home", accessToken)
+PostsListJob::PostsListJob(const QString &accessToken, QObject *parent)
+  : ListJobBase("/me/home", accessToken, parent)
 {
 }
 
-PostsListJob::PostsListJob(const QString &userId, const QString &accessToken)
-    : ListJobBase("/" + userId + "/feed", accessToken)
+PostsListJob::PostsListJob(const QString &userId, const QString &accessToken, QObject *parent)
+    : ListJobBase("/" + userId + "/feed", accessToken, parent)
 {
 }
 

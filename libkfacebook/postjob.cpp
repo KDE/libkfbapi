@@ -23,13 +23,13 @@
 
 using namespace KFacebook;
 
-PostJob::PostJob(const QString &postId, const QString &accessToken)
-    : FacebookGetIdJob(postId, accessToken)
+PostJob::PostJob(const QString &postId, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(postId, accessToken, parent)
 {
 }
 
-PostJob::PostJob(const QStringList &postIds, const QString &accessToken)
-    : FacebookGetIdJob(postIds, accessToken)
+PostJob::PostJob(const QStringList &postIds, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(postIds, accessToken, parent)
 {
 }
 

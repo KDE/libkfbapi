@@ -21,8 +21,8 @@
 
 using namespace KFacebook;
 
-GetCommentsJob::GetCommentsJob(const QString &postId, const QString &accessToken)
-    : FacebookGetJob("/fql", accessToken),
+GetCommentsJob::GetCommentsJob(const QString &postId, const QString &accessToken, QObject *parent)
+    : FacebookGetJob("/fql", accessToken, parent),
       m_commentCount(0)
 {
     m_postId = postId;

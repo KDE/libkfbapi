@@ -36,9 +36,9 @@ public:
     * @brief Construct a job to retrieve the data of the currently authenticaed user.
     * @param accessToken The access token to access data on facebook.
     */
-    UserInfoJob(const QString &accessToken);
+    UserInfoJob(const QString &accessToken, QObject *parent = 0);
 
-    UserInfoJob(const QString &userId, const QString &accessToken);
+    UserInfoJob(const QString &userId, const QString &accessToken, QObject *parent = 0);
     /**
     * @return A pointer to a userInfo object about the currently authenticated user.
     */

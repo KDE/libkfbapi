@@ -1,5 +1,6 @@
 /* Copyright 2010, 2011 Thomas McGuire <mcguire@kde.org>
    Copyright 2011 Roeland Jago Douma <unix@rullzer.com>
+   Copyright 2012 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -30,8 +31,9 @@ namespace KFacebook {
 /*
  * FacebookJobs base class
  */
-FacebookJob::FacebookJob(const QString &path, const QString &accessToken)
-    : m_accessToken(accessToken),
+FacebookJob::FacebookJob(const QString &path, const QString &accessToken, QObject *parent)
+    : KJob(parent),
+      m_accessToken(accessToken),
       m_path(path)
 {
     Q_ASSERT(m_path.startsWith('/'));
@@ -80,8 +82,8 @@ void FacebookJob::handleError(const QVariant &data)
 /*
  * Facebook Add Job
  */
-FacebookAddJob::FacebookAddJob(const QString &path, const QString &accessToken)
-    : FacebookJob(path, accessToken)
+FacebookAddJob::FacebookAddJob(const QString &path, const QString &accessToken, QObject *parent)
+    : FacebookJob(path, accessToken, parent)
 {
 }
 
@@ -141,8 +143,8 @@ void FacebookAddJob::jobFinished(KJob *job)
 /*
  * Facebook Delete job
  */
-FacebookDeleteJob::FacebookDeleteJob(const QString &id, const QString &accessToken)
-    : FacebookJob("/" + id, accessToken)
+FacebookDeleteJob::FacebookDeleteJob(const QString &id, const QString &accessToken, QObject *parent)
+    : FacebookJob("/" + id, accessToken, parent)
 {
 }
 
@@ -188,8 +190,8 @@ FacebookGetJob::FacebookGetJob(const QString &path, const QString &accessToken)
 {
 }
 
-FacebookGetJob::FacebookGetJob(const QString &accessToken)
-    : FacebookJob(accessToken)
+FacebookGetJob::FacebookGetJob(const QString &path, const QString &accessToken, QObject *parent)
+    : FacebookJob(path, accessToken, parent)
 {
 }
 
@@ -267,15 +269,15 @@ void FacebookGetJob::jobFinished(KJob *job)
 /*
  * FacebookGetIdJob
  */
-FacebookGetIdJob::FacebookGetIdJob(const QStringList &ids, const QString &accessToken)
-    : FacebookGetJob(accessToken),
+FacebookGetIdJob::FacebookGetIdJob(const QStringList &ids, const QString &accessToken, QObject *parent)
+    : FacebookGetJob("/", accessToken, parent),
       m_multiQuery(true)
 {
     setIds(ids);
 }
 
-FacebookGetIdJob::FacebookGetIdJob(const QString &id, const QString &accessToken)
-    : FacebookGetJob("/" + id, accessToken),
+FacebookGetIdJob::FacebookGetIdJob(const QString &id, const QString &accessToken, QObject *parent)
+    : FacebookGetJob("/" + id, accessToken, parent),
       m_multiQuery(false)
 {
 }
