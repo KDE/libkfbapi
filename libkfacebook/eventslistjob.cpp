@@ -26,7 +26,7 @@
 using namespace KFacebook;
 
 EventsListJob::EventsListJob(const QString &accessToken, QObject *parent)
-    : ListJobBase("/me/events", accessToken, parent)
+    : ListJobBase("/me/events", accessToken, true, parent)
 {
 }
 

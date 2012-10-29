@@ -24,7 +24,7 @@
 using namespace KFacebook;
 
 NotificationsListJob::NotificationsListJob(const QString &accessToken, QObject *parent)
-    : ListJobBase("/me/notifications", accessToken, parent)
+    : ListJobBase("/me/notifications", accessToken, true, parent)
 {
     // Fetch also read notification
     addQueryItem("include_read", "1");

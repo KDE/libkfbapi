@@ -24,7 +24,7 @@
 using namespace KFacebook;
 
 NotesListJob::NotesListJob(const QString &accessToken, QObject *parent)
-    : ListJobBase("/me/notes", accessToken, parent)
+    : ListJobBase("/me/notes", accessToken, true, parent)
 {
 }
 
