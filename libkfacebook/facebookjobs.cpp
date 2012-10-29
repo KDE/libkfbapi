@@ -32,30 +32,20 @@ namespace KFacebook {
  * FacebookJobs base class
  */
 FacebookJob::FacebookJob(const QString &path, const QString &accessToken, QObject *parent)
-    : KJob(parent),
-      m_accessToken(accessToken),
-      m_path(path)
+    : KJob(parent)
 {
-    Q_ASSERT(m_path.startsWith('/'));
+    Q_ASSERT(path.startsWith('/'));
     setCapabilities(KJob::Killable);
 
     m_url.setProtocol("https");
     m_url.setHost("graph.facebook.com");
-    m_url.setPath(m_path);
-    m_url.addQueryItem("access_token", m_accessToken);
-
-    foreach (const QueryItem &item, m_queryItems) {
-        m_url.addQueryItem(item.first, item.second);
-    }
-
+    m_url.setPath(path);
+    m_url.addQueryItem("access_token", accessToken);
 }
 
 void FacebookJob::addQueryItem(const QString &key, const QString &value)
 {
-    QueryItem item;
-    item.first = key;
-    item.second = value;
-    m_queryItems.append(item);
+    m_url.addQueryItem(key, value);
 }
 
 bool FacebookJob::doKill()
@@ -190,8 +180,6 @@ void FacebookGetJob::setFields(const QStringList &fields)
 
 void FacebookGetJob::start()
 {
-    Q_ASSERT(m_ids.isEmpty() ^ m_path.isEmpty());
-
     if (!m_ids.isEmpty()) {
         m_url.addQueryItem("ids", m_ids.join(","));
     }

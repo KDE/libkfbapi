@@ -52,8 +52,6 @@ public:
     /** Add a query item to the list */
     void addQueryItem(const QString &key, const QString &value);
 
-    virtual void start() = 0;
-
     enum JobErrorType { AuthenticationProblem = KJob::UserDefinedError + 42 };
 
 protected:
@@ -65,8 +63,6 @@ protected:
 
     KUrl m_url;
 
-    QString m_accessToken;         /** Facebook Access token */
-    QString m_path;                /** path after https://graph.facebook.com/ */
     QList<QueryItem> m_queryItems; /** The query items */
     QPointer<KJob> m_job;          /** Pointer to the running job */
 
