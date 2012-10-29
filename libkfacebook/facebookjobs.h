@@ -32,8 +32,6 @@
 
 namespace KFacebook {
 
-typedef QPair<QString, QString> QueryItem;
-
 /**
  * FacebookJob base class
  */
@@ -63,7 +61,6 @@ protected:
 
     KUrl m_url;
 
-    QList<QueryItem> m_queryItems; /** The query items */
     QPointer<KJob> m_job;          /** Pointer to the running job */
 
 private Q_SLOTS:
