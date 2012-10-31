@@ -1,0 +1,23 @@
+
+# Do not modify this file. Any change will be overwritten by CMake.
+
+# Config file for LibKFbAPI. This file will define:
+# LibKFbAPI_INCLUDE_DIR - The LibKFbAPI include directory
+# LibKFbAPI_LIBRARY - The library needed to use LibKFbAPI
+# LibKFbAPI_VERSION - The LibKFbAPI version
+
+get_filename_component(_currentDir ${CMAKE_CURRENT_LIST_FILE} PATH) # The current directory
+get_filename_component(rootDir ${_currentDir}/@relInstallDir@ ABSOLUTE) # The install prefix
+
+# The library version
+set(LibKFbAPI_VERSION_MAJOR @KFBAPI_VERSION_MAJOR@)
+set(LibKFbAPI_VERSION_MINOR @KFBAPI_VERSION_MINOR@)
+set(LibKFbAPI_VERSION_RELEASE @KFBAPI_VERSION_RELEASE@)
+set(LibKFbAPI_VERSION ${LibKFbAPI_VERSION_MAJOR}.${LibKFbAPI_VERSION_MINOR}.${LibKFbAPI_VERSION_RELEASE})
+
+# Include directory
+set(LibKFbAPI_INSTALL_PREFIX "${rootDir}")
+set(LibKFbAPI_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@")
+
+# Set the library variable
+set(LibKFbAPI_LIBRARY kfbapi)
