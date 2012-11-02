@@ -26,6 +26,8 @@
 #include <KDebug>
 #include <KLocale>
 
+static const KCatalogLoader loader("libkfbapi");
+
 namespace KFbAPI {
 
 /*
