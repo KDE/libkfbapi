@@ -87,7 +87,7 @@ void CommentInfo::setData(const QVariantList &data)
 {
     m_data = QList<CommentDataPtr>();
 
-    foreach (QVariant	v, data) {
+    foreach (const QVariant &v, data) {
         QVariantMap vMap = v.toMap();
         CommentDataPtr commentData (new CommentData());
         QJson::QObjectHelper::qvariant2qobject(vMap, commentData.data());
