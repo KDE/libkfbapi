@@ -45,7 +45,7 @@ public:
      * Set the data of this like (list of people who like the post)
      * @param data the like data
      */
-    virtual void setData(const QVariantList &data);
+    void setData(const QVariantList &data);
     /**
      * Returns the like data
      */
@@ -53,22 +53,22 @@ public:
     /**
      * Return the like data as VariantList
      */
-    virtual QVariantList dataList() const;
+    QVariantList dataList() const;
 
     /**
      * Set the count of this like (number of people who like the post)
      * @param count the like count
      */
-    virtual void setCount(const int &count);
+    void setCount(const int &count);
     /**
      * Returns the like count
      */
-    virtual int count() const;
+    int count() const;
 
     /**
      * Returns relative REST path w.r.t FacebookObject, "/" included
      */
-    virtual QString path() const ;
+    QString path() const;
 
 private:
     class LikeInfoPrivate;
