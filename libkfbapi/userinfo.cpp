@@ -93,7 +93,7 @@ QDate UserInfo::birthday() const
     return d->birthday;
 }
 
-QString UserInfo::birthdayAsString() const
+QString UserInfo::birthdayString() const
 {
     return d->birthday.toString();
 }

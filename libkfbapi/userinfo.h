@@ -90,7 +90,7 @@ public:
     /**
      * @return The birthday as a QString in "facebook format"
      */
-    QString birthdayAsString() const;
+    QString birthdayString() const;
     /**
      * @return The birthday of this person as a QDate.
      */
