@@ -29,9 +29,6 @@
 
 #include <KDateTime>
 
-#include <QObject>
-#include <qjson/qobjecthelper.h>
-
 namespace KFbAPI {
 
 /**

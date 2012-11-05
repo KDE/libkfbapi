@@ -27,6 +27,8 @@
 #include "appinfoparser_p.h"
 #include "userinfoparser_p.h"
 
+#include <qjson/qobjecthelper.h>
+
 using namespace KFbAPI;
 
 class PostInfo::PostInfoPrivate : public QSharedData {

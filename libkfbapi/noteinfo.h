@@ -25,8 +25,6 @@
 #include <KMime/Message>
 #include <KDateTime>
 
-#include <QObject>
-
 namespace KFbAPI {
 
 /**

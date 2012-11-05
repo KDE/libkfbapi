@@ -22,6 +22,8 @@
 #include "userinfoparser_p.h"
 #include "commentinfoparser_p.h"
 
+#include <qjson/qobjecthelper.h>
+
 using namespace KFbAPI;
 
 class CommentData::CommentDataPrivate : public QSharedData {

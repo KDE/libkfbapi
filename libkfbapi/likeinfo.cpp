@@ -20,6 +20,8 @@
 #include "likeinfo.h"
 #include "userinfoparser_p.h"
 
+#include <qjson/qobjecthelper.h>
+
 using namespace KFbAPI;
 
 class LikeInfo::LikeInfoPrivate : public QSharedData {

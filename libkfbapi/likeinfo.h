@@ -23,9 +23,6 @@
 #include "libkfbapi_export.h"
 #include "userinfo.h"
 
-#include <qjson/qobjecthelper.h>
-#include <QObject>
-
 namespace KFbAPI {
 
 /**

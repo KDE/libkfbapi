@@ -22,8 +22,6 @@
 
 #include "libkfbapi_export.h"
 
-#include <qjson/qobjecthelper.h>
-#include <QObject>
 #include <QSharedPointer>
 
 namespace KFbAPI {

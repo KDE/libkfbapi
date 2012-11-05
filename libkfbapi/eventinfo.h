@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <KDateTime>
-#include <QObject>
 
 #ifndef KDEPIM_44_COMPAT
 #include <KCalCore/Event>
