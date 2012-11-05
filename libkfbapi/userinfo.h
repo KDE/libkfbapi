@@ -43,57 +43,57 @@ public:
     UserInfo &operator=(const UserInfo &other);
 
     /**
-    * @brief Sets the facebook id of a person
-    * @param id The Facebook id
-    */
+     * @brief Sets the facebook id of a person
+     * @param id The Facebook id
+     */
     void setId(const QString &id);
     /**
-    * @return The facebook id of this person
-    */
+     * @return The facebook id of this person
+     */
     QString id() const;
 
     /**
-    * @brief Set the name of this person.
-    * @param name The name of this person.
-    */
+     * @brief Set the name of this person.
+     * @param name The name of this person.
+     */
     void setName(const QString &name);
     /**
-    * @return The name this person.
-    */
+     * @return The name this person.
+     */
     QString name() const;
 
     /**
-    * @brief Set the first name of this person.
-    * @param firstName The first name of this person.
-    */
+     * @brief Set the first name of this person.
+     * @param firstName The first name of this person.
+     */
     void setFirstName(const QString &firstName);
     /**
-    * @return The first name of this person.
-    */
+     * @return The first name of this person.
+     */
     QString firstName() const;
 
     /**
-    * @brief Set the last name of this person.
-    * @param lastName The last name of this person.
-    */
+     * @brief Set the last name of this person.
+     * @param lastName The last name of this person.
+     */
     void setLastName(const QString &lastName);
     /**
-    * @return The last name of this person.
-    */
+     * @return The last name of this person.
+     */
     QString lastName() const;
 
     /**
-    * @brief Set the birthday of this person.
-    * @param birthday The birthday in "facebook format"
-    */
+     * @brief Set the birthday of this person.
+     * @param birthday The birthday in "facebook format"
+     */
     void setBirthday(const QString &birthday);
     /**
-    * @return The birthday as a QString in "facebook format"
-    */
+     * @return The birthday as a QString in "facebook format"
+     */
     QString birthdayAsString() const;
     /**
-    * @return The birthday of this person as a QDate.
-    */
+     * @return The birthday of this person as a QDate.
+     */
     QDate birthday() const;
 
     /**
@@ -102,8 +102,8 @@ public:
      */
     void setWebsite(const QUrl &website);
     /**
-    * @return The url to the website of this user as a QString.
-    */
+     * @return The url to the website of this user as a QString.
+     */
     QUrl website() const;
 
     /**
@@ -112,84 +112,84 @@ public:
      */
     void setUsername(const QString &username);
     /**
-    * @return The username of this user as a QString.
-    */
+     * @return The username of this user as a QString.
+     */
     QString username() const;
 
     /**
-    * @brief Set the current city of this person.
-    * @param city The current city of this person.
-    */
+     * @brief Set the current city of this person.
+     * @param city The current city of this person.
+     */
     void setCity(const QString &city);
 
     /**
-    * @brief Set the current country of this person.
-    * @param country The current country of this person.
-    */
+     * @brief Set the current country of this person.
+     * @param country The current country of this person.
+     */
     void setCountry(const QString &country);
 
     /**
-    * @brief Set the current company this person is working at.
-    * @param company The company this person is working at.
-    */
+     * @brief Set the current company this person is working at.
+     * @param company The company this person is working at.
+     */
     void setCompany(const QString &company);
 
     /**
-    * @return The company this person is working at.
-    */
+     * @return The company this person is working at.
+     */
     QString company() const;
 
     /**
-    * @brief Set the profession of this person.
-    * @param profession The profession of this person.
-    */
+     * @brief Set the profession of this person.
+     * @param profession The profession of this person.
+     */
     void setProfession(const QString &profession);
     /**
-    * @return The profession of this person.
-    */
+     * @return The profession of this person.
+     */
     QString profession() const;
 
     /**
-    * @brief Set the partner of this person.
-    * @param partner The partner of this person.
-    */
+     * @brief Set the partner of this person.
+     * @param partner The partner of this person.
+     */
     void setPartner(const QString &partner);
     /**
-    * @return The partner of this person.
-    */
+     * @return The partner of this person.
+     */
     QString partner() const;
 
     /**
-    * @brief Set the timezone of this person.
-    * @param timezone The timezone of this person.
-    */
+     * @brief Set the timezone of this person.
+     * @param timezone The timezone of this person.
+     */
     void setTimezone(int timezone);
     /**
-    * @return The timezone fo this person.
-    */
+     * @return The timezone fo this person.
+     */
     int timezone() const;
 
     /**
-    * @brief Set the time this person last updated his/her profile.
-    * @param updatedTime The time of the last update in "facebook format"
-    */
+     * @brief Set the time this person last updated his/her profile.
+     * @param updatedTime The time of the last update in "facebook format"
+     */
     void setUpdatedTimeString(const QString &updatedTime);
     /**
-    * @return The time of the last update of the profile as a QString
-    *         in "facebook format"
-    */
+     * @return The time of the last update of the profile as a QString
+     *         in "facebook format"
+     */
     QString updatedTimeString() const;
     /**
-    * @return The time of the last update of the profile as a KDateTime
-    */
+     * @return The time of the last update of the profile as a KDateTime
+     */
     KDateTime updatedTime() const;
 
     /**
-    * @brief Created a KABC::Addressee for all the information we have about
-    *        this person.
-    *
-    * @return A KABC::Addressee of this person.
-    */
+     * @brief Created a KABC::Addressee for all the information we have about
+     *        this person.
+     *
+     * @return A KABC::Addressee of this person.
+     */
     KABC::Addressee toAddressee() const;
 
     /**
