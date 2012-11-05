@@ -38,7 +38,7 @@ void NotificationsListJob::handleItem(const QVariant &item)
     m_notifications.append(parser.dataObject());
 }
 
-int NotificationsListJob::numEntries() const
+int NotificationsListJob::entriesCount() const
 {
     return m_notifications.size();
 }

@@ -41,7 +41,7 @@ void NotesListJob::handleItem(const QVariant &item)
     m_notes.append(parser.dataObject());
 }
 
-int NotesListJob::numEntries() const
+int NotesListJob::entriesCount() const
 {
     return m_notes.size();
 }

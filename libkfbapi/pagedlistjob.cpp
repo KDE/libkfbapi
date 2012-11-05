@@ -69,13 +69,13 @@ void PagedListJob::listJobFinished(KJob *job)
         setErrorText(listJob->errorString());
         emitResult();
     } else {
-        kDebug() << "Got" << listJob->numEntries() << "items from our subjob.";
+        kDebug() << "Got" << listJob->entriesCount() << "items from our subjob.";
 
         const KUrl next = KUrl::fromUserInput(listJob->nextItems());
         const KUrl prev = KUrl::fromUserInput(listJob->previousItems());
 
         // Stop when we got all items after a certain dates, or no items at all
-        if (listJob->numEntries() == 0 || !shouldStartNewJob(prev, next)) {
+        if (listJob->entriesCount() == 0 || !shouldStartNewJob(prev, next)) {
             kDebug() << "All items fetched.";
             m_currentJob = 0;
             emitResult();

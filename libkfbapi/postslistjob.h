@@ -32,7 +32,7 @@ public:
     explicit PostsListJob(const QString &accessToken, QObject *parent = 0);
     PostsListJob(const QString &userId, const QString &accessToken, QObject *parent = 0);
     QList<PostInfo> posts() const;
-    int numEntries() const;
+    int entriesCount() const;
 
 protected:
     void handleItem(const QVariant &item);

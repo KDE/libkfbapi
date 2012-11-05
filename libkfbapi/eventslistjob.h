@@ -31,7 +31,7 @@ class LIBKFBAPI_EXPORT EventsListJob : public ListJobBase
 public:
     explicit EventsListJob(const QString &accessToken, QObject *parent = 0);
     QList<EventInfo> events() const;
-    int numEntries() const;
+    int entriesCount() const;
 
 protected:
     void handleItem(const QVariant &item);

@@ -43,7 +43,7 @@ void EventsListJob::handleItem(const QVariant &item)
     m_events.append(parser.dataObject());
 }
 
-int EventsListJob::numEntries() const
+int EventsListJob::entriesCount() const
 {
     return m_events.size();
 }

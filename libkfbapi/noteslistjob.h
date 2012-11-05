@@ -31,7 +31,7 @@ class LIBKFBAPI_EXPORT NotesListJob : public ListJobBase
 public:
     explicit NotesListJob(const QString &accessToken, QObject *parent = 0);
     QList<NoteInfo> notes() const;
-    int numEntries() const;
+    int entriesCount() const;
 
 protected:
     void handleItem(const QVariant &item);

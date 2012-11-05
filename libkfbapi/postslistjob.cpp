@@ -46,7 +46,7 @@ void PostsListJob::handleItem(const QVariant &item)
     m_posts.append(parser.dataObject());
 }
 
-int PostsListJob::numEntries() const
+int PostsListJob::entriesCount() const
 {
     return m_posts.size();
 }
