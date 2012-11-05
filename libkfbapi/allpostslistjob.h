@@ -32,7 +32,7 @@ class LIBKFBAPI_EXPORT AllPostsListJob  : public PagedListJob
     Q_OBJECT
 public:
     explicit AllPostsListJob(const QString &accessToken, QObject *parent = 0);
-    QList<PostInfoPtr> allPosts() const;
+    QList<PostInfo> allPosts() const;
 
 protected:
     virtual void appendItems(const ListJobBase *job);
@@ -40,7 +40,7 @@ protected:
     virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next);
 
 private:
-    QList<PostInfoPtr> m_posts;
+    QList<PostInfo> m_posts;
 };
 
 }

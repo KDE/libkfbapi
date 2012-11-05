@@ -18,6 +18,7 @@
 */
 
 #include "postslistjob.h"
+#include "postinfoparser_p.h"
 
 #include <qjson/qobjecthelper.h>
 
@@ -33,16 +34,16 @@ PostsListJob::PostsListJob(const QString &userId, const QString &accessToken, QO
 {
 }
 
-PostInfoList PostsListJob::posts() const
+QList<PostInfo> PostsListJob::posts() const
 {
     return m_posts;
 }
 
 void PostsListJob::handleItem(const QVariant &item)
 {
-    PostInfoPtr postInfo(new PostInfo());
-    QJson::QObjectHelper::qvariant2qobject(item.toMap(), postInfo.data());
-    m_posts.append(postInfo);
+    PostInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
+    m_posts.append(parser.dataObject());
 }
 
 int PostsListJob::numEntries() const

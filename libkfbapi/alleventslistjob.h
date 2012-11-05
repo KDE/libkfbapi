@@ -31,7 +31,7 @@ class LIBKFBAPI_EXPORT AllEventsListJob : public PagedListJob
     Q_OBJECT
 public:
     explicit AllEventsListJob(const QString &accessToken, QObject *parent = 0);
-    QList< EventInfoPtr > allEvents() const;
+    QList<EventInfo> allEvents() const;
 
 protected:
     virtual void appendItems(const ListJobBase *job);
@@ -39,7 +39,7 @@ protected:
     virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next);
 
 private:
-    QList<EventInfoPtr> m_events;
+    QList<EventInfo> m_events;
 };
 
 }

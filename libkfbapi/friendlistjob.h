@@ -31,13 +31,13 @@ class LIBKFBAPI_EXPORT FriendListJob : public FacebookGetJob
     Q_OBJECT
 public:
     explicit FriendListJob(const QString &accessToken, QObject *parent = 0);
-    QList<UserInfoPtr> friends() const;
+    QList<UserInfo> friends() const;
 
 protected:
     virtual void handleData(const QVariant &data);
 
 private:
-    QList<UserInfoPtr> m_friends;
+    QList<UserInfo> m_friends;
 };
 
 }

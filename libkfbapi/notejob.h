@@ -54,12 +54,12 @@ public:
     *
     * @return List of pointers to noteinfo objects
     */
-    QList<NoteInfoPtr> noteInfo() const;
+    QList<NoteInfo> noteInfo() const;
 
   private:
     void handleSingleData(const QVariant &data);
 
-    QList<NoteInfoPtr> m_noteInfo;
+    QList<NoteInfo> m_noteInfo;
 };
 
 }

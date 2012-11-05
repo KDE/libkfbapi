@@ -18,6 +18,7 @@
 */
 
 #include "notejob.h"
+#include "noteinfoparser_p.h"
 
 #include <KDebug>
 
@@ -35,17 +36,17 @@ NoteJob::NoteJob(const QStringList &noteIds, const QString &accessToken, QObject
 {
 }
 
-QList<NoteInfoPtr> NoteJob::noteInfo() const
+QList<NoteInfo> NoteJob::noteInfo() const
 {
     return m_noteInfo;
 }
 
 void NoteJob::handleSingleData(const QVariant &data)
 {
-    NoteInfoPtr noteInfo(new NoteInfo());
+    NoteInfoParser parser;
     const QVariantMap dataMap = data.toMap();
-    QJson::QObjectHelper::qvariant2qobject(dataMap, noteInfo.data());
-    m_noteInfo.append(noteInfo);
+    QJson::QObjectHelper::qvariant2qobject(dataMap, &parser);
+    m_noteInfo.append(parser.dataObject());
 }
 
 #include "notejob.moc"

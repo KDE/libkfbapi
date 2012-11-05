@@ -18,6 +18,7 @@
 */
 
 #include "eventjob.h"
+#include "eventinfoparser_p.h"
 
 #include <KDebug>
 
@@ -57,7 +58,7 @@ QStringList EventJob::eventFields() const
     return fields;
 }
 
-QList<EventInfoPtr> EventJob::eventInfo() const
+QList<EventInfo> EventJob::eventInfo() const
 {
     return m_eventInfo;
 }
@@ -80,19 +81,22 @@ QList<AttendeeInfoPtr> attendees(const QVariantMap &dataMap, const QString &face
 
 void EventJob::handleSingleData(const QVariant &data)
 {
-    EventInfoPtr eventInfo(new EventInfo());
+    EventInfoParser parser;
+
     const QVariantMap dataMap = data.toMap();
-    QJson::QObjectHelper::qvariant2qobject(dataMap, eventInfo.data());
+    QJson::QObjectHelper::qvariant2qobject(dataMap, &parser);
     const QVariant owner = dataMap.value("owner");
 
+    EventInfo eventInfo = parser.dataObject();
+
     if (!owner.isNull() && owner.isValid()) {
-        eventInfo->setOrganizer(owner.toMap().value("name").toString());
+        eventInfo.setOrganizer(owner.toMap().value("name").toString());
     }
 
-    eventInfo->addAttendees(attendees(dataMap, "noreply", Attendee::NeedsAction));
-    eventInfo->addAttendees(attendees(dataMap, "maybe", Attendee::Tentative));
-    eventInfo->addAttendees(attendees(dataMap, "attending", Attendee::Accepted));
-    eventInfo->addAttendees(attendees(dataMap, "declined", Attendee::Declined));
+    eventInfo.addAttendees(attendees(dataMap, "noreply", Attendee::NeedsAction));
+    eventInfo.addAttendees(attendees(dataMap, "maybe", Attendee::Tentative));
+    eventInfo.addAttendees(attendees(dataMap, "attending", Attendee::Accepted));
+    eventInfo.addAttendees(attendees(dataMap, "declined", Attendee::Declined));
 
     m_eventInfo.append(eventInfo);
 }

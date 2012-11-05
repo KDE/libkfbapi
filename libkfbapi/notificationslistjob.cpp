@@ -18,6 +18,7 @@
 */
 
 #include "notificationslistjob.h"
+#include "notificationinfoparser_p.h"
 
 #include <KDebug>
 
@@ -32,9 +33,9 @@ NotificationsListJob::NotificationsListJob(const QString &accessToken, QObject *
 
 void NotificationsListJob::handleItem(const QVariant &item)
 {
-    NotificationInfoPtr notificationInfo(new NotificationInfo());
-    QJson::QObjectHelper::qvariant2qobject(item.toMap(), notificationInfo.data());
-    m_notifications.append(notificationInfo);
+    NotificationInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
+    m_notifications.append(parser.dataObject());
 }
 
 int NotificationsListJob::numEntries() const
@@ -42,7 +43,7 @@ int NotificationsListJob::numEntries() const
     return m_notifications.size();
 }
 
-QList<NotificationInfoPtr> NotificationsListJob::notifications() const
+QList<NotificationInfo> NotificationsListJob::notifications() const
 {
     return m_notifications;
 }

@@ -18,6 +18,7 @@
 */
 
 #include "friendlistjob.h"
+#include "userinfoparser_p.h"
 
 #include <qjson/qobjecthelper.h>
 
@@ -28,18 +29,19 @@ FriendListJob::FriendListJob(const QString &accessToken, QObject *parent)
 {
 }
 
-QList< UserInfoPtr > FriendListJob::friends() const
+QList<UserInfo> FriendListJob::friends() const
 {
     return m_friends;
 }
 
 void FriendListJob::handleData(const QVariant &root)
 {
+    UserInfoParser parser;
     const QVariant data = root.toMap()["data"];
     foreach (const QVariant &user, data.toList()) {
-        UserInfoPtr userInfo(new UserInfo());
-        QJson::QObjectHelper::qvariant2qobject(user.toMap(), userInfo.data());
-        m_friends.append(userInfo);
+        parser.setDataObject(UserInfo());
+        QJson::QObjectHelper::qvariant2qobject(user.toMap(), &parser);
+        m_friends.append(parser.dataObject());
     }
 }
 

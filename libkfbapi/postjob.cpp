@@ -18,6 +18,7 @@
 */
 
 #include "postjob.h"
+#include "postinfoparser_p.h"
 
 #include <qjson/qobjecthelper.h>
 
@@ -33,17 +34,17 @@ PostJob::PostJob(const QStringList &postIds, const QString &accessToken, QObject
 {
 }
 
-QList<PostInfoPtr> PostJob::postInfo() const
+QList<PostInfo> PostJob::postInfo() const
 {
     return m_postInfo;
 }
 
 void PostJob::handleSingleData(const QVariant &data)
 {
-    PostInfoPtr postInfo(new PostInfo());
+    PostInfoParser parser;
     const QVariantMap dataMap = data.toMap();
-    QJson::QObjectHelper::qvariant2qobject(dataMap, postInfo.data());
-    m_postInfo.append(postInfo);
+    QJson::QObjectHelper::qvariant2qobject(dataMap, &parser);
+    m_postInfo.append(parser.dataObject());
 }
 
 #include "postjob.moc"

@@ -18,6 +18,7 @@
 */
 
 #include "eventslistjob.h"
+#include "eventinfoparser_p.h"
 
 #include <KDebug>
 
@@ -30,16 +31,16 @@ EventsListJob::EventsListJob(const QString &accessToken, QObject *parent)
 {
 }
 
-QList< EventInfoPtr > EventsListJob::events() const
+QList<EventInfo> EventsListJob::events() const
 {
     return m_events;
 }
 
 void EventsListJob::handleItem(const QVariant &item)
 {
-    EventInfoPtr eventInfo(new EventInfo());
-    QJson::QObjectHelper::qvariant2qobject(item.toMap(), eventInfo.data());
-    m_events.append(eventInfo);
+    EventInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
+    m_events.append(parser.dataObject());
 }
 
 int EventsListJob::numEntries() const

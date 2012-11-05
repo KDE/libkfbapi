@@ -17,6 +17,7 @@
    Boston, MA 02110-1301, USA.
 */
 #include "noteslistjob.h"
+#include "noteinfoparser_p.h"
 
 #include <KDebug>
 #include <qjson/qobjecthelper.h>
@@ -28,16 +29,16 @@ NotesListJob::NotesListJob(const QString &accessToken, QObject *parent)
 {
 }
 
-QList<NoteInfoPtr> NotesListJob::notes() const
+QList<NoteInfo> NotesListJob::notes() const
 {
     return m_notes;
 }
 
 void NotesListJob::handleItem(const QVariant &item)
 {
-    NoteInfoPtr noteInfo(new NoteInfo());
-    QJson::QObjectHelper::qvariant2qobject(item.toMap(), noteInfo.data());
-    m_notes.append(noteInfo);
+    NoteInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
+    m_notes.append(parser.dataObject());
 }
 
 int NotesListJob::numEntries() const

@@ -54,12 +54,12 @@ public:
     *
     * @return List of pointers to postinfo objects
     */
-    QList<PostInfoPtr> postInfo() const;
+    QList<PostInfo> postInfo() const;
 
 private:
     void handleSingleData(const QVariant &data);
 
-    QList<PostInfoPtr> m_postInfo;
+    QList<PostInfo> m_postInfo;
 };
 
 }

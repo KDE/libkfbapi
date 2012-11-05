@@ -30,7 +30,7 @@ AllEventsListJob::AllEventsListJob(const QString &accessToken, QObject *parent)
 {
 }
 
-QList< EventInfoPtr > AllEventsListJob::allEvents() const
+QList<EventInfo> AllEventsListJob::allEvents() const
 {
     return m_events;
 }

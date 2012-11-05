@@ -31,7 +31,7 @@ AllPostsListJob::AllPostsListJob(const QString &accessToken, QObject *parent)
 
 }
 
-QList<PostInfoPtr> AllPostsListJob::allPosts() const
+QList<PostInfo> AllPostsListJob::allPosts() const
 {
     return m_posts;
 }

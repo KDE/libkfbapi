@@ -31,14 +31,14 @@ class LIBKFBAPI_EXPORT PostsListJob : public ListJobBase
 public:
     explicit PostsListJob(const QString &accessToken, QObject *parent = 0);
     PostsListJob(const QString &userId, const QString &accessToken, QObject *parent = 0);
-    QList<PostInfoPtr> posts() const;
+    QList<PostInfo> posts() const;
     int numEntries() const;
 
 protected:
     void handleItem(const QVariant &item);
 
 private:
-    QList<PostInfoPtr> m_posts;
+    QList<PostInfo> m_posts;
 };
 
 }

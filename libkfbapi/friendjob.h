@@ -52,16 +52,16 @@ public:
     * @return A list of pointers to UserInfo objects of all the users (friends)
     *         that have been retrieved by this job.
     */
-    QList<UserInfoPtr> friendInfo() const;
+    QList<UserInfo> friendInfo() const;
 
 private:
     QStringList friendFields() const;
     void handleSingleData(const QVariant &data);
-    void handlePartner(const UserInfoPtr &userInfo, const QVariant &partner);
-    void handleLocation(const UserInfoPtr &userInfo, const QVariant &data);
-    void handleWork(const UserInfoPtr &userInfo, const QVariant &data);
+    void handlePartner(UserInfo *userInfo, const QVariant &partner);
+    void handleLocation(UserInfo *userInfo, const QVariant &data);
+    void handleWork(UserInfo *userInfo, const QVariant &data);
 
-    QList<UserInfoPtr> m_friendInfo;
+    QList<UserInfo> m_friendInfo;
 };
 
 }

@@ -18,6 +18,7 @@
 */
 
 #include "userinfojob.h"
+#include "userinfoparser_p.h"
 
 #include <qjson/qobjecthelper.h>
 
@@ -34,15 +35,17 @@ UserInfoJob::UserInfoJob(const QString &userId, const QString &accessToken, QObj
 {
 }
 
-UserInfoPtr UserInfoJob::userInfo() const
+UserInfo UserInfoJob::userInfo() const
 {
     return m_userInfo;
 }
 
 void UserInfoJob::handleData(const QVariant &data)
 {
-    m_userInfo = UserInfoPtr(new UserInfo());
-    QJson::QObjectHelper::qvariant2qobject(data.toMap(), m_userInfo.data());
+    UserInfoParser parser;
+
+    QJson::QObjectHelper::qvariant2qobject(data.toMap(), &parser);
+    m_userInfo = parser.dataObject();
 }
 
 #include "userinfojob.moc"

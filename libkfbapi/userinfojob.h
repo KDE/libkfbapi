@@ -42,7 +42,7 @@ public:
     /**
     * @return A pointer to a userInfo object about the currently authenticated user.
     */
-    UserInfoPtr userInfo() const;
+    UserInfo userInfo() const;
 
 protected:
     /**
@@ -52,7 +52,7 @@ protected:
     virtual void handleData(const QVariant &data);
 
 private:
-    UserInfoPtr m_userInfo;
+    UserInfo m_userInfo;
 };
 
 }

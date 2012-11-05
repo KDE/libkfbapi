@@ -30,7 +30,7 @@ AllNotesListJob::AllNotesListJob(const QString &accessToken, QObject *parent)
 {
 }
 
-QList< NoteInfoPtr > AllNotesListJob::allNotes() const
+QList<NoteInfo> AllNotesListJob::allNotes() const
 {
     return m_notes;
 }

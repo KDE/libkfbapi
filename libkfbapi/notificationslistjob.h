@@ -30,14 +30,14 @@ class LIBKFBAPI_EXPORT NotificationsListJob : public ListJobBase
     Q_OBJECT
 public:
     explicit NotificationsListJob(const QString &accessToken, QObject *parent = 0);
-    QList<NotificationInfoPtr> notifications() const;
+    QList<NotificationInfo> notifications() const;
     virtual int numEntries() const;
 
 protected:
     virtual void handleItem(const QVariant &item);
 
 private:
-    QList<NotificationInfoPtr> m_notifications;
+    QList<NotificationInfo> m_notifications;
 };
 
 }

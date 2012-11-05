@@ -18,6 +18,7 @@
 */
 
 #include "friendjob.h"
+#include "userinfoparser_p.h"
 
 #include <KDebug>
 
@@ -57,7 +58,7 @@ QStringList FriendJob::friendFields() const
     return fields;
 }
 
-QList<UserInfoPtr> FriendJob::friendInfo() const
+QList<UserInfo> FriendJob::friendInfo() const
 {
     return m_friendInfo;
 }
@@ -71,7 +72,7 @@ struct WorkInfo
 };
 typedef QSharedPointer<WorkInfo> WorkInfoPtr;
 
-void FriendJob::handleLocation(const UserInfoPtr &userInfo, const QVariant &data)
+void FriendJob::handleLocation(UserInfo *userInfo, const QVariant &data)
 {
     if (data.isValid()) {
         const QVariant nameVariant = data.toMap()["name"];
@@ -88,7 +89,7 @@ void FriendJob::handleLocation(const UserInfoPtr &userInfo, const QVariant &data
     }
 }
 
-void FriendJob::handleWork(const UserInfoPtr &userInfo, const QVariant &data)
+void FriendJob::handleWork(UserInfo *userInfo, const QVariant &data)
 {
     QList<QVariant> work = data.toList();
     QList<WorkInfoPtr> workInfos;
@@ -125,7 +126,7 @@ void FriendJob::handleWork(const UserInfoPtr &userInfo, const QVariant &data)
     }
 }
 
-void FriendJob::handlePartner(const UserInfoPtr &userInfo, const QVariant &partner)
+void FriendJob::handlePartner(UserInfo *userInfo, const QVariant &partner)
 {
     if (partner.isValid()) {
         const QVariantMap partnerMap = partner.toMap();
@@ -135,14 +136,15 @@ void FriendJob::handlePartner(const UserInfoPtr &userInfo, const QVariant &partn
 
 void FriendJob::handleSingleData(const QVariant &data)
 {
-    UserInfoPtr friendInfo(new UserInfo());
-    QJson::QObjectHelper::qvariant2qobject(data.toMap(), friendInfo.data());
+    UserInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(data.toMap(), &parser);
     const QVariant location = data.toMap()["location"];
-    handleLocation(friendInfo, location);
+    UserInfo friendInfo = parser.dataObject();
+    handleLocation(&friendInfo, location);
     const QVariant work = data.toMap()["work"];
-    handleWork(friendInfo, work);
+    handleWork(&friendInfo, work);
     const QVariant partner = data.toMap()["significant_other"];
-    handlePartner(friendInfo, partner);
+    handlePartner(&friendInfo, partner);
     m_friendInfo.append(friendInfo);
 }
 

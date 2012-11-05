@@ -56,13 +56,13 @@ public:
     *
     * @return
     */
-    QList<EventInfoPtr> eventInfo() const;
+    QList<EventInfo> eventInfo() const;
 
 private:
     QStringList eventFields() const;
     void handleSingleData(const QVariant &data);
 
-    QList<EventInfoPtr> m_eventInfo;
+    QList<EventInfo> m_eventInfo;
 };
 
 }
