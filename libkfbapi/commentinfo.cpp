@@ -19,106 +19,176 @@
 
 #include "commentinfo.h"
 #include "util.h"
+#include "userinfoparser_p.h"
+#include "commentinfoparser_p.h"
 
 using namespace KFbAPI;
 
+class CommentData::CommentDataPrivate : public QSharedData {
+public:
+    QString id;            /* Facebook id of comment. */
+    UserInfo from;         /* Person who commented on the post. */
+    QString message;       /* Actual content of the comment. */
+    QString createdTime;   /* Creation time of the comment. */
+    int likes;             /* No. of likes on  the comment. */
+};
+
+CommentData::CommentData()
+    : d(new CommentDataPrivate)
+{
+}
+
+CommentData::CommentData(const CommentData &other)
+{
+    d = other.d;
+}
+
+CommentData::~CommentData()
+{
+}
+
+CommentData& CommentData::operator=(const CommentData &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
+}
+
 void CommentData::setId(const QString &id)
 {
-    m_id = id;
+    d->id = id;
 }
 
 QString CommentData::id() const
 {
-    return m_id;
+    return d->id;
 }
 
 void CommentData::setFrom(const QVariantMap &from)
 {
-    m_from = UserInfoPtr(new UserInfo());
-    QJson::QObjectHelper::qvariant2qobject(from, m_from.data());
+    UserInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(from, &parser);
+    d->from = parser.dataObject();
 }
 
-UserInfoPtr CommentData::from() const
+UserInfo CommentData::from() const
 {
-    return m_from;
+    return d->from;
 }
 
 QVariantMap CommentData::fromMap() const
 {
-    return QJson::QObjectHelper::qobject2qvariant(m_from.data());
+    UserInfoParser parser;
+    parser.setDataObject(d->from);
+    return QJson::QObjectHelper::qobject2qvariant(&parser);
 }
 
 void CommentData::setMessage(const QString &message)
 {
-    m_message = message;
+    d->message = message;
 }
 
 QString CommentData::message() const
 {
-    return m_message;
+    return d->message;
 }
 
 void CommentData::setCreatedTimeString(const QString &createdTime)
 {
-    m_createdTime = createdTime;
+    d->createdTime = createdTime;
 }
 
 QString CommentData::createdTimeString() const
 {
-    return m_createdTime;
+    return d->createdTime;
 }
 
 KDateTime CommentData::createdTime() const
 {
-    return facebookTimeToKDateTime(m_createdTime);
+    return facebookTimeToKDateTime(d->createdTime);
 }
 
-void CommentData::setLikes(const int &likes)
+void CommentData::setLikes(int likes)
 {
-    m_likes = likes;
+    d->likes = likes;
 }
 
 int CommentData::likes() const
 {
-    return m_likes;
+    return d->likes;
+}
+
+//============================================================================
+
+class CommentInfo::CommentInfoPrivate : public QSharedData {
+public:
+    QList<CommentData> data;       /*  Data of comment. */
+    int count;                     /* Count  of comment. */
+};
+
+CommentInfo::CommentInfo()
+    : d(new CommentInfoPrivate)
+{
+}
+
+CommentInfo::CommentInfo(const CommentInfo& other)
+{
+    d = other.d;
+}
+
+CommentInfo::~CommentInfo()
+{
+}
+
+CommentInfo& CommentInfo::operator=(const CommentInfo &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
 }
 
 void CommentInfo::setData(const QVariantList &data)
 {
-    m_data = QList<CommentDataPtr>();
+    d->data = QList<CommentData>();
+    CommentDataParser parser;
 
-    foreach (const QVariant &v, data) {
+    Q_FOREACH (const QVariant &v, data) {
         QVariantMap vMap = v.toMap();
-        CommentDataPtr commentData (new CommentData());
-        QJson::QObjectHelper::qvariant2qobject(vMap, commentData.data());
-        m_data << commentData;
+        CommentData commentData;
+        parser.setDataObject(commentData);
+
+        QJson::QObjectHelper::qvariant2qobject(vMap, &parser);
+        d->data << parser.dataObject();
     }
 }
 
-QList<CommentDataPtr> CommentInfo::data() const
+QList<CommentData> CommentInfo::data() const
 {
-    return m_data;
+    return d->data;
 }
 
 QVariantList CommentInfo::dataList() const
 {
     QVariantList list;
 
-    foreach(const CommentDataPtr &comment, m_data) {
-        list.append(QJson::QObjectHelper::qobject2qvariant(comment.data()));
+    CommentDataParser parser;
+
+    Q_FOREACH (const CommentData &comment, d->data) {
+        parser.setDataObject(comment);
+        list.append(QJson::QObjectHelper::qobject2qvariant(&parser));
     }
 
     return list;
 }
 
-void CommentInfo::setCount(const int &count)
+void CommentInfo::setCount(int count)
 {
-    m_count = count;
+    d->count = count;
 }
 
 int CommentInfo::count() const
 {
-    return m_count;
+    return d->count;
 }
 
 QString CommentInfo::path() const

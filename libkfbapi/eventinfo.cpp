@@ -27,6 +27,23 @@
 
 using namespace KFbAPI;
 
+class EventInfo::EventInfoPrivate : public QSharedData
+{
+public:
+    QString name;
+    QString startTime;
+    QString endTime;
+    QString location;
+    QString id;
+    QString description;
+    QString organizer;
+    QString updatedTime;
+
+    QList<AttendeeInfoPtr> attendees;
+};
+
+//============================================================================================
+
 AttendeeInfo::AttendeeInfo(const QString &name, const QString &id, const Attendee::PartStat &status)
     : m_name(name),
       m_id(id),
@@ -47,6 +64,29 @@ QString AttendeeInfo::id() const
 Attendee::PartStat AttendeeInfo::status() const
 {
     return m_status;
+}
+
+//============================================================================================
+
+EventInfo::EventInfo()
+    : d(new EventInfoPrivate)
+{
+}
+
+EventInfo::EventInfo(const EventInfo &other)
+{
+    d = other.d;
+}
+
+EventInfo::~EventInfo()
+{
+}
+
+EventInfo& EventInfo::operator=(const EventInfo& other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
 }
 
 EventPtr EventInfo::asEvent() const
@@ -106,105 +146,105 @@ EventPtr EventInfo::asEvent() const
 
 KDateTime EventInfo::endTime() const
 {
-    return facebookTimeToKDateTime(m_endTime);
+    return facebookTimeToKDateTime(d->endTime);
 }
 
 QString EventInfo::endTimeString() const
 {
-    return m_endTime;
+    return d->endTime;
 }
 
 QString EventInfo::id() const
 {
-    return m_id;
+    return d->id;
 }
 
 QString EventInfo::location() const
 {
-    return m_location;
+    return d->location;
 }
 
 QString EventInfo::name() const
 {
-    return m_name;
+    return d->name;
 }
 
 void EventInfo::setEndTimeString(const QString &endTime)
 {
-    m_endTime = endTime;
+    d->endTime = endTime;
 }
 
 void EventInfo::setId(const QString &id)
 {
-    m_id = id;
+    d->id = id;
 }
 
 void EventInfo::setLocation(const QString &location)
 {
-    m_location = location;
+    d->location = location;
 }
 
 void EventInfo::setName(const QString &name)
 {
-    m_name = name;
+    d->name = name;
 }
 
 void EventInfo::setStartTimeString(const QString &startTime)
 {
-    m_startTime = startTime;
+    d->startTime = startTime;
 }
 
 KDateTime EventInfo::startTime() const
 {
-    return facebookTimeToKDateTime(m_startTime);
+    return facebookTimeToKDateTime(d->startTime);
 }
 
 QString EventInfo::startTimeString() const
 {
-    return m_startTime;
+    return d->startTime;
 }
 
 QString EventInfo::description() const
 {
-    return m_description;
+    return d->description;
 }
 
 void EventInfo::setDescription(const QString &description)
 {
-    m_description = description;
+    d->description = description;
 }
 
 QString EventInfo::organizer() const
 {
-    return m_organizer;
+    return d->organizer;
 }
 
 void EventInfo::setOrganizer(const QString &organizer)
 {
-    m_organizer = organizer;
+    d->organizer = organizer;
 }
 
 void EventInfo::setUpdatedTimeString(const QString &updatedTime)
 {
-    m_updatedTime = updatedTime;
+    d->updatedTime = updatedTime;
 }
 
 KDateTime EventInfo::updatedTime() const
 {
-    return facebookTimeToKDateTime(m_updatedTime);
+    return facebookTimeToKDateTime(d->updatedTime);
 }
 
 QString EventInfo::updatedTimeString() const
 {
-    return m_updatedTime;
+    return d->updatedTime;
 }
 
 void EventInfo::addAttendees(const QList<AttendeeInfoPtr> &attendees)
 {
-    m_attendees << attendees;
+    d->attendees << attendees;
 }
 
 QList<AttendeeInfoPtr> EventInfo::attendees() const
 {
-    return m_attendees;
+    return d->attendees;
 }

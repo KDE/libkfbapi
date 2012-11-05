@@ -92,18 +92,15 @@ typedef QSharedPointer<AttendeeInfo> AttendeeInfoPtr;
 /**
 * Class to describe a facebook event.
 */
-class LIBKFBAPI_EXPORT EventInfo : public QObject
+class LIBKFBAPI_EXPORT EventInfo
 {
-  Q_OBJECT
-  Q_PROPERTY(QString name WRITE setName READ name)
-  Q_PROPERTY(QString start_time WRITE setStartTimeString READ startTimeString)
-  Q_PROPERTY(QString end_time WRITE setEndTimeString READ endTimeString)
-  Q_PROPERTY(QString location WRITE setLocation READ location)
-  Q_PROPERTY(QString id WRITE setId READ id)
-  Q_PROPERTY(QString description WRITE setDescription READ description)
-  Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
-
 public:
+    EventInfo();
+    EventInfo(const EventInfo &other);
+    ~EventInfo();
+
+    EventInfo &operator=(const EventInfo &other);
+
     /**
     * @brief Set the name of the event.
     * @param name The name of the event.
@@ -209,19 +206,9 @@ public:
     EventPtr asEvent() const;
 
 private:
-    QString m_name;
-    QString m_startTime;
-    QString m_endTime;
-    QString m_location;
-    QString m_id;
-    QString m_description;
-    QString m_organizer;
-    QString m_updatedTime;
-
-    QList<AttendeeInfoPtr> m_attendees;
+    class EventInfoPrivate;
+    QSharedDataPointer<EventInfoPrivate> d;
 };
-
-typedef QSharedPointer<EventInfo> EventInfoPtr;
 
 }
 

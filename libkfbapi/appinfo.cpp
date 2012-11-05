@@ -21,92 +21,127 @@
 
 using namespace KFbAPI;
 
+class AppInfo::AppInfoPrivate : public QSharedData {
+public:
+    QString id;            /* Facebook id of the Application. */
+    QString name;          /* Name of the Application */
+    QString description;   /* Description of the Application. */
+    QString category;      /* Category of the Application */
+    QString company;       /* Company of the Application */
+    QString iconUrl;       /* IconUrl of the Application */
+    QString subcategory;   /* Subcategory of the Application */
+    QString link;          /* Link of the Application */
+    QString logoUrl;       /* LogoUrl of the Application */
+};
+
+AppInfo::AppInfo()
+    : d(new AppInfoPrivate)
+{
+}
+
+AppInfo::AppInfo(const AppInfo &other)
+{
+    d = other.d;
+}
+
+
+AppInfo::~AppInfo()
+{
+}
+
+AppInfo& AppInfo::operator=(const AppInfo &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
+}
+
 void AppInfo::setId(const QString &id)
 {
-    m_id = id;
+    d->id = id;
 }
 
 QString AppInfo::id() const
 {
-    return m_id;
+    return d->id;
 }
 
 void AppInfo::setName(const QString &name)
 {
-    m_name = name;
+    d->name = name;
 }
 
 QString AppInfo::name() const
 {
-    return m_name;
+    return d->name;
 }
 
 void AppInfo::setDescription(const QString &description)
 {
-    m_description = description;
+    d->description = description;
 }
 
 QString AppInfo::description() const
 {
-    return m_description;
+    return d->description;
 }
 
 void AppInfo::setCategory(const QString &category)
 {
-    m_category = category;
+    d->category = category;
 }
 
 QString AppInfo::category() const
 {
-    return m_category;
+    return d->category;
 }
 
 void AppInfo::setCompany(const QString &company)
 {
-    m_company = company;
+    d->company = company;
 }
 
 QString AppInfo::company() const
 {
-    return m_company;
+    return d->company;
 }
 
 void AppInfo::setIconUrl(const QString &iconUrl)
 {
-    m_iconUrl = iconUrl;
+    d->iconUrl = iconUrl;
 }
 
 QString AppInfo::iconUrl() const
 {
-    return m_iconUrl;
+    return d->iconUrl;
 }
 
 void AppInfo::setSubcategory(const QString &subCategory)
 {
-    m_subcategory = subCategory;
+    d->subcategory = subCategory;
 }
 
 QString AppInfo::subcategory() const
 {
-    return m_subcategory;
+    return d->subcategory;
 }
 
 void AppInfo::setLink(const QString &link)
 {
-    m_link = link;
+    d->link = link;
 }
 
 QString AppInfo::link() const
 {
-    return m_link;
+    return d->link;
 }
 
 void AppInfo::setLogoUrl(const QString &logoUrl)
 {
-    m_logoUrl = logoUrl;
+    d->logoUrl = logoUrl;
 }
 
 QString AppInfo::logoUrl() const
 {
-    return m_logoUrl;
+    return d->logoUrl;
 }

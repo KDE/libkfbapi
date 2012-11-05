@@ -33,16 +33,15 @@ namespace KFbAPI {
 /**
  * Class that represents data to be held by comment
  */
-class LIBKFBAPI_EXPORT CommentData : public QObject
+class LIBKFBAPI_EXPORT CommentData
 {
-    Q_OBJECT
-    Q_PROPERTY(QString id WRITE setId READ id)
-    Q_PROPERTY(QVariantMap from WRITE setFrom READ fromMap)
-    Q_PROPERTY(QString message WRITE setMessage READ message)
-    Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
-    Q_PROPERTY(int likes WRITE setLikes READ likes)
-
 public:
+    CommentData();
+    CommentData(const CommentData &other);
+    ~CommentData();
+
+    CommentData &operator=(const CommentData &other);
+
     /**
      * Set the facebook id of comment
      * @param id the facebook id
@@ -61,7 +60,7 @@ public:
     /**
      * Returns the person who commented the post
      */
-    UserInfoPtr from() const;
+    UserInfo from() const;
     /**
      * Returns the person who commented the post as a QVariantMap
      */
@@ -94,7 +93,7 @@ public:
      * Set the no. of likes of comment
      * @param likes the no. of likes
      */
-    void setLikes(const int &likes);
+    void setLikes(int likes);
     /**
      * Returns the no. of likes
      */
@@ -102,25 +101,22 @@ public:
 
 
 private:
-    QString m_id;            /* Facebook id of comment. */
-    UserInfoPtr m_from;      /* Person who commented on the post. */
-    QString m_message;       /* Actual content of the comment. */
-    QString m_createdTime;   /* Creation time of the comment. */
-    int m_likes;             /* No. of likes on  the comment. */
+    class CommentDataPrivate;
+    QSharedDataPointer<CommentDataPrivate> d;
 };
-
-typedef QSharedPointer<CommentData> CommentDataPtr;
 
 /**
  * Class to represent a facebook comment . See https://developers.facebook.com/docs/reference/api/Comment/
  */
-class LIBKFBAPI_EXPORT CommentInfo : public QObject
+class LIBKFBAPI_EXPORT CommentInfo
 {
-    Q_OBJECT
-    Q_PROPERTY(QVariantList data WRITE setData READ dataList)
-    Q_PROPERTY(int count WRITE setCount READ count)
-
 public:
+    CommentInfo();
+    CommentInfo(const CommentInfo &other);
+    ~CommentInfo();
+
+    CommentInfo &operator=(const CommentInfo &other);
+
     /**
      * Set the data of this like (list of people who like the post)
      * @param data the like data
@@ -129,7 +125,7 @@ public:
     /**
      * Returns the comment data
      */
-    QList<CommentDataPtr> data() const;
+    QList<CommentData> data() const;
     /**
      * Returns the comment data as Variant List
      */
@@ -139,7 +135,7 @@ public:
      * Set the count of this like (number of people who like the post)
      * @param count the like count
      */
-    virtual void setCount(const int &count);
+    virtual void setCount(int count);
     /**
      * Returns the comment count
      */
@@ -152,11 +148,10 @@ public:
 
 
 private:
-    QList<CommentDataPtr> m_data;    /*  Data of comment. */
-    int m_count;                     /* Count  of comment. */
+    class CommentInfoPrivate;
+    QSharedDataPointer<CommentInfoPrivate> d;
 };
 
-typedef QSharedPointer<CommentInfo> CommentInfoPtr;
 
 }
 

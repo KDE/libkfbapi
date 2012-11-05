@@ -6,6 +6,16 @@ include_directories(
   ${Boost_INCLUDE_DIR}
 )
 
+qt4_generate_moc(appinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_appinfoparser_p.cpp)
+qt4_generate_moc(commentinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_commentinfoparser_p.cpp)
+qt4_generate_moc(eventinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_eventinfoparser_p.cpp)
+qt4_generate_moc(likeinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_likeinfoparser_p.cpp)
+qt4_generate_moc(noteinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_noteinfoparser_p.cpp)
+qt4_generate_moc(notificationinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_notificationinfoparser_p.cpp)
+qt4_generate_moc(postinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_postinfoparser_p.cpp)
+qt4_generate_moc(propertyinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_propertyinfoparser_p.cpp)
+qt4_generate_moc(userinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_userinfoparser_p.cpp)
+
 set(kfbapi_SRCS
   allpostslistjob.cpp
   authenticationdialog.cpp
@@ -40,9 +50,18 @@ set(kfbapi_SRCS
   getlikesjob.cpp
   getcommentsjob.cpp
   notificationsmarkreadjob.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/moc_appinfoparser_p.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/moc_commentinfoparser_p.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/moc_eventinfoparser_p.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/moc_likeinfoparser_p.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/moc_noteinfoparser_p.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/moc_notificationinfoparser_p.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/moc_postinfoparser_p.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/moc_propertyinfoparser_p.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/moc_userinfoparser_p.cpp
+
   #connectioninfo.cpp
   #connectionslistjob.cpp
-
 )
 
 kde4_add_library(kfbapi SHARED ${kfbapi_SRCS})

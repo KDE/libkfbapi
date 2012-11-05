@@ -18,32 +18,63 @@
 */
 
 #include "likeinfo.h"
+#include "userinfoparser_p.h"
 
 using namespace KFbAPI;
 
+class LikeInfo::LikeInfoPrivate : public QSharedData {
+public:
+    QList<UserInfo> data;   /*  Data of like. */
+    int count;                 /* Count  of like. */
+};
+
+LikeInfo::LikeInfo()
+    : d(new LikeInfoPrivate)
+{
+}
+
+LikeInfo::LikeInfo(const LikeInfo &other)
+{
+    d = other.d;
+}
+
+LikeInfo::~LikeInfo()
+{
+}
+
+LikeInfo& LikeInfo::operator=(const LikeInfo &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
+}
+
 void LikeInfo::setData(const QVariantList &data)
 {
-    m_data =  QList<UserInfoPtr>();
+    UserInfoParser parser;
+    d->data = QList<UserInfo>();
 
-    foreach(const QVariant &v, data) {
+    Q_FOREACH (const QVariant &v, data) {
         QVariantMap vMap = v.toMap();
-        UserInfoPtr userInfo(new UserInfo());
-        QJson::QObjectHelper::qvariant2qobject(vMap, userInfo.data());
-        m_data << userInfo;
+        parser.setDataObject(UserInfo());
+        QJson::QObjectHelper::qvariant2qobject(vMap, &parser);
+        d->data << parser.dataObject();
     }
 }
 
-QList<UserInfoPtr> LikeInfo::data() const
+QList<UserInfo> LikeInfo::data() const
 {
-    return m_data;
+    return d->data;
 }
 
 QVariantList LikeInfo::dataList() const
 {
+    UserInfoParser parser;
     QVariantList list;
 
-    foreach(const UserInfoPtr &user, m_data) {
-        list.append(QJson::QObjectHelper::qobject2qvariant(user.data()));
+    Q_FOREACH (const UserInfo &user, d->data) {
+        parser.setDataObject(user);
+        list.append(QJson::QObjectHelper::qobject2qvariant(&parser));
     }
 
     return list;
@@ -51,12 +82,12 @@ QVariantList LikeInfo::dataList() const
 
 void LikeInfo::setCount(const int &count)
 {
-    m_count = count;
+    d->count = count;
 }
 
 int LikeInfo::count() const
 {
-    return m_count;
+    return d->count;
 }
 
 QString LikeInfo::path() const

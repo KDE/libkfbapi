@@ -31,20 +31,14 @@ namespace KFbAPI {
  * Class to represent a facebook application. See https://developers.facebook.com/docs/reference/api/application/
  */
 
-class LIBKFBAPI_EXPORT AppInfo : public QObject
+class LIBKFBAPI_EXPORT AppInfo
 {
-    Q_OBJECT
-    Q_PROPERTY(QString id WRITE setId READ id)
-    Q_PROPERTY(QString name WRITE setName READ name)
-    Q_PROPERTY(QString description WRITE setDescription READ description)
-    Q_PROPERTY(QString category WRITE setCategory READ category)
-    Q_PROPERTY(QString company WRITE setCompany READ company)
-    Q_PROPERTY(QString icon_url WRITE setIconUrl READ iconUrl)
-    Q_PROPERTY(QString subcategory WRITE setSubcategory READ subcategory)
-    Q_PROPERTY(QString link WRITE setLink READ link)
-    Q_PROPERTY(QString logo_url WRITE setLogoUrl READ logoUrl)
+public:
+    AppInfo();
+    AppInfo(const AppInfo &other);
+    ~AppInfo();
 
-public :
+    AppInfo &operator=(const AppInfo &other);
 
     /**
      * Set the facebook id of this application
@@ -137,18 +131,9 @@ public :
     QString link() const;
 
 private:
-    QString m_id;            /* Facebook id of the Application. */
-    QString m_name;          /* Name of the Application */
-    QString m_description;   /* Description of the Application. */
-    QString m_category;      /* Category of the Application */
-    QString m_company;       /* Company of the Application */
-    QString m_iconUrl;       /* IconUrl of the Application */
-    QString m_subcategory;   /* Subcategory of the Application */
-    QString m_link;          /* Link of the Application */
-    QString m_logoUrl;       /* LogoUrl of the Application */
+    class AppInfoPrivate;
+    QSharedDataPointer<AppInfoPrivate> d;
 };
-
-typedef QSharedPointer<AppInfo> AppInfoPtr;
 
 }
 

@@ -19,228 +19,278 @@
 
 #include "postinfo.h"
 #include "util.h"
+#include "commentinfo.h"
+
+#include "propertyinfoparser_p.h"
+#include "likeinfoparser_p.h"
+#include "commentinfoparser_p.h"
+#include "appinfoparser_p.h"
+//#include "postinfoparser_p.h"
+#include "userinfoparser_p.h"
 
 using namespace KFbAPI;
 
+class PostInfo::PostInfoPrivate : public QSharedData {
+public:
+    QString id;            /* Facebook id of the post. */
+    UserInfo from;      /* Creator of the post. */
+    QString message;       /* Actual content of the post. */
+    QString pictureUrl;    /* Picture assocauted with the Post. */
+    QString link;          /* Link associated with the post */
+    QString name;          /* Name of the Link */
+    QString caption;       /* Caption of the Link */
+    QString description;   /* Description of the Link. */
+    QString source;        /* Source of the Link */
+    QList<PropertyInfo> properties;     /* Properties of the Link */
+    QString icon;          /* Icon of the post */
+    QString type;          /* Type of  post */
+    LikeInfo likes;     /* Likes of  post */
+    QString story;         /* Story of  post */
+    CommentInfo comments;          /* Comments on  post */
+    AppInfo application;           /*App associated with the post*/
+    QString createdTime;   /* Creation time of the post. */
+    QString updatedTime;   /* Last update time of the post. */
+};
+
+PostInfo::PostInfo()
+    : d(new PostInfoPrivate)
+{
+}
+
+PostInfo::PostInfo(const PostInfo &other)
+{
+    d = other.d;
+}
+
+PostInfo::~PostInfo()
+{
+}
+
+PostInfo& PostInfo::operator=(const PostInfo &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
+}
 
 void PostInfo::setId(const QString &id)
 {
-    m_id = id;
+    d->id = id;
 }
 
 QString PostInfo::id() const
 {
-    return m_id;
+    return d->id;
 }
 
 void PostInfo::setFrom(const QVariantMap &from)
 {
-    m_from = UserInfoPtr (new UserInfo());
-    QJson::QObjectHelper::qvariant2qobject(from, m_from.data());
+    UserInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(from, &parser);
+    d->from = parser.dataObject();
 }
 
-UserInfoPtr PostInfo::from() const
+UserInfo PostInfo::from() const
 {
-    return m_from;
+    return d->from;
 }
 
 void PostInfo::setMessage(const QString &message)
 {
-    m_message = message;
+    d->message = message;
 }
 
 QString PostInfo::message() const
 {
-    return m_message;
+    return d->message;
 }
 
 QString PostInfo::pictureUrl() const
 {
-    return m_pictureUrl;
+    return d->pictureUrl;
 }
 
 void PostInfo::setPictureUrl(const QString &pictureUrl)
 {
-    m_pictureUrl = pictureUrl;
+    d->pictureUrl = pictureUrl;
 }
-
 
 void PostInfo::setLink(const QString &link)
 {
-    m_link = link;
+    d->link = link;
 }
 
 QString PostInfo::link() const
 {
-    return m_link;
+    return d->link;
 }
 
 
 void PostInfo::setName(const QString &name)
 {
-    m_name = name;
+    d->name = name;
 }
 
 QString PostInfo::name() const
 {
-    return m_name;
+    return d->name;
 }
 
 
 void PostInfo::setCaption(const QString &caption)
 {
-    m_caption = caption;
+    d->caption = caption;
 }
 
 QString PostInfo::caption() const
 {
-    return m_caption;
+    return d->caption;
 }
 
 void PostInfo::setDescription(const QString &description)
 {
-    m_description = description;
+    d->description = description;
 }
 
 QString PostInfo::description() const
 {
-    return m_description;
+    return d->description;
 }
 
 void PostInfo::setSource(const QString &source)
 {
-    m_source = source;
+    d->source = source;
 }
 
 QString PostInfo::source() const
 {
-    return m_source;
+    return d->source;
 }
 
 void PostInfo::setProperties(const QVariantList &properties)
 {
-    m_properties = QList<PropertyInfoPtr>();
+    PropertyInfoParser parser;
+    d->properties = QList<PropertyInfo>();
 
-    foreach (const QVariant &v, properties) {
+    Q_FOREACH (const QVariant &v, properties) {
         QVariantMap vMap = v.toMap();
-        PropertyInfoPtr propertyInfo(new PropertyInfo());
-        QJson::QObjectHelper::qvariant2qobject(vMap, propertyInfo.data());
-        m_properties << propertyInfo;
+        parser.setDataObject(PropertyInfo());
+        QJson::QObjectHelper::qvariant2qobject(vMap, &parser);
+        d->properties << parser.dataObject();
     }
 }
 
-QList<PropertyInfoPtr> PostInfo::properties() const
+QList<PropertyInfo> PostInfo::properties() const
 {
-    return m_properties;
+    return d->properties;
 }
 
 void PostInfo::setIcon(const QString &icon)
 {
-    m_icon = icon;
+    d->icon = icon;
 }
 
 QString PostInfo::icon() const
 {
-    return m_icon;
+    return d->icon;
 }
 
 void PostInfo::setType(const QString &type)
 {
-    m_type = type;
+    d->type = type;
 }
 
 QString PostInfo::type() const
 {
-    return m_type;
+    return d->type;
 }
 
 void PostInfo::setLikes(const QVariantMap &likes)
 {
-    m_likes = LikeInfoPtr(new LikeInfo());
-    QJson::QObjectHelper::qvariant2qobject(likes, m_likes.data());
+    LikeInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(likes, &parser);
+    d->likes = parser.dataObject();
 }
 
-LikeInfoPtr PostInfo::likes() const
+LikeInfo PostInfo::likes() const
 {
-    return m_likes;
+    return d->likes;
 }
 
 QVariantMap PostInfo::likesMap() const
 {
-    if (!m_likes.isNull()) {
-        return QJson::QObjectHelper::qobject2qvariant(m_likes.data());
-    }
-
-    return QVariantMap();
+    LikeInfoParser parser;
+    parser.setDataObject(d->likes);
+    return QJson::QObjectHelper::qobject2qvariant(&parser);
 }
 
 void PostInfo::setStory(const QString &story)
 {
-    m_story = story;
+    d->story = story;
 }
 
 QString PostInfo::story() const
 {
-    return m_story;
+    return d->story;
 }
 
 void PostInfo::setComments(const QVariantMap &comments)
 {
-    m_comments  = CommentInfoPtr (new CommentInfo());
-    QJson::QObjectHelper::qvariant2qobject(comments, m_comments.data());
+    CommentInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(comments, &parser);
+    d->comments = parser.dataObject();
 }
 
-CommentInfoPtr PostInfo::comments() const
+CommentInfo PostInfo::comments() const
 {
-    return m_comments;
+    return d->comments;
 }
 
 QVariantMap PostInfo::commentsMap() const
 {
-    if (!m_comments.isNull()) {
-        return QJson::QObjectHelper::qobject2qvariant(m_comments.data());
-    }
-
-    return QVariantMap();
+    CommentInfoParser parser;
+    parser.setDataObject(d->comments);
+    return QJson::QObjectHelper::qobject2qvariant(&parser);
 }
 
 void PostInfo::setApplication(const QVariantMap &application)
 {
-    m_application = AppInfoPtr(new AppInfo());
-    QJson::QObjectHelper::qvariant2qobject(application, m_application.data());
+    AppInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(application, &parser);
+    d->application = parser.dataObject();
 }
 
-AppInfoPtr PostInfo::application() const
+AppInfo PostInfo::application() const
 {
-    return m_application;
+    return d->application;
 }
 
 void PostInfo::setCreatedTimeString(const QString &createdTime)
 {
-    m_createdTime = createdTime;
+    d->createdTime = createdTime;
 }
 
 QString PostInfo::createdTimeString() const
 {
-    return m_createdTime;
+    return d->createdTime;
 }
 
 KDateTime PostInfo::createdTime() const
 {
-    return facebookTimeToKDateTime(m_createdTime);
+    return facebookTimeToKDateTime(d->createdTime);
 }
 
 void PostInfo::setUpdatedTimeString(const QString &updatedTime)
 {
-    m_updatedTime = updatedTime;
+    d->updatedTime = updatedTime;
 }
 
 QString PostInfo::updatedTimeString() const
 {
-    return m_updatedTime;
+    return d->updatedTime;
 }
 
 KDateTime PostInfo::updatedTime() const
 {
-    return facebookTimeToKDateTime(m_updatedTime);
+    return facebookTimeToKDateTime(d->updatedTime);
 }

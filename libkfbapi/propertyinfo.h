@@ -32,14 +32,15 @@ namespace KFbAPI {
  * Class to represent a property associated with a facebook post
  */
 
-class LIBKFBAPI_EXPORT PropertyInfo : public QObject
+class LIBKFBAPI_EXPORT PropertyInfo
 {
-    Q_OBJECT
-    Q_PROPERTY(QString name WRITE setName READ name)
-    Q_PROPERTY(QString text WRITE setText READ text)
-    Q_PROPERTY(QString href WRITE setHref READ href)
-
 public:
+    PropertyInfo();
+    PropertyInfo(const PropertyInfo &other);
+    ~PropertyInfo();
+
+    PropertyInfo &operator=(const PropertyInfo &other);
+
     /**
     * Set the name of this property
     * @param name the property name
@@ -71,12 +72,9 @@ public:
     QString href() const;
 
 private:
-    QString m_name;          /* Name of the property. */
-    QString m_text;          /* Text of the property. */
-    QString m_href;          /* Href Link of the property. */
+    class PropertyInfoPrivate;
+    QSharedDataPointer<PropertyInfoPrivate> d;
  };
-
-typedef QSharedPointer<PropertyInfo> PropertyInfoPtr;
 
 }
 

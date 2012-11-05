@@ -39,29 +39,15 @@ namespace KFbAPI {
  * See https://developers.facebook.com/docs/reference/api/post/
  */
 
-class LIBKFBAPI_EXPORT PostInfo : public QObject
+class LIBKFBAPI_EXPORT PostInfo
 {
-    Q_OBJECT
-    Q_PROPERTY(QString id WRITE setId READ id)
-    Q_PROPERTY(QVariantMap from WRITE setFrom)
-    Q_PROPERTY(QString message WRITE setMessage READ message)
-    Q_PROPERTY(QString picture WRITE setPictureUrl READ pictureUrl)
-    Q_PROPERTY(QString link WRITE setLink READ link)
-    Q_PROPERTY(QString name WRITE setName READ name)
-    Q_PROPERTY(QString caption WRITE setCaption READ caption)
-    Q_PROPERTY(QString description WRITE setDescription READ description)
-    Q_PROPERTY(QString source WRITE setSource READ source)
-    Q_PROPERTY(QVariantList properties WRITE setProperties)
-    Q_PROPERTY(QString icon WRITE setIcon READ icon)
-    Q_PROPERTY(QString type WRITE setType READ type)
-    Q_PROPERTY(QVariantMap likes WRITE setLikes READ likesMap)
-    Q_PROPERTY(QString story WRITE setStory READ story)
-    Q_PROPERTY(QVariantMap comments WRITE setComments READ commentsMap)
-    Q_PROPERTY(QVariantMap application WRITE setApplication)
-    Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
-    Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
-
 public:
+    PostInfo();
+    PostInfo(const PostInfo &other);
+    ~PostInfo();
+
+    PostInfo &operator=(const PostInfo &other);
+
     /**
      * Set the facebook id of this post
      * @param id the facebook id
@@ -80,7 +66,7 @@ public:
     /**
      * Returns the creator of the post as a User Info Object Pointer
      */
-    UserInfoPtr from() const;
+    UserInfo from() const;
 
     /**
      * Set the actual content of the post
@@ -160,7 +146,7 @@ public:
     /**
      * Returns properties of the link
      */
-    QList<PropertyInfoPtr> properties() const;
+    QList<PropertyInfo> properties() const;
 
     /**
      * Set icon of post (represents type of post)
@@ -190,7 +176,7 @@ public:
     /**
      * Returns likes of the post
      */
-    LikeInfoPtr likes() const;
+    LikeInfo likes() const;
 
     /**
      * Returns likes of the post as a Variant Map
@@ -214,7 +200,7 @@ public:
     /**
      * Returns comments of the post
      */
-    CommentInfoPtr comments() const;
+    CommentInfo comments() const;
 
     /**
      * Returns comments of the post as a Variant Map
@@ -229,7 +215,7 @@ public:
     /**
      * Returns the creator app of the post
      */
-    AppInfoPtr application() const;
+    AppInfo application() const;
 
     /**
      * Set the creation time of the post
@@ -261,31 +247,12 @@ public:
     KDateTime updatedTime() const;
 
 private:
-    QString m_id;            /* Facebook id of the post. */
-    UserInfoPtr m_from;      /* Creator of the post. */
-    QString m_message;       /* Actual content of the post. */
-    QString m_pictureUrl;    /* Picture assocauted with the Post. */
-    QString m_link;          /* Link associated with the post */
-    QString m_name;          /* Name of the Link */
-    QString m_caption;       /* Caption of the Link */
-    QString m_description;   /* Description of the Link. */
-    QString m_source;        /* Source of the Link */
-    QList<PropertyInfoPtr> m_properties;     /* Properties of the Link */
-    QString m_icon;          /* Icon of the post */
-    QString m_type;          /* Type of  post */
-    LikeInfoPtr m_likes;     /* Likes of  post */
-    QString m_story;         /* Story of  post */
-    CommentInfoPtr m_comments;          /* Comments on  post */
-    AppInfoPtr m_application;           /*App associated with the post*/
-    QString m_createdTime;   /* Creation time of the post. */
-    QString m_updatedTime;   /* Last update time of the post. */
+    class PostInfoPrivate;
+    QSharedDataPointer<PostInfoPrivate> d;
 };
-
-typedef QSharedPointer<PostInfo> PostInfoPtr;
-typedef QList<PostInfoPtr> PostInfoList;
 
 }
 
-Q_DECLARE_METATYPE(KFbAPI::PostInfo *);
+Q_DECLARE_METATYPE(KFbAPI::PostInfo);
 
 #endif

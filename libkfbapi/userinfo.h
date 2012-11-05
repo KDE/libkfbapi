@@ -33,22 +33,14 @@ namespace KFbAPI {
 /**
 * Class that describes a person on facebook
 */
-class LIBKFBAPI_EXPORT UserInfo : public QObject
+class LIBKFBAPI_EXPORT UserInfo
 {
-    Q_OBJECT
-    Q_PROPERTY(QString id WRITE setId READ id)
-    Q_PROPERTY(QString name WRITE setName READ name)
-    Q_PROPERTY(QString first_name WRITE setFirstName READ firstName)
-    Q_PROPERTY(QString last_name WRITE setLastName READ lastName)
-    Q_PROPERTY(QString birthday WRITE setBirthday READ birthdayAsString)
-    Q_PROPERTY(QString website WRITE setWebsite READ website)
-    Q_PROPERTY(QString username WRITE setUsername READ username)
-    Q_PROPERTY(int timezone WRITE setTimezone READ timezone)
-    Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
-    Q_PROPERTY(QUrl picture WRITE setPicture READ picture)
-
 public:
     UserInfo();
+    UserInfo(const UserInfo &other);
+    ~UserInfo();
+
+    UserInfo &operator=(const UserInfo &other);
 
     /**
     * @brief Sets the facebook id of a person
@@ -161,7 +153,7 @@ public:
     * @brief Set the partner of this person.
     * @param partner The partner of this person.
     */
-    void setPartner( const QString &partner );
+    void setPartner(const QString &partner);
     /**
     * @return The partner of this person.
     */
@@ -211,27 +203,12 @@ public:
     QUrl picture() const;
 
 private:
-    QString m_id;
-    QString m_name;
-    QString m_firstName;
-    QString m_lastName;
-    QDate m_birthday;
-    QString m_website;
-    QString m_username;
-    QString m_country;
-    QString m_city;
-    QString m_company;
-    QString m_profession;
-    QString m_partner;
-    QString m_updatedTime;
-    int m_timezone;
-    QUrl m_pictureUrl;
+    class UserInfoPrivate;
+    QSharedDataPointer<UserInfoPrivate> d;
 };
-
-typedef QSharedPointer<UserInfo> UserInfoPtr;
 
 }
 
-Q_DECLARE_METATYPE(KFbAPI::UserInfoPtr)
+Q_DECLARE_METATYPE(KFbAPI::UserInfo)
 
 #endif

@@ -21,108 +21,147 @@
 #include "userinfo.h"
 #include "appinfo.h"
 #include "util.h"
+#include "userinfoparser_p.h"
+#include "appinfoparser_p.h"
 
 using namespace KFbAPI;
 
+class NotificationInfo::NotificationInfoPrivate : public QSharedData {
+public:
+    QString id;          /* Facebook notification id */
+    UserInfo from;       /* User from whom the notification originates */
+    UserInfo to;         /* User receiving the notification */
+    QString createdTime; /* Creation time of the post. */
+    QString updatedTime; /* Last update time of the post. */
+    QString title;       /* Title of the notification */
+    QString link;        /* Link for the notification */
+    AppInfo app;         /* App causing the notification */
+    bool unread;         /* Status of the notification, true if unread, false otherwise */
+};
+
+NotificationInfo::NotificationInfo()
+    : d(new NotificationInfoPrivate)
+{
+}
+
+NotificationInfo::NotificationInfo(const NotificationInfo &other)
+{
+    d = other.d;
+}
+
+NotificationInfo::~NotificationInfo()
+{
+}
+
+NotificationInfo& NotificationInfo::operator=(const NotificationInfo &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
+}
+
 void NotificationInfo::setId(const QString &id)
 {
-    m_id = id;
+    d->id = id;
 }
 
 QString NotificationInfo::id() const
 {
-    return m_id;
+    return d->id;
 }
 
 void NotificationInfo::setFrom(const QVariantMap &from)
 {
-    m_from = UserInfoPtr (new UserInfo());
-    QJson::QObjectHelper::qvariant2qobject(from, m_from.data());
+    UserInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(from, &parser);
+    d->from = parser.dataObject();
 }
 
-UserInfoPtr NotificationInfo::from() const
+UserInfo NotificationInfo::from() const
 {
-    return m_from;
+    return d->from;
 }
 
 void NotificationInfo::setTo(const QVariantMap &to)
 {
-    m_to = UserInfoPtr (new UserInfo());
-    QJson::QObjectHelper::qvariant2qobject(to, m_to.data());
+    UserInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(to, &parser);
+    d->to = parser.dataObject();
 }
 
-UserInfoPtr NotificationInfo::to() const
+UserInfo NotificationInfo::to() const
 {
-    return m_to;
+    return d->to;
 }
 
 void NotificationInfo::setCreatedTimeString(const QString &time)
 {
-    m_createdTime = time;
+    d->createdTime = time;
 }
 
 QString NotificationInfo::createdTimeString() const
 {
-    return m_createdTime;
+    return d->createdTime;
 }
 
 KDateTime NotificationInfo::createdTime() const
 {
-    return facebookTimeToKDateTime(m_createdTime);
+    return facebookTimeToKDateTime(d->createdTime);
 }
 
 void NotificationInfo::setUpdatedTimeString(const QString &time)
 {
-    m_updatedTime = time;
+    d->updatedTime = time;
 }
 
 QString NotificationInfo::updatedTimeString() const
 {
-    return m_updatedTime;
+    return d->updatedTime;
 }
 
 KDateTime NotificationInfo::updatedTime() const
 {
-    return facebookTimeToKDateTime(m_updatedTime);
+    return facebookTimeToKDateTime(d->updatedTime);
 }
 
 void NotificationInfo::setTitle(const QString &title)
 {
-    m_title = title;
+    d->title = title;
 }
 
 QString NotificationInfo::title() const
 {
-    return m_title;
+    return d->title;
 }
 
 void NotificationInfo::setLink(const QString &link)
 {
-    m_link = link;
+    d->link = link;
 }
 
 QString NotificationInfo::link() const
 {
-    return m_link;
+    return d->link;
 }
 
 void NotificationInfo::setApplication(const QVariantMap &app)
 {
-    m_app = AppInfoPtr (new AppInfo());
-    QJson::QObjectHelper::qvariant2qobject(app, m_app.data());
+    AppInfoParser parser;
+    QJson::QObjectHelper::qvariant2qobject(app, &parser);
+    d->app = parser.dataObject();
 }
 
-AppInfoPtr NotificationInfo::application() const
+AppInfo NotificationInfo::application() const
 {
-    return m_app;
+    return d->app;
 }
 
 void NotificationInfo::setUnread(bool unread)
 {
-    m_unread = unread;
+    d->unread = unread;
 }
 
 bool NotificationInfo::unread() const
 {
-    return m_unread;
+    return d->unread;
 }

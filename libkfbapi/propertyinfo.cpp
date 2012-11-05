@@ -21,32 +21,60 @@
 
 using namespace KFbAPI;
 
+class PropertyInfo::PropertyInfoPrivate : public QSharedData {
+public:
+    QString name;      /* Name of the property. */
+    QString text;      /* Text of the property. */
+    QString href;      /* Href Link of the property. */
+};
+
+PropertyInfo::PropertyInfo()
+    : d(new PropertyInfoPrivate)
+{
+}
+
+PropertyInfo::PropertyInfo(const PropertyInfo &other)
+{
+    d = other.d;
+}
+
+PropertyInfo::~PropertyInfo()
+{
+}
+
+PropertyInfo& PropertyInfo::operator=(const PropertyInfo &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
+}
+
 void PropertyInfo::setName(const QString &name)
 {
-    m_name = name;
+    d->name = name;
 }
 
 QString PropertyInfo::name() const
 {
-    return m_name;
+    return d->name;
 }
 
 void PropertyInfo::setText(const QString &text)
 {
-    m_text = text;
+    d->text = text;
 }
 
 QString PropertyInfo::text() const
 {
-    return m_text;
+    return d->text;
 }
 
 void PropertyInfo::setHref(const QString &href)
 {
-    m_href = href;
+    d->href = href;
 }
 
 QString PropertyInfo::href() const
 {
-    return m_href;
+    return d->href;
 }

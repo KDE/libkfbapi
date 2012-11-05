@@ -39,20 +39,15 @@ namespace KFbAPI {
  * See https://developers.facebook.com/docs/reference/api/user/#notifications
  */
 
-class LIBKFBAPI_EXPORT NotificationInfo : public QObject
+class LIBKFBAPI_EXPORT NotificationInfo
 {
-    Q_OBJECT
-    Q_PROPERTY(QString id WRITE setId READ id)
-    Q_PROPERTY(QVariantMap from WRITE setFrom)
-    Q_PROPERTY(QVariantMap to WRITE setTo)
-    Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
-    Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
-    Q_PROPERTY(QString title WRITE setTitle READ title)
-    Q_PROPERTY(QString link WRITE setLink READ link)
-    Q_PROPERTY(QVariantMap application WRITE setApplication)
-    Q_PROPERTY(bool unread WRITE setUnread READ unread)
-
 public:
+    NotificationInfo();
+    NotificationInfo(const NotificationInfo &other);
+    ~NotificationInfo();
+
+    NotificationInfo &operator=(const NotificationInfo &other);
+
     /**
      * Set the notification id of the post
      * @param id of the notification
@@ -71,7 +66,7 @@ public:
     /**
      * Returns the user causing the notification as a User Info Object Pointer
      */
-    UserInfoPtr from() const;
+    UserInfo from() const;
 
     /**
      * Set the user receiving the notification
@@ -81,7 +76,7 @@ public:
     /**
      * Returns the user receiving the notification as a User Info Object Pointer
      */
-    UserInfoPtr to() const;
+    UserInfo to() const;
 
     /**
      * Set the creation time of the notification
@@ -141,7 +136,7 @@ public:
     /**
      * Returns the creator app that caused the notification
      */
-    AppInfoPtr application() const;
+    AppInfo application() const;
 
     /**
      * Set the notification as read/unread
@@ -154,21 +149,12 @@ public:
     bool unread() const;
 
 private:
-    QString m_id;          /* Facebook notification id */
-    UserInfoPtr m_from;    /* User from whom the notification originates */
-    UserInfoPtr m_to;      /* User receiving the notification */
-    QString m_createdTime; /* Creation time of the post. */
-    QString m_updatedTime; /* Last update time of the post. */
-    QString m_title;       /* Title of the notification */
-    QString m_link;        /* Link for the notification */
-    AppInfoPtr m_app;      /* App causing the notification */
-    bool m_unread;         /* Status of the notification, true if unread, false otherwise */
+    class NotificationInfoPrivate;
+    QSharedDataPointer<NotificationInfoPrivate> d;
 };
 
-typedef QSharedPointer<NotificationInfo> NotificationInfoPtr;
-typedef QList<NotificationInfoPtr> NotificationInfoList;
 }
 
-Q_DECLARE_METATYPE(KFbAPI::NotificationInfo *);
+Q_DECLARE_METATYPE(KFbAPI::NotificationInfo);
 
 #endif // NOTIFICATIONINFO_H

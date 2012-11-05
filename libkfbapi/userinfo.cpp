@@ -26,68 +26,105 @@ using namespace KFbAPI;
 
 static const int invalidTimezone = 42;
 
+class UserInfo::UserInfoPrivate : public QSharedData {
+public:
+    QString id;
+    QString name;
+    QString firstName;
+    QString lastName;
+    QDate birthday;
+    QString website;
+    QString username;
+    QString country;
+    QString city;
+    QString company;
+    QString profession;
+    QString partner;
+    QString updatedTime;
+    int timezone;
+    QUrl pictureUrl;
+};
+
 UserInfo::UserInfo()
-    : m_timezone(invalidTimezone)
+    : d(new UserInfoPrivate)
 {
+    d->timezone = invalidTimezone;
+}
+
+UserInfo::UserInfo(const UserInfo &other)
+{
+    d = other.d;
+}
+
+UserInfo::~UserInfo()
+{
+    //delete d;
+}
+
+UserInfo& UserInfo::operator=(const UserInfo &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
 }
 
 QString UserInfo::name() const
 {
-    return m_name;
+    return d->name;
 }
 
 QString UserInfo::id() const
 {
-    return m_id;
+    return d->id;
 }
 
 void UserInfo::setName(const QString &name)
 {
-    m_name = name;
+    d->name = name;
 }
 
 void UserInfo::setId(const QString &id)
 {
-    m_id = id;
+    d->id = id;
 }
 
 QDate UserInfo::birthday() const
 {
-    return m_birthday;
+    return d->birthday;
 }
 
 QString UserInfo::birthdayAsString() const
 {
-    return m_birthday.toString();
+    return d->birthday.toString();
 }
 
 QString UserInfo::firstName() const
 {
-    return m_firstName;
+    return d->firstName;
 }
 
 QString UserInfo::lastName() const
 {
-    return m_lastName;
+    return d->lastName;
 }
 
 void UserInfo::setBirthday(const QString &birthday)
 {
-    m_birthday = QDate::fromString(birthday, "MM/dd/yyyy");
-    if (!m_birthday.isValid()) {
+    d->birthday = QDate::fromString(birthday, "MM/dd/yyyy");
+    if (!d->birthday.isValid()) {
         // Some users don't tell the year of their birthday.
-        m_birthday = QDate::fromString(birthday + "/0001", "MM/dd/yyyy");
+        d->birthday = QDate::fromString(birthday + "/0001", "MM/dd/yyyy");
     }
 }
 
 void UserInfo::setFirstName(const QString &firstName)
 {
-    m_firstName = firstName;
+    d->firstName = firstName;
 }
 
 void UserInfo::setLastName(const QString &lastName)
 {
-    m_lastName = lastName;
+    d->lastName = lastName;
 }
 
 void UserInfo::setWebsite(const QString &website)
@@ -97,76 +134,76 @@ void UserInfo::setWebsite(const QString &website)
         normalized.replace("\r\n", "\n");
         normalized.replace("\r", "\n");
         const QStringList websites = normalized.split('\n');
-        m_website = websites[0];
+        d->website = websites[0];
     } else {
-        m_website = website;
+        d->website = website;
     }
 }
 
 void UserInfo::setCity(const QString &city)
 {
-    m_city = city;
+    d->city = city;
 }
 
 void UserInfo::setCountry(const QString &country)
 {
-    m_country = country;
+    d->country = country;
 }
 
 
 QString UserInfo::website() const
 {
-    return m_website;
+    return d->website;
 }
 
 QString UserInfo::username() const
 {
-    return m_username;
+    return d->username;
 }
 
 void UserInfo::setUsername(const QString &username)
 {
-    m_username = username;
+    d->username = username;
 }
 
 QString UserInfo::company() const
 {
-    return m_company;
+    return d->company;
 }
 
 QString UserInfo::profession() const
 {
-    return m_profession;
+    return d->profession;
 }
 
 void UserInfo::setCompany(const QString &company)
 {
-    m_company = company;
+    d->company = company;
 }
 
 void UserInfo::setProfession(const QString &profession)
 {
-    m_profession = profession;
+    d->profession = profession;
 }
 
 QString UserInfo::partner() const
 {
-    return m_partner;
+    return d->partner;
 }
 
 void UserInfo::setPartner(const QString &partner)
 {
-    m_partner = partner;
+    d->partner = partner;
 }
 
 void UserInfo::setTimezone(int timezone)
 {
-    m_timezone = timezone;
+    d->timezone = timezone;
 }
 
 int UserInfo::timezone() const
 {
-    return m_timezone;
+    return d->timezone;
 }
 
 KABC::Addressee UserInfo::toAddressee() const
@@ -178,16 +215,16 @@ KABC::Addressee UserInfo::toAddressee() const
     addressee.setFormattedName(name());
     addressee.setUrl(website());
     addressee.setBirthday(QDateTime(birthday()));
-    addressee.setOrganization(m_company);
-    if (m_timezone != invalidTimezone) {
-        addressee.setTimeZone(KABC::TimeZone(m_timezone));
+    addressee.setOrganization(d->company);
+    if (d->timezone != invalidTimezone) {
+        addressee.setTimeZone(KABC::TimeZone(d->timezone));
     }
-    addressee.insertCustom("KADDRESSBOOK", "X-Profession", m_profession);
-    addressee.insertCustom("KADDRESSBOOK", "X-SpousesName", m_partner);
-    if (!m_city.isEmpty() || !m_country.isEmpty()) {
+    addressee.insertCustom("KADDRESSBOOK", "X-Profession", d->profession);
+    addressee.insertCustom("KADDRESSBOOK", "X-SpousesName", d->partner);
+    if (!d->city.isEmpty() || !d->country.isEmpty()) {
         KABC::Address address(KABC::Address::Home);
-        address.setRegion(m_country);
-        address.setLocality(m_city);
+        address.setRegion(d->country);
+        address.setLocality(d->city);
         addressee.insertAddress(address);
     }
     return addressee;
@@ -195,25 +232,25 @@ KABC::Addressee UserInfo::toAddressee() const
 
 void UserInfo::setUpdatedTimeString(const QString &updatedTime)
 {
-    m_updatedTime = updatedTime;
+    d->updatedTime = updatedTime;
 }
 
 QString UserInfo::updatedTimeString() const
 {
-    return m_updatedTime;
+    return d->updatedTime;
 }
 
 KDateTime UserInfo::updatedTime() const
 {
-    return facebookTimeToKDateTime(m_updatedTime);
+    return facebookTimeToKDateTime(d->updatedTime);
 }
 
 void UserInfo::setPicture(const QUrl &pictureUrl)
 {
-    m_pictureUrl = pictureUrl;
+    d->pictureUrl = pictureUrl;
 }
 
 QUrl UserInfo::picture() const
 {
-    return m_pictureUrl;
+    return d->pictureUrl;
 }

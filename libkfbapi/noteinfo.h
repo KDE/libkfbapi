@@ -32,17 +32,15 @@ namespace KFbAPI {
 /**
  * Class to represent a facebook note
  */
-class LIBKFBAPI_EXPORT NoteInfo : public QObject
+class LIBKFBAPI_EXPORT NoteInfo
 {
-  Q_OBJECT
-  Q_PROPERTY(QString id WRITE setId READ id)
-  Q_PROPERTY(QString from WRITE setFrom READ from)
-  Q_PROPERTY(QString subject WRITE setSubject READ subject)
-  Q_PROPERTY(QString message WRITE setMessage READ message)
-  Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
-  Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
-
 public:
+    NoteInfo();
+    NoteInfo(const NoteInfo &other);
+    ~NoteInfo();
+
+    NoteInfo &operator=(const NoteInfo &other);
+
     /**
      * Set the facebook id of this note
      * @param id the facebook id
@@ -119,15 +117,9 @@ public:
     KMime::Message::Ptr asNote() const;
 
 private:
-    QString m_id;          /* Facebook id of the note. */
-    QString m_from;        /* Creator of the note. */
-    QString m_subject;     /* Subject of the note. */
-    QString m_message;     /* Actual content of the note. */
-    QString m_createdTime; /* Creation time of the note. */
-    QString m_updatedTime; /* Last update time of the note. */
+    class NoteInfoPrivate;
+    QSharedDataPointer<NoteInfoPrivate> d;
 };
-
-typedef QSharedPointer<NoteInfo> NoteInfoPtr;
 
 }
 

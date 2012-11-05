@@ -32,13 +32,15 @@ namespace KFbAPI {
  * Class to represent likes on a facebook post
  */
 
-class LIBKFBAPI_EXPORT LikeInfo : public QObject
+class LIBKFBAPI_EXPORT LikeInfo
 {
-    Q_OBJECT
-    Q_PROPERTY(QVariantList data WRITE setData READ dataList)
-    Q_PROPERTY(int count WRITE setCount READ count)
-
 public:
+    LikeInfo();
+    LikeInfo(const LikeInfo &other);
+    ~LikeInfo();
+
+    LikeInfo &operator=(const LikeInfo &other);
+
     /**
      * Set the data of this like (list of people who like the post)
      * @param data the like data
@@ -47,7 +49,7 @@ public:
     /**
      * Returns the like data
      */
-    QList<UserInfoPtr> data() const;
+    QList<UserInfo> data() const;
     /**
      * Return the like data as VariantList
      */
@@ -69,11 +71,9 @@ public:
     virtual QString path() const ;
 
 private:
-    QList<UserInfoPtr> m_data;   /*  Data of like. */
-    int m_count;                 /* Count  of like. */
+    class LikeInfoPrivate;
+    QSharedDataPointer<LikeInfoPrivate> d;
 };
-
-typedef QSharedPointer<LikeInfo> LikeInfoPtr;
 
 }
 

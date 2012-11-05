@@ -27,9 +27,40 @@
 
 using namespace KFbAPI;
 
+class NoteInfo::NoteInfoPrivate : public QSharedData {
+public:
+    QString id;          /* Facebook id of the note. */
+    QString from;        /* Creator of the note. */
+    QString subject;     /* Subject of the note. */
+    QString message;     /* Actual content of the note. */
+    QString createdTime; /* Creation time of the note. */
+    QString updatedTime; /* Last update time of the note. */
+};
+
+NoteInfo::NoteInfo()
+    : d(new NoteInfoPrivate)
+{
+}
+
+NoteInfo::NoteInfo(const NoteInfo &other)
+{
+    d = other.d;
+}
+
+NoteInfo::~NoteInfo()
+{
+}
+
+NoteInfo& NoteInfo::operator=(const NoteInfo &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
+}
+
 void NoteInfo::setId(const QString &id)
 {
-    m_id = id;
+    d->id = id;
 }
 
 KMime::Message::Ptr NoteInfo::asNote() const
@@ -56,65 +87,65 @@ KMime::Message::Ptr NoteInfo::asNote() const
 
 QString NoteInfo::id() const
 {
-    return m_id;
+    return d->id;
 }
 
 void NoteInfo::setFrom(const QString &from)
 {
-    m_from = from;
+    d->from = from;
 }
 
 QString NoteInfo::from() const
 {
-    return m_from;
+    return d->from;
 }
 
 void NoteInfo::setSubject(const QString &subject)
 {
-    m_subject = subject;
+    d->subject = subject;
 }
 
 QString NoteInfo::subject() const
 {
-    return m_subject;
+    return d->subject;
 }
 
 void NoteInfo::setMessage(const QString &message)
 {
-    m_message = message;
+    d->message = message;
 }
 
 QString NoteInfo::message() const
 {
-    return m_message;
+    return d->message;
 }
 
 void NoteInfo::setCreatedTimeString(const QString &createdTime)
 {
-    m_createdTime = createdTime;
+    d->createdTime = createdTime;
 }
 
 QString NoteInfo::createdTimeString() const
 {
-    return m_createdTime;
+    return d->createdTime;
 }
 
 KDateTime NoteInfo::createdTime() const
 {
-    return facebookTimeToKDateTime(m_createdTime);
+    return facebookTimeToKDateTime(d->createdTime);
 }
 
 void NoteInfo::setUpdatedTimeString(const QString &updatedTime)
 {
-    m_updatedTime = updatedTime;
+    d->updatedTime = updatedTime;
 }
 
 QString NoteInfo::updatedTimeString() const
 {
-    return m_updatedTime;
+    return d->updatedTime;
 }
 
 KDateTime NoteInfo::updatedTime() const
 {
-    return facebookTimeToKDateTime(m_updatedTime);
+    return facebookTimeToKDateTime(d->updatedTime);
 }
