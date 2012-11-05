@@ -51,7 +51,7 @@ void GetCommentsJob::handleData(const QVariant &data)
     }
 }
 
-uint GetCommentsJob::commentCount()
+uint GetCommentsJob::commentCount() const
 {
     return m_commentCount;
 }

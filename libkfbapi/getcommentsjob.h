@@ -34,7 +34,7 @@ class LIBKFBAPI_EXPORT GetCommentsJob : public FacebookGetJob
 public:
     GetCommentsJob(const QString &postId, const QString &accessToken, QObject *parent = 0);
 
-    uint commentCount();
+    uint commentCount() const;
 
 protected:
     void handleData(const QVariant &data);
