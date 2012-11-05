@@ -100,13 +100,13 @@ public:
      * @brief Set the website of this person.
      * @param website The url to the website of this user.
      */
-    void setWebsite(const QString &website);
+    void setWebsite(const QUrl &website);
     /**
     * @return The url to the website of this user as a QString.
     */
-    QString website() const;
+    QUrl website() const;
 
-	/**
+    /**
      * @brief Set the username of this person.
      * @param username The username of this user.
      */

@@ -33,12 +33,12 @@ class PostInfoParser : public QObject
     Q_PROPERTY(QString id WRITE setId READ id)
     Q_PROPERTY(QVariantMap from WRITE setFrom READ fromMap)
     Q_PROPERTY(QString message WRITE setMessage READ message)
-    Q_PROPERTY(QString picture WRITE setPictureUrl READ pictureUrl)
-    Q_PROPERTY(QString link WRITE setLink READ link)
+    Q_PROPERTY(QUrl picture WRITE setPictureUrl READ pictureUrl)
+    Q_PROPERTY(QUrl link WRITE setLink READ link)
     Q_PROPERTY(QString name WRITE setName READ name)
     Q_PROPERTY(QString caption WRITE setCaption READ caption)
     Q_PROPERTY(QString description WRITE setDescription READ description)
-    Q_PROPERTY(QString source WRITE setSource READ source)
+    Q_PROPERTY(QUrl source WRITE setSourceUrl READ sourceUrl)
     Q_PROPERTY(QVariantList properties WRITE setProperties READ propertiesList)
     Q_PROPERTY(QString icon WRITE setIcon READ icon)
     Q_PROPERTY(QString type WRITE setType READ type)
@@ -62,11 +62,11 @@ public:
     void setMessage(const QString &message) {m_postInfo.setMessage(message);}
     QString message() const {return m_postInfo.message();}
 
-    void setPictureUrl(const QString &pictureUrl) {m_postInfo.setPictureUrl(pictureUrl);}
-    QString pictureUrl() const {return m_postInfo.pictureUrl();}
+    void setPictureUrl(const QUrl &pictureUrl) {m_postInfo.setPictureUrl(pictureUrl);}
+    QUrl pictureUrl() const {return m_postInfo.pictureUrl();}
 
-    void setLink(const QString &link) {m_postInfo.setLink(link);}
-    QString link() const {return m_postInfo.link();}
+    void setLink(const QUrl &link) {m_postInfo.setLink(link);}
+    QUrl link() const {return m_postInfo.link();}
 
     void setName(const QString &name) {m_postInfo.setName(name);}
     QString name() const {return m_postInfo.name();}
@@ -77,8 +77,8 @@ public:
     void setDescription(const QString &description) {m_postInfo.setDescription(description);}
     QString description() const {return m_postInfo.description();}
 
-    void setSource(const QString &source) {m_postInfo.setSource(source);}
-    QString source() const {return m_postInfo.source();}
+    void setSourceUrl(const QUrl &source) {m_postInfo.setSourceUrl(source);}
+    QUrl sourceUrl() const {return m_postInfo.sourceUrl();}
 
     void setProperties(const QVariantList &properties) {m_postInfo.setProperties(properties);}
     QVariantList propertiesList() const {return m_postInfo.propertiesList();}

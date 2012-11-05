@@ -23,6 +23,7 @@
 #include "libkfbapi_export.h"
 
 #include <QSharedPointer>
+#include <QUrl>
 
 namespace KFbAPI {
 
@@ -93,11 +94,11 @@ public:
      * Set the Icon URL of this application
      * @param  the Icon URL
      */
-    void setIconUrl(const QString &iconUrl);
+    void setIconUrl(const QUrl &iconUrl);
     /**
      * Returns the Icon Url
      */
-    QString iconUrl() const;
+    QUrl iconUrl() const;
 
     /**
      * Set the subcategory of this application
@@ -113,21 +114,21 @@ public:
      * Set the Logo URL of this application
      * @param  the Logo URL
      */
-    void setLogoUrl(const QString &logoUrl);
+    void setLogoUrl(const QUrl &logoUrl);
     /**
      * Returns the Logo URL
      */
-    QString logoUrl() const;
+    QUrl logoUrl() const;
 
     /**
      * Set the link of this application
      * @param  the link
      */
-    void setLink(const QString &link);
+    void setLink(const QUrl &link);
     /**
      * Returns the link
      */
-    QString link() const;
+    QUrl link() const;
 
 private:
     class AppInfoPrivate;

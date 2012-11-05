@@ -33,7 +33,7 @@ public:
     QString firstName;
     QString lastName;
     QDate birthday;
-    QString website;
+    QUrl website;
     QString username;
     QString country;
     QString city;
@@ -127,14 +127,19 @@ void UserInfo::setLastName(const QString &lastName)
     d->lastName = lastName;
 }
 
-void UserInfo::setWebsite(const QString &website)
+QUrl UserInfo::website() const
 {
-    if (website.contains('\r') || website.contains('\n')) {
-        QString normalized = website;
+    return d->website;
+}
+
+void UserInfo::setWebsite(const QUrl &website)
+{
+    if (website.toString().contains('\r') || website.toString().contains('\n')) {
+        QString normalized = website.toString();
         normalized.replace("\r\n", "\n");
         normalized.replace("\r", "\n");
         const QStringList websites = normalized.split('\n');
-        d->website = websites[0];
+        d->website = QUrl(websites[0]);
     } else {
         d->website = website;
     }
@@ -148,12 +153,6 @@ void UserInfo::setCity(const QString &city)
 void UserInfo::setCountry(const QString &country)
 {
     d->country = country;
-}
-
-
-QString UserInfo::website() const
-{
-    return d->website;
 }
 
 QString UserInfo::username() const

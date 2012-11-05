@@ -35,7 +35,7 @@ class NotificationInfoParser : public QObject
     Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
     Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
     Q_PROPERTY(QString title WRITE setTitle READ title)
-    Q_PROPERTY(QString link WRITE setLink READ link)
+    Q_PROPERTY(QUrl link WRITE setLink READ link)
     Q_PROPERTY(QVariantMap application WRITE setApplication READ applicationMap)
     Q_PROPERTY(bool unread WRITE setUnread READ unread)
 
@@ -61,8 +61,8 @@ public:
     void setTitle(const QString &title) {m_notificationInfo.setTitle(title);}
     QString title() const {return m_notificationInfo.title();}
 
-    void setLink(const QString &link) {m_notificationInfo.setLink(link);}
-    QString link() const {return m_notificationInfo.link();}
+    void setLink(const QUrl &link) {m_notificationInfo.setLink(link);}
+    QUrl link() const {return m_notificationInfo.link();}
 
     void setApplication(const QVariantMap &application) {m_notificationInfo.setApplication(application);}
     QVariantMap applicationMap() const {return m_notificationInfo.applicationMap();}

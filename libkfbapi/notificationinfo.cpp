@@ -34,7 +34,7 @@ public:
     QString createdTime; /* Creation time of the post. */
     QString updatedTime; /* Last update time of the post. */
     QString title;       /* Title of the notification */
-    QString link;        /* Link for the notification */
+    QUrl link;           /* Link for the notification */
     AppInfo app;         /* App causing the notification */
     bool unread;         /* Status of the notification, true if unread, false otherwise */
 };
@@ -148,12 +148,12 @@ QString NotificationInfo::title() const
     return d->title;
 }
 
-void NotificationInfo::setLink(const QString &link)
+void NotificationInfo::setLink(const QUrl &link)
 {
     d->link = link;
 }
 
-QString NotificationInfo::link() const
+QUrl NotificationInfo::link() const
 {
     return d->link;
 }

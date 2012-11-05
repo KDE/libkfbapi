@@ -36,12 +36,12 @@ public:
     QString id;            /* Facebook id of the post. */
     UserInfo from;         /* Creator of the post. */
     QString message;       /* Actual content of the post. */
-    QString pictureUrl;    /* Picture assocauted with the Post. */
-    QString link;          /* Link associated with the post */
+    QUrl pictureUrl;       /* Picture assocauted with the Post. */
+    QUrl link;             /* Link associated with the post */
     QString name;          /* Name of the Link */
     QString caption;       /* Caption of the Link */
     QString description;   /* Description of the Link. */
-    QString source;        /* Source of the Link */
+    QUrl source;           /* Source of the Link */
     QList<PropertyInfo> properties;     /* Properties of the Link */
     QString icon;          /* Icon of the post */
     QString type;          /* Type of  post */
@@ -113,22 +113,22 @@ QString PostInfo::message() const
     return d->message;
 }
 
-QString PostInfo::pictureUrl() const
+QUrl PostInfo::pictureUrl() const
 {
     return d->pictureUrl;
 }
 
-void PostInfo::setPictureUrl(const QString &pictureUrl)
+void PostInfo::setPictureUrl(const QUrl &pictureUrl)
 {
     d->pictureUrl = pictureUrl;
 }
 
-void PostInfo::setLink(const QString &link)
+void PostInfo::setLink(const QUrl &link)
 {
     d->link = link;
 }
 
-QString PostInfo::link() const
+QUrl PostInfo::link() const
 {
     return d->link;
 }
@@ -163,12 +163,12 @@ QString PostInfo::description() const
     return d->description;
 }
 
-void PostInfo::setSource(const QString &source)
+void PostInfo::setSourceUrl(const QUrl &source)
 {
     d->source = source;
 }
 
-QString PostInfo::source() const
+QUrl PostInfo::sourceUrl() const
 {
     return d->source;
 }

@@ -28,10 +28,10 @@ public:
     QString description;   /* Description of the Application. */
     QString category;      /* Category of the Application */
     QString company;       /* Company of the Application */
-    QString iconUrl;       /* IconUrl of the Application */
+    QUrl iconUrl;          /* IconUrl of the Application */
     QString subcategory;   /* Subcategory of the Application */
-    QString link;          /* Link of the Application */
-    QString logoUrl;       /* LogoUrl of the Application */
+    QUrl link;             /* Link of the Application */
+    QUrl logoUrl;          /* LogoUrl of the Application */
 };
 
 AppInfo::AppInfo()
@@ -106,12 +106,12 @@ QString AppInfo::company() const
     return d->company;
 }
 
-void AppInfo::setIconUrl(const QString &iconUrl)
+void AppInfo::setIconUrl(const QUrl &iconUrl)
 {
     d->iconUrl = iconUrl;
 }
 
-QString AppInfo::iconUrl() const
+QUrl AppInfo::iconUrl() const
 {
     return d->iconUrl;
 }
@@ -126,22 +126,22 @@ QString AppInfo::subcategory() const
     return d->subcategory;
 }
 
-void AppInfo::setLink(const QString &link)
+void AppInfo::setLink(const QUrl &link)
 {
     d->link = link;
 }
 
-QString AppInfo::link() const
+QUrl AppInfo::link() const
 {
     return d->link;
 }
 
-void AppInfo::setLogoUrl(const QString &logoUrl)
+void AppInfo::setLogoUrl(const QUrl &logoUrl)
 {
     d->logoUrl = logoUrl;
 }
 
-QString AppInfo::logoUrl() const
+QUrl AppInfo::logoUrl() const
 {
     return d->logoUrl;
 }

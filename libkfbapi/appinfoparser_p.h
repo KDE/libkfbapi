@@ -23,6 +23,7 @@
 #include "appinfo.h"
 
 #include <QObject>
+#include <QUrl>
 
 namespace KFbAPI {
 
@@ -34,10 +35,10 @@ class AppInfoParser : public QObject
     Q_PROPERTY(QString description WRITE setDescription READ description)
     Q_PROPERTY(QString category WRITE setCategory READ category)
     Q_PROPERTY(QString company WRITE setCompany READ company)
-    Q_PROPERTY(QString icon_url WRITE setIconUrl READ iconUrl)
+    Q_PROPERTY(QUrl icon_url WRITE setIconUrl READ iconUrl)
     Q_PROPERTY(QString subcategory WRITE setSubcategory READ subcategory)
-    Q_PROPERTY(QString link WRITE setLink READ link)
-    Q_PROPERTY(QString logo_url WRITE setLogoUrl READ logoUrl)
+    Q_PROPERTY(QUrl link WRITE setLink READ link)
+    Q_PROPERTY(QUrl logo_url WRITE setLogoUrl READ logoUrl)
 
 public:
     void setDataObject(const AppInfo &appInfo) {m_appInfo = appInfo;}
@@ -58,17 +59,17 @@ public:
     void setCompany(const QString &company) {m_appInfo.setCompany(company);}
     QString company() const {return m_appInfo.company();}
 
-    void setIconUrl(const QString &iconUrl) {m_appInfo.setIconUrl(iconUrl);}
-    QString iconUrl() const {return m_appInfo.iconUrl();}
+    void setIconUrl(const QUrl &iconUrl) {m_appInfo.setIconUrl(iconUrl);}
+    QUrl iconUrl() const {return m_appInfo.iconUrl();}
 
     void setSubcategory(const QString &subcategory) {m_appInfo.setSubcategory(subcategory);}
     QString subcategory() const {return m_appInfo.subcategory();}
 
-    void setLink(const QString &link) {m_appInfo.setLink(link);}
-    QString link() const {return m_appInfo.link();}
+    void setLink(const QUrl &link) {m_appInfo.setLink(link);}
+    QUrl link() const {return m_appInfo.link();}
 
-    void setLogoUrl(const QString &logoUrl) {m_appInfo.setLogoUrl(logoUrl);}
-    QString logoUrl() const {return m_appInfo.logoUrl();}
+    void setLogoUrl(const QUrl &logoUrl) {m_appInfo.setLogoUrl(logoUrl);}
+    QUrl logoUrl() const {return m_appInfo.logoUrl();}
 
 private:
     AppInfo m_appInfo;

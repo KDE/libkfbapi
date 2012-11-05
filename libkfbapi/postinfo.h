@@ -84,21 +84,21 @@ public:
      * Set picture url of  author of the post
      * @param picture url - url of  author of the post
      */
-    void setPictureUrl(const QString &pictureUrl);
+    void setPictureUrl(const QUrl &pictureUrl);
     /**
      * Returns the picture url of  author of the post
      */
-    QString pictureUrl() const;
+    QUrl pictureUrl() const;
 
     /**
      * Set link associated the post
      * @param link the link of the post
      */
-    void setLink(const QString &link);
+    void setLink(const QUrl &link);
     /**
      * Returns the Link of the post
      */
-    QString link() const;
+    QUrl link() const;
 
     /**
      * Set name of link
@@ -134,11 +134,11 @@ public:
      * Set source of link (url of video for e.g.)
      * @param source  of the link
      */
-    void setSource(const QString &source);
+    void setSourceUrl(const QUrl &source);
     /**
      * Returns source of the link
      */
-    QString source() const;
+    QUrl sourceUrl() const;
 
     /**
      * Set properties aoosicated with the link (length of video for e.g)

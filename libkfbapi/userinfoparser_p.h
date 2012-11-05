@@ -34,7 +34,7 @@ class UserInfoParser : public QObject
     Q_PROPERTY(QString first_name WRITE setFirstName READ firstName)
     Q_PROPERTY(QString last_name WRITE setLastName READ lastName)
     Q_PROPERTY(QString birthday WRITE setBirthday READ birthdayAsString)
-    Q_PROPERTY(QString website WRITE setWebsite READ website)
+    Q_PROPERTY(QUrl website WRITE setWebsite READ website)
     Q_PROPERTY(QString username WRITE setUsername READ username)
     Q_PROPERTY(int timezone WRITE setTimezone READ timezone)
     Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
@@ -59,8 +59,8 @@ public:
     void setBirthday(const QString &birthday) {m_userInfo.setBirthday(birthday);}
     QString birthdayAsString() const {return m_userInfo.birthdayAsString();}
 
-    void setWebsite(const QString &website) {m_userInfo.setWebsite(website);}
-    QString website() const {return m_userInfo.website();}
+    void setWebsite(const QUrl &website) {m_userInfo.setWebsite(website);}
+    QUrl website() const {return m_userInfo.website();}
 
     void setUsername(const QString &username) {m_userInfo.setUsername(username);}
     QString username() const {return m_userInfo.username();}

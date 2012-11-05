@@ -128,11 +128,11 @@ public:
      * Set the link for the notification
      * @param link Link for the notification
      */
-    void setLink(const QString &link);
+    void setLink(const QUrl &link);
     /**
      * Returns link for the notification
      */
-    QString link() const;
+    QUrl link() const;
 
     /**
      * Set application details that caused the notification
