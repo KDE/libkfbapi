@@ -31,7 +31,7 @@ class PostInfoParser : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString id WRITE setId READ id)
-    Q_PROPERTY(QVariantMap from WRITE setFrom)
+    Q_PROPERTY(QVariantMap from WRITE setFrom READ fromMap)
     Q_PROPERTY(QString message WRITE setMessage READ message)
     Q_PROPERTY(QString picture WRITE setPictureUrl READ pictureUrl)
     Q_PROPERTY(QString link WRITE setLink READ link)
@@ -39,13 +39,13 @@ class PostInfoParser : public QObject
     Q_PROPERTY(QString caption WRITE setCaption READ caption)
     Q_PROPERTY(QString description WRITE setDescription READ description)
     Q_PROPERTY(QString source WRITE setSource READ source)
-    Q_PROPERTY(QVariantList properties WRITE setProperties)
+    Q_PROPERTY(QVariantList properties WRITE setProperties READ propertiesList)
     Q_PROPERTY(QString icon WRITE setIcon READ icon)
     Q_PROPERTY(QString type WRITE setType READ type)
     Q_PROPERTY(QVariantMap likes WRITE setLikes READ likesMap)
     Q_PROPERTY(QString story WRITE setStory READ story)
     Q_PROPERTY(QVariantMap comments WRITE setComments READ commentsMap)
-    Q_PROPERTY(QVariantMap application WRITE setApplication)
+    Q_PROPERTY(QVariantMap application WRITE setApplication READ applicationMap)
     Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
     Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
 
@@ -57,7 +57,7 @@ public:
     QString id() const {return m_postInfo.id();}
 
     void setFrom(const QVariantMap &from) {m_postInfo.setFrom(from);}
-//     QString () const {return m_postInfo;}
+    QVariantMap fromMap() const {return m_postInfo.fromMap();}
 
     void setMessage(const QString &message) {m_postInfo.setMessage(message);}
     QString message() const {return m_postInfo.message();}
@@ -81,7 +81,7 @@ public:
     QString source() const {return m_postInfo.source();}
 
     void setProperties(const QVariantList &properties) {m_postInfo.setProperties(properties);}
-//     QString () const {return m_postInfo;}
+    QVariantList propertiesList() const {return m_postInfo.propertiesList();}
 
     void setIcon(const QString &icon) {m_postInfo.setIcon(icon);}
     QString icon() const {return m_postInfo.icon();}
@@ -99,7 +99,7 @@ public:
     QVariantMap commentsMap() const {return m_postInfo.commentsMap();}
 
     void setApplication(const QVariantMap &application) {m_postInfo.setApplication(application);}
-//     QVariantMap () const {return m_postInfo.application();}
+    QVariantMap applicationMap() const {return m_postInfo.applicationMap();}
 
     void setCreatedTimeString(const QString &createdTimeString) {m_postInfo.setCreatedTimeString(createdTimeString);}
     QString createdTimeString() const {return m_postInfo.createdTimeString();}

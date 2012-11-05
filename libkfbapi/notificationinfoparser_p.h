@@ -30,13 +30,13 @@ class NotificationInfoParser : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString id WRITE setId READ id)
-    Q_PROPERTY(QVariantMap from WRITE setFrom)
-    Q_PROPERTY(QVariantMap to WRITE setTo)
+    Q_PROPERTY(QVariantMap from WRITE setFrom READ fromMap)
+    Q_PROPERTY(QVariantMap to WRITE setTo READ toMap)
     Q_PROPERTY(QString created_time WRITE setCreatedTimeString READ createdTimeString)
     Q_PROPERTY(QString updated_time WRITE setUpdatedTimeString READ updatedTimeString)
     Q_PROPERTY(QString title WRITE setTitle READ title)
     Q_PROPERTY(QString link WRITE setLink READ link)
-    Q_PROPERTY(QVariantMap application WRITE setApplication)
+    Q_PROPERTY(QVariantMap application WRITE setApplication READ applicationMap)
     Q_PROPERTY(bool unread WRITE setUnread READ unread)
 
 public:
@@ -47,10 +47,10 @@ public:
     QString id() const {return m_notificationInfo.id();}
 
     void setFrom(const QVariantMap &from) {m_notificationInfo.setFrom(from);}
-//     QString () const {return m_notificationInfo}
+    QVariantMap fromMap() const {return m_notificationInfo.fromMap();}
 
     void setTo(const QVariantMap &to) {m_notificationInfo.setTo(to);}
-//     QString () const {return m_notificationInfo}
+    QVariantMap toMap() const {return m_notificationInfo.toMap();}
 
     void setCreatedTimeString(const QString &createdTimeString) {m_notificationInfo.setCreatedTimeString(createdTimeString);}
     QString createdTimeString() const {return m_notificationInfo.createdTimeString();}
@@ -65,7 +65,7 @@ public:
     QString link() const {return m_notificationInfo.link();}
 
     void setApplication(const QVariantMap &application) {m_notificationInfo.setApplication(application);}
-//     QString () const {return m_notificationInfo}
+    QVariantMap applicationMap() const {return m_notificationInfo.applicationMap();}
 
     void setUnread(bool unread) {m_notificationInfo.setUnread(unread);}
     bool unread() const {return m_notificationInfo.unread();}

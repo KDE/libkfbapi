@@ -25,7 +25,6 @@
 #include "likeinfoparser_p.h"
 #include "commentinfoparser_p.h"
 #include "appinfoparser_p.h"
-//#include "postinfoparser_p.h"
 #include "userinfoparser_p.h"
 
 using namespace KFbAPI;
@@ -33,7 +32,7 @@ using namespace KFbAPI;
 class PostInfo::PostInfoPrivate : public QSharedData {
 public:
     QString id;            /* Facebook id of the post. */
-    UserInfo from;      /* Creator of the post. */
+    UserInfo from;         /* Creator of the post. */
     QString message;       /* Actual content of the post. */
     QString pictureUrl;    /* Picture assocauted with the Post. */
     QString link;          /* Link associated with the post */
@@ -44,10 +43,10 @@ public:
     QList<PropertyInfo> properties;     /* Properties of the Link */
     QString icon;          /* Icon of the post */
     QString type;          /* Type of  post */
-    LikeInfo likes;     /* Likes of  post */
+    LikeInfo likes;        /* Likes of  post */
     QString story;         /* Story of  post */
-    CommentInfo comments;          /* Comments on  post */
-    AppInfo application;           /*App associated with the post*/
+    CommentInfo comments;  /* Comments on  post */
+    AppInfo application;   /*App associated with the post*/
     QString createdTime;   /* Creation time of the post. */
     QString updatedTime;   /* Last update time of the post. */
 };
@@ -95,6 +94,13 @@ UserInfo PostInfo::from() const
     return d->from;
 }
 
+QVariantMap PostInfo::fromMap() const
+{
+    UserInfoParser parser;
+    parser.setDataObject(d->from);
+    return QJson::QObjectHelper::qobject2qvariant(&parser);
+}
+
 void PostInfo::setMessage(const QString &message)
 {
     d->message = message;
@@ -125,7 +131,6 @@ QString PostInfo::link() const
     return d->link;
 }
 
-
 void PostInfo::setName(const QString &name)
 {
     d->name = name;
@@ -135,7 +140,6 @@ QString PostInfo::name() const
 {
     return d->name;
 }
-
 
 void PostInfo::setCaption(const QString &caption)
 {
@@ -183,6 +187,19 @@ void PostInfo::setProperties(const QVariantList &properties)
 QList<PropertyInfo> PostInfo::properties() const
 {
     return d->properties;
+}
+
+QVariantList PostInfo::propertiesList() const
+{
+    PropertyInfoParser parser;
+    QVariantList vList;
+
+    Q_FOREACH (const PropertyInfo &propertyInfo, d->properties) {
+        parser.setDataObject(propertyInfo);
+        vList.append(QJson::QObjectHelper::qobject2qvariant(&parser));
+    }
+
+    return vList;
 }
 
 void PostInfo::setIcon(const QString &icon)
@@ -263,6 +280,13 @@ void PostInfo::setApplication(const QVariantMap &application)
 AppInfo PostInfo::application() const
 {
     return d->application;
+}
+
+QVariantMap PostInfo::applicationMap() const
+{
+    AppInfoParser parser;
+    parser.setDataObject(d->application);
+    return QJson::QObjectHelper::qobject2qvariant(&parser);
 }
 
 void PostInfo::setCreatedTimeString(const QString &createdTime)

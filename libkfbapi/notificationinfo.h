@@ -20,15 +20,11 @@
 #ifndef KFBAPI_NOTIFICATIONINFO_H
 #define KFBAPI_NOTIFICATIONINFO_H
 
-#include <QObject>
-
 #include "libkfbapi_export.h"
 #include "userinfo.h"
 #include "appinfo.h"
 
 #include <qjson/qobjecthelper.h>
-
-#include <QObject>
 
 #include <KDateTime>
 
@@ -64,9 +60,14 @@ public:
      */
     void setFrom(const QVariantMap &from);
     /**
-     * Returns the user causing the notification as a User Info Object Pointer
+     * Returns the user causing the notification as a User Info Object
      */
     UserInfo from() const;
+
+    /**
+     * Returns the user causing the notification as a QVariantMap
+     */
+    QVariantMap fromMap() const;
 
     /**
      * Set the user receiving the notification
@@ -74,9 +75,14 @@ public:
      */
     void setTo(const QVariantMap &to);
     /**
-     * Returns the user receiving the notification as a User Info Object Pointer
+     * Returns the user receiving the notification as a User Info Object
      */
     UserInfo to() const;
+
+    /**
+     * Returns the user receiving the notification as a QVariantMap
+     */
+    QVariantMap toMap() const;
 
     /**
      * Set the creation time of the notification
@@ -137,6 +143,11 @@ public:
      * Returns the creator app that caused the notification
      */
     AppInfo application() const;
+
+    /**
+     * Returns the creator app that caused the notification as QVariantMap
+     */
+    QVariantMap applicationMap() const;
 
     /**
      * Set the notification as read/unread

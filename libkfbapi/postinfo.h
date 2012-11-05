@@ -64,9 +64,14 @@ public:
      */
     void setFrom(const QVariantMap &from);
     /**
-     * Returns the creator of the post as a User Info Object Pointer
+     * Returns the creator of the post as a User Info Object
      */
     UserInfo from() const;
+
+    /**
+     * Returns the creator of the post as a QVariantMap
+     */
+    QVariantMap fromMap() const;
 
     /**
      * Set the actual content of the post
@@ -149,6 +154,11 @@ public:
     QList<PropertyInfo> properties() const;
 
     /**
+     * Returns properties of the post as a QVariantList
+     */
+    QVariantList propertiesList() const;
+
+    /**
      * Set icon of post (represents type of post)
      * @param icon  of post
      */
@@ -216,6 +226,11 @@ public:
      * Returns the creator app of the post
      */
     AppInfo application() const;
+
+    /**
+     * Returns the creator app of the post as a QVariantMap
+     */
+    QVariantMap applicationMap() const;
 
     /**
      * Set the creation time of the post

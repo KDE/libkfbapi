@@ -82,6 +82,13 @@ UserInfo NotificationInfo::from() const
     return d->from;
 }
 
+QVariantMap NotificationInfo::fromMap() const
+{
+    UserInfoParser parser;
+    parser.setDataObject(d->from);
+    return QJson::QObjectHelper::qobject2qvariant(&parser);
+}
+
 void NotificationInfo::setTo(const QVariantMap &to)
 {
     UserInfoParser parser;
@@ -92,6 +99,13 @@ void NotificationInfo::setTo(const QVariantMap &to)
 UserInfo NotificationInfo::to() const
 {
     return d->to;
+}
+
+QVariantMap NotificationInfo::toMap() const
+{
+    UserInfoParser parser;
+    parser.setDataObject(d->to);
+    return QJson::QObjectHelper::qobject2qvariant(&parser);
 }
 
 void NotificationInfo::setCreatedTimeString(const QString &time)
@@ -154,6 +168,13 @@ void NotificationInfo::setApplication(const QVariantMap &app)
 AppInfo NotificationInfo::application() const
 {
     return d->app;
+}
+
+QVariantMap NotificationInfo::applicationMap() const
+{
+    AppInfoParser parser;
+    parser.setDataObject(d->app);
+    return QJson::QObjectHelper::qobject2qvariant(&parser);
 }
 
 void NotificationInfo::setUnread(bool unread)
