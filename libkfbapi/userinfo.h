@@ -123,10 +123,20 @@ public:
     void setCity(const QString &city);
 
     /**
+     * @return Current city of this person
+     */
+    QString city() const;
+
+    /**
      * @brief Set the current country of this person.
      * @param country The current country of this person.
      */
     void setCountry(const QString &country);
+
+    /**
+     * @return Current city of this person
+     */
+    QString country() const;
 
     /**
      * @brief Set the current company this person is working at.

@@ -145,9 +145,19 @@ void UserInfo::setWebsite(const QUrl &website)
     }
 }
 
+QString UserInfo::city() const
+{
+    return d->city;
+}
+
 void UserInfo::setCity(const QString &city)
 {
     d->city = city;
+}
+
+QString UserInfo::country() const
+{
+    return d->country;
 }
 
 void UserInfo::setCountry(const QString &country)
