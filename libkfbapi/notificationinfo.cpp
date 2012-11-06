@@ -34,6 +34,7 @@ public:
     QString createdTime; /* Creation time of the post. */
     QString updatedTime; /* Last update time of the post. */
     QString title;       /* Title of the notification */
+    QString message;     /* Comment posted by the user (if it's a comment notification) */
     QUrl link;           /* Link for the notification */
     AppInfo app;         /* App causing the notification */
     bool unread;         /* Status of the notification, true if unread, false otherwise */
@@ -146,6 +147,16 @@ void NotificationInfo::setTitle(const QString &title)
 QString NotificationInfo::title() const
 {
     return d->title;
+}
+
+void NotificationInfo::setMessage(const QString &message)
+{
+    d->message = message;
+}
+
+QString NotificationInfo::message() const
+{
+    return d->message;
 }
 
 void NotificationInfo::setLink(const QUrl &link)

@@ -125,6 +125,19 @@ public:
     QString title() const;
 
     /**
+     * Sets the message of the notification, which is for example the comment itself
+     * If there was no commenting involved etc, this is empty
+     *
+     * @param message The notification message
+     */
+    void setMessage(const QString &message);
+
+    /**
+     * Returns notification message (usually a comment posted by the user)
+     */
+    QString message() const;
+
+    /**
      * Set the link for the notification
      * @param link Link for the notification
      */
