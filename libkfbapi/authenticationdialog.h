@@ -29,6 +29,8 @@ class QProgressBar;
 
 namespace KFbAPI {
 
+class AuthenticationDialogPrivate;
+
 class LIBKFBAPI_EXPORT AuthenticationDialog : public KDialog
 {
   Q_OBJECT
@@ -50,15 +52,8 @@ private Q_SLOTS:
     void showErrorDialog();
 
 private:
-    QString m_appId;
-    QStringList m_permissions;
-    KWebView *m_webView;
-    QProgressBar *m_progressBar;
-    QString m_error;
-    QString m_errorReason;
-    QString m_errorDescription;
-    QString m_username;
-    QString m_password;
+    AuthenticationDialogPrivate * const d;
+//     Q_DECLARE_PRIVATE(AuthenticationDialog);
 };
 
 }

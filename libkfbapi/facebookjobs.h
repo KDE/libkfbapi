@@ -32,6 +32,9 @@
 
 namespace KFbAPI {
 
+class FacebookJobPrivate;
+class FacebookGetJobPrivate;
+
 /**
  * FacebookJob base class
  */
@@ -59,13 +62,15 @@ protected:
     /** Check for a return error and set the appropiate error messags */
     void handleError(const QVariant &data);
 
-    KUrl m_url;
+    FacebookJob(FacebookJobPrivate &dd, const QString &path, const QString &accessToken, QObject *parent = 0);
 
-    QPointer<KJob> m_job;          /** Pointer to the running job */
+    FacebookJobPrivate * const d_ptr;
 
 private Q_SLOTS:
     virtual void jobFinished(KJob *job) = 0;
 
+private:
+    Q_DECLARE_PRIVATE(FacebookJob);
 };
 
 /**
@@ -122,12 +127,14 @@ public:
 protected:
     virtual void handleData(const QVariant &data) = 0;
 
+    FacebookGetJob(FacebookGetJobPrivate &dd, const QString &path, const QString &accessToken, QObject *parent = 0);
+
 protected Q_SLOTS:
     void jobFinished(KJob *job);
 
 private:
-    QStringList m_fields; /** The field to retrieve from facebook */
-    QStringList m_ids;    /** The id's to retrieve from facebook */
+    Q_DECLARE_PRIVATE(FacebookGetJob);
+
 };
 
 /**
@@ -161,9 +168,13 @@ protected:
      */
     virtual void handleSingleData(const QVariant &data) = 0;
 
+    //FacebookGetIdJob(FacebookGetJobPrivate &dd, const QString &path, const QString &accessToken, QObject *parent = 0);
+
 private:
     virtual void handleData(const QVariant &data);
-    bool m_multiQuery;
+
+//     FacebookGetIdJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(FacebookGetJob);
 };
 
 }

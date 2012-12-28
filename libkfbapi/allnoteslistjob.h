@@ -26,6 +26,8 @@
 
 namespace KFbAPI {
 
+class AllNotesListJobPrivate;
+
 class LIBKFBAPI_EXPORT AllNotesListJob : public PagedListJob
 {
     Q_OBJECT
@@ -39,7 +41,7 @@ protected:
     virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next);
 
 private:
-    QList<NoteInfo> m_notes;
+    Q_DECLARE_PRIVATE(AllNotesListJob);
 };
 
 }

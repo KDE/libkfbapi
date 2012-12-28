@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class EventJobPrivate;
+
 /**
  * A job to retrieve one or multiple notes from facebook
  */
@@ -57,12 +59,12 @@ public:
     * @return
     */
     QList<EventInfo> eventInfo() const;
-
-private:
-    QStringList eventFields() const;
+    
     void handleSingleData(const QVariant &data);
 
-    QList<EventInfo> m_eventInfo;
+private:
+    EventJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(EventJob);
 };
 
 }

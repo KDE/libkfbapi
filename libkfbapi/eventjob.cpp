@@ -26,50 +26,42 @@
 
 using namespace KFbAPI;
 
-EventJob::EventJob(const QString &eventId, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(eventId, accessToken, parent)
-{
-    setFields(eventFields());
-}
+class KFbAPI::EventJobPrivate {
+public:
+    QStringList eventFields() const;
+    QList<AttendeeInfoPtr> attendees(const QVariantMap &dataMap, const QString &facebookKey,
+                                     Attendee::PartStat status);
 
-EventJob::EventJob(const QStringList &eventIds, const QString &accessToken, QObject *parent)
-  : FacebookGetIdJob(eventIds, accessToken, parent)
-{
-    setFields(eventFields());
-}
+    QList<EventInfo> eventInfo;
+};
 
-QStringList EventJob::eventFields() const
+QStringList EventJobPrivate::eventFields() const
 {
     QStringList fields;
     fields << "owner"
-           << "name"
-           << "description"
-           << "start_time"
-           << "end_time"
-           << "location"
-           << "venue"
-           << "privacy"
-           << "updated_time"
-           << "noreply"
-           << "maybe"
-           << "attending"
-           << "declined";
+            << "name"
+            << "description"
+            << "start_time"
+            << "end_time"
+            << "location"
+            << "venue"
+            << "privacy"
+            << "updated_time"
+            << "noreply"
+            << "maybe"
+            << "attending"
+            << "declined";
 
     return fields;
 }
 
-QList<EventInfo> EventJob::eventInfo() const
-{
-    return m_eventInfo;
-}
-
-QList<AttendeeInfoPtr> attendees(const QVariantMap &dataMap, const QString &facebookKey,
-                                 Attendee::PartStat status)
+QList<AttendeeInfoPtr> EventJobPrivate::attendees(const QVariantMap &dataMap, const QString &facebookKey,
+                                                  Attendee::PartStat status)
 {
     QList<AttendeeInfoPtr> retVal;
     const QVariantList list = dataMap.value(facebookKey).toMap().value("data").toList();
 
-    foreach (const QVariant &attendee, list) {
+    Q_FOREACH (const QVariant &attendee, list) {
         const QVariantMap map = attendee.toMap();
         AttendeeInfoPtr attendeeInfo(new AttendeeInfo(map["name"].toString(),
                                                       map["id"].toString(), status));
@@ -79,8 +71,33 @@ QList<AttendeeInfoPtr> attendees(const QVariantMap &dataMap, const QString &face
     return retVal;
 }
 
+//-----------------------------------------------------------------------------
+
+EventJob::EventJob(const QString &eventId, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(eventId, accessToken, parent),
+      d_ptr(new EventJobPrivate)
+{
+    Q_D(EventJob);
+    setFields(d->eventFields());
+}
+
+EventJob::EventJob(const QStringList &eventIds, const QString &accessToken, QObject *parent)
+  : FacebookGetIdJob(eventIds, accessToken, parent),
+    d_ptr(new EventJobPrivate)
+{
+    Q_D(EventJob);
+    setFields(d->eventFields());
+}
+
+QList<EventInfo> EventJob::eventInfo() const
+{
+    Q_D(const EventJob);
+    return d->eventInfo;
+}
+
 void EventJob::handleSingleData(const QVariant &data)
 {
+    Q_D(EventJob);
     EventInfoParser parser;
 
     const QVariantMap dataMap = data.toMap();
@@ -93,12 +110,12 @@ void EventJob::handleSingleData(const QVariant &data)
         eventInfo.setOrganizer(owner.toMap().value("name").toString());
     }
 
-    eventInfo.addAttendees(attendees(dataMap, "noreply", Attendee::NeedsAction));
-    eventInfo.addAttendees(attendees(dataMap, "maybe", Attendee::Tentative));
-    eventInfo.addAttendees(attendees(dataMap, "attending", Attendee::Accepted));
-    eventInfo.addAttendees(attendees(dataMap, "declined", Attendee::Declined));
+    eventInfo.addAttendees(d->attendees(dataMap, "noreply", Attendee::NeedsAction));
+    eventInfo.addAttendees(d->attendees(dataMap, "maybe", Attendee::Tentative));
+    eventInfo.addAttendees(d->attendees(dataMap, "attending", Attendee::Accepted));
+    eventInfo.addAttendees(d->attendees(dataMap, "declined", Attendee::Declined));
 
-    m_eventInfo.append(eventInfo);
+    d->eventInfo.append(eventInfo);
 }
 
 #include "eventjob.moc"

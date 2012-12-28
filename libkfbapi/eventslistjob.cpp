@@ -26,24 +26,33 @@
 
 using namespace KFbAPI;
 
+class KFbAPI::EventsListJobPrivate {
+public:
+    QList<EventInfo> events;
+};
+
 EventsListJob::EventsListJob(const QString &accessToken, QObject *parent)
-    : ListJobBase("/me/events", accessToken, true, parent)
+    : ListJobBase("/me/events", accessToken, true, parent),
+      d_ptr(new EventsListJobPrivate)
 {
 }
 
 QList<EventInfo> EventsListJob::events() const
 {
-    return m_events;
+    Q_D(const EventsListJob);
+    return d->events;
 }
 
 void EventsListJob::handleItem(const QVariant &item)
 {
+    Q_D(EventsListJob);
     EventInfoParser parser;
     QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
-    m_events.append(parser.dataObject());
+    d->events.append(parser.dataObject());
 }
 
 int EventsListJob::entriesCount() const
 {
-    return m_events.size();
+    Q_D(const EventsListJob);
+    return d->events.size();
 }

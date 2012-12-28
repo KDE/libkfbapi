@@ -19,32 +19,43 @@
 
 #include "allnoteslistjob.h"
 #include "noteslistjob.h"
+#include "pagedlistjob_p.h"
 
 #include <KDebug>
 #include <KUrl>
 
 using namespace KFbAPI;
 
+class KFbAPI::AllNotesListJobPrivate : public KFbAPI::PagedListJobPrivate {
+public:
+    QList<NoteInfo> notes;
+};
+
+//-----------------------------------------------------------------------------
+
 AllNotesListJob::AllNotesListJob(const QString &accessToken, QObject *parent)
-  : PagedListJob(accessToken, parent)
+  : PagedListJob(*new AllNotesListJobPrivate, accessToken, parent)
 {
 }
 
 QList<NoteInfo> AllNotesListJob::allNotes() const
 {
-    return m_notes;
+    Q_D(const AllNotesListJob);
+    return d->notes;
 }
 
 void AllNotesListJob::appendItems(const ListJobBase* job)
 {
+    Q_D(AllNotesListJob);
     const NotesListJob * const listJob = dynamic_cast<const NotesListJob*>(job);
     Q_ASSERT(listJob);
-    m_notes.append(listJob->notes());
+    d->notes.append(listJob->notes());
 }
 
 bool AllNotesListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
 {
     Q_UNUSED(next);
+    Q_D(AllNotesListJob);
     const QString since = prev.queryItem("since");
     if (since.isEmpty()) {
         kDebug() << "Aborting notes fetching, no date range found in URL!";
@@ -57,13 +68,14 @@ bool AllNotesListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
         return false;
     }
 
-    return (sinceTime >= m_lowerLimit);
+    return (sinceTime >= d->lowerLimit);
 }
 
 ListJobBase* AllNotesListJob::createJob(const KUrl &prev, const KUrl &next)
 {
     Q_UNUSED(next);
-    NotesListJob * const job = new NotesListJob(m_accessToken);
+    Q_D(AllNotesListJob);
+    NotesListJob * const job = new NotesListJob(d->accessToken);
     if (!prev.isEmpty()) {
         const QString limit = prev.queryItem("limit");
         const QString until = prev.queryItem("until");

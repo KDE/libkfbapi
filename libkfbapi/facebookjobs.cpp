@@ -18,7 +18,9 @@
    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
    Boston, MA 02110-1301, USA.
 */
+
 #include "facebookjobs.h"
+#include "facebookjobs_p.h"
 
 #include <qjson/parser.h>
 
@@ -34,26 +36,34 @@ namespace KFbAPI {
  * FacebookJobs base class
  */
 FacebookJob::FacebookJob(const QString &path, const QString &accessToken, QObject *parent)
-    : KJob(parent)
+    : KJob(parent),
+      d_ptr(new FacebookJobPrivate)
 {
-    Q_ASSERT(path.startsWith('/'));
+    Q_D(FacebookJob);
+    d->init(path, accessToken);
     setCapabilities(KJob::Killable);
+}
 
-    m_url.setProtocol("https");
-    m_url.setHost("graph.facebook.com");
-    m_url.setPath(path);
-    m_url.addQueryItem("access_token", accessToken);
+FacebookJob::FacebookJob(FacebookJobPrivate& dd, const QString &path, const QString &accessToken, QObject* parent)
+    : KJob(parent),
+      d_ptr(&dd)
+{
+    Q_D(FacebookJob);
+    d->init(path, accessToken);
+    setCapabilities(KJob::Killable);
 }
 
 void FacebookJob::addQueryItem(const QString &key, const QString &value)
 {
-    m_url.addQueryItem(key, value);
+    Q_D(FacebookJob);
+    d->url.addQueryItem(key, value);
 }
 
 bool FacebookJob::doKill()
 {
-    if (m_job) {
-        m_job->kill(KJob::Quietly);
+    Q_D(FacebookJob);
+    if (d->job) {
+        d->job->kill(KJob::Quietly);
     }
 
     return KJob::doKill();
@@ -86,9 +96,9 @@ FacebookAddJob::FacebookAddJob(const QString &path, const QString &accessToken, 
 
 void FacebookAddJob::start()
 {
-    kDebug() << "Starting add: " << m_url;
-    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), m_url, KIO::HideProgressInfo);
-    m_job = job;
+    kDebug() << "Starting add: " << d_ptr->url;
+    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), d_ptr->url, KIO::HideProgressInfo);
+    d_ptr->job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     job->start();
 }
@@ -123,7 +133,7 @@ void FacebookAddJob::jobFinished(KJob *job)
     }
 
     emitResult();
-    m_job = 0;
+    d_ptr->job = 0;
 }
 
 /*
@@ -136,11 +146,11 @@ FacebookDeleteJob::FacebookDeleteJob(const QString &id, const QString &accessTok
 
 void FacebookDeleteJob::start()
 {
-    m_url.addQueryItem("method", "delete");
+    d_ptr->url.addQueryItem("method", "delete");
 
-    kDebug() << "Starting delete: " << m_url;
-    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), m_url, KIO::HideProgressInfo);
-    m_job = job;
+    kDebug() << "Starting delete: " << d_ptr->url;
+    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), d_ptr->url, KIO::HideProgressInfo);
+    d_ptr->job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     job->start();
 }
@@ -159,46 +169,57 @@ void FacebookDeleteJob::jobFinished(KJob *job)
     }
 
     emitResult();
-    m_job = 0;
+    d_ptr->job = 0;
 }
 
 /*
  * Facebook get job
  */
 FacebookGetJob::FacebookGetJob(const QString &path, const QString &accessToken, QObject *parent)
-    : FacebookJob(path, accessToken, parent)
+    : FacebookJob(*new FacebookGetJobPrivate, path, accessToken, parent)
+{
+    Q_D(FacebookGetJob);
+    kDebug() << d->url << d_ptr->url;
+}
+
+FacebookGetJob::FacebookGetJob(FacebookGetJobPrivate &dd, const QString &path, const QString &accessToken, QObject *parent)
+    : FacebookJob(dd, path, accessToken, parent)
 {
 }
 
 void FacebookGetJob::setIds(const QStringList &ids)
 {
-    m_ids = ids;
+    Q_D(FacebookGetJob);
+    d->ids = ids;
 }
 
 void FacebookGetJob::setFields(const QStringList &fields)
 {
-    m_fields = fields;
+    Q_D(FacebookGetJob);
+    d->fields = fields;
 }
 
 void FacebookGetJob::start()
 {
-    if (!m_ids.isEmpty()) {
-        m_url.addQueryItem("ids", m_ids.join(","));
+    Q_D(FacebookGetJob);
+    if (!d->ids.isEmpty()) {
+        d->url.addQueryItem("ids", d->ids.join(","));
     }
 
-    if (!m_fields.isEmpty()) {
-        m_url.addQueryItem("fields", m_fields.join(","));
+    if (!d->fields.isEmpty()) {
+        d->url.addQueryItem("fields", d->fields.join(","));
     }
 
-    kDebug() << "Starting query" << m_url;
-    KIO::StoredTransferJob * const job = KIO::storedGet(m_url, KIO::Reload, KIO::HideProgressInfo);
-    m_job = job;
+    kDebug() << "Starting query" << d->url;
+    KIO::StoredTransferJob * const job = KIO::storedGet(d->url, KIO::Reload, KIO::HideProgressInfo);
+    d->job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     job->start();
 }
 
 void FacebookGetJob::jobFinished(KJob *job)
 {
+    Q_D(FacebookGetJob);
     KIO::StoredTransferJob *transferJob = dynamic_cast<KIO::StoredTransferJob *>(job);
     Q_ASSERT(transferJob);
     if (transferJob->error()) {
@@ -225,28 +246,31 @@ void FacebookGetJob::jobFinished(KJob *job)
     }
 
     emitResult();
-    m_job = 0;
+    d->job = 0;
 }
 
 /*
  * FacebookGetIdJob
  */
 FacebookGetIdJob::FacebookGetIdJob(const QStringList &ids, const QString &accessToken, QObject *parent)
-    : FacebookGetJob("/", accessToken, parent),
-      m_multiQuery(true)
+    : FacebookGetJob("/", accessToken, parent)
 {
+    Q_D(FacebookGetJob);
+    d->multiQuery = true;
     setIds(ids);
 }
 
 FacebookGetIdJob::FacebookGetIdJob(const QString &id, const QString &accessToken, QObject *parent)
-    : FacebookGetJob("/" + id, accessToken, parent),
-      m_multiQuery(false)
+    : FacebookGetJob("/" + id, accessToken, parent)
 {
+    Q_D(FacebookGetJob);
+    d->multiQuery = false;
 }
 
 void FacebookGetIdJob::handleData(const QVariant &data)
 {
-    if (!m_multiQuery) {
+    Q_D(FacebookGetJob);
+    if (!d->multiQuery) {
         handleSingleData(data);
     } else {
         foreach (const QVariant &item, data.toMap()) {

@@ -18,6 +18,7 @@
 */
 
 #include "pagedlistjob.h"
+#include "pagedlistjob_p.h"
 
 #include "listjobbase.h"
 
@@ -27,14 +28,26 @@ using namespace KFbAPI;
 
 PagedListJob::PagedListJob(const QString &accessToken, QObject *parent)
     : KJob(parent),
-      m_accessToken(accessToken)
+      d_ptr(new PagedListJobPrivate)
 {
+    Q_D(PagedListJob);
+    d->accessToken = accessToken; 
+}
+
+PagedListJob::PagedListJob(PagedListJobPrivate &dd, const QString &accessToken, QObject *parent)
+    : KJob(parent),
+      d_ptr(&dd)
+{
+    Q_D(PagedListJob);
+    d->accessToken = accessToken; 
 }
 
 bool PagedListJob::doKill()
 {
-    if (m_currentJob) {
-        m_currentJob->kill(KJob::Quietly);
+    Q_D(PagedListJob);
+
+    if (d->currentJob) {
+        d->currentJob->kill(KJob::Quietly);
     }
 
     return KJob::doKill();
@@ -42,29 +55,34 @@ bool PagedListJob::doKill()
 
 void PagedListJob::setLowerLimit(const KDateTime &lowerLimit)
 {
-    m_lowerLimit = lowerLimit;
+    Q_D(PagedListJob);
+    d->lowerLimit = lowerLimit;
 }
 
 void PagedListJob::start()
 {
-    Q_ASSERT(m_lowerLimit.isValid());
-    Q_ASSERT(!m_currentJob);
+    Q_D(PagedListJob);
 
-    m_currentJob = createJob(KUrl(), KUrl());
+    Q_ASSERT(d->lowerLimit.isValid());
+    Q_ASSERT(!d->currentJob);
 
-    connect(m_currentJob, SIGNAL(result(KJob*)),
+    d->currentJob = createJob(KUrl(), KUrl());
+
+    connect(d->currentJob, SIGNAL(result(KJob*)),
             this, SLOT(listJobFinished(KJob*)));
 
-    m_currentJob->start();
+    d->currentJob->start();
 }
 
 void PagedListJob::listJobFinished(KJob *job)
 {
-    Q_ASSERT(job == m_currentJob);
+    Q_D(PagedListJob);
+
+    Q_ASSERT(job == d->currentJob);
     ListJobBase * const listJob = dynamic_cast<ListJobBase*>(job);
     Q_ASSERT(listJob);
     if (job->error()) {
-        m_currentJob = 0;
+        d->currentJob = 0;
         setError(listJob->error());
         setErrorText(listJob->errorString());
         emitResult();
@@ -77,16 +95,16 @@ void PagedListJob::listJobFinished(KJob *job)
         // Stop when we got all items after a certain dates, or no items at all
         if (listJob->entriesCount() == 0 || !shouldStartNewJob(prev, next)) {
             kDebug() << "All items fetched.";
-            m_currentJob = 0;
+            d->currentJob = 0;
             emitResult();
         } else {
-            appendItems(m_currentJob);
+            appendItems(d->currentJob);
 
-            m_currentJob = createJob(prev, next);
-            connect(m_currentJob, SIGNAL(result(KJob*)),
+            d->currentJob = createJob(prev, next);
+            connect(d->currentJob, SIGNAL(result(KJob*)),
                     this, SLOT(listJobFinished(KJob*)));
 
-            m_currentJob->start();
+            d->currentJob->start();
         }
     }
 }

@@ -24,8 +24,16 @@
 
 using namespace KFbAPI;
 
+class KFbAPI::NotificationsListJobPrivate {
+public:
+    QList<NotificationInfo> notifications;
+};
+
+//-----------------------------------------------------------------------------
+
 NotificationsListJob::NotificationsListJob(const QString &accessToken, QObject *parent)
-    : ListJobBase("/me/notifications", accessToken, true, parent)
+    : ListJobBase("/me/notifications", accessToken, true, parent),
+      d_ptr(new NotificationsListJobPrivate)
 {
     // Fetch also read notification
     addQueryItem("include_read", "1");
@@ -33,17 +41,20 @@ NotificationsListJob::NotificationsListJob(const QString &accessToken, QObject *
 
 void NotificationsListJob::handleItem(const QVariant &item)
 {
+    Q_D(NotificationsListJob);
     NotificationInfoParser parser;
     QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
-    m_notifications.append(parser.dataObject());
+    d->notifications.append(parser.dataObject());
 }
 
 int NotificationsListJob::entriesCount() const
 {
-    return m_notifications.size();
+    Q_D(const NotificationsListJob);
+    return d->notifications.size();
 }
 
 QList<NotificationInfo> NotificationsListJob::notifications() const
 {
-    return m_notifications;
+    Q_D(const NotificationsListJob);
+    return d->notifications;
 }

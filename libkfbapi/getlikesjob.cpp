@@ -21,19 +21,31 @@
 
 using namespace KFbAPI;
 
+class KFbAPI::GetLikesJobPrivate {
+public:
+    QString postId;
+    QString href;
+    uint likeCount;
+    bool userLikes;
+    bool canLike;
+};
+
 GetLikesJob::GetLikesJob(const QString &postId, const QString &accessToken, QObject *parent)
     : FacebookGetJob("/fql", accessToken, parent),
-      m_likeCount(0),
-      m_userLikes(false),
-      m_canLike(true)
+      d_ptr(new GetLikesJobPrivate)
 {
-    m_postId = postId;
-    QString query = QString("SELECT likes FROM stream WHERE post_id = \"%1\"").arg(m_postId);
+    Q_D(GetLikesJob);
+    d->likeCount = 0;
+    d->userLikes = false;
+    d->canLike = true;
+    d->postId = postId;
+    QString query = QString("SELECT likes FROM stream WHERE post_id = \"%1\"").arg(d->postId);
     addQueryItem("q", query);
 }
 
-void GetLikesJob::handleData(const QVariant& data)
+void GetLikesJob::handleData(const QVariant &data)
 {
+    Q_D(GetLikesJob);
     QVariantMap dataMap = data.toMap();
 
     if (!dataMap.isEmpty()) {
@@ -46,32 +58,36 @@ void GetLikesJob::handleData(const QVariant& data)
                 QVariantMap likeMap = map["likes"].toMap();
 
                 if (!likeMap.isEmpty()) {
-                    m_likeCount = likeMap["count"].toUInt();
-                    m_userLikes = likeMap["user_likes"].toBool();
-                    m_canLike = likeMap["can_like"].toBool();
-                    m_href = likeMap["href"].toString();
+                    d->likeCount = likeMap["count"].toUInt();
+                    d->userLikes = likeMap["user_likes"].toBool();
+                    d->canLike = likeMap["can_like"].toBool();
+                    d->href = likeMap["href"].toString();
                 }
             }
         }
     }
 }
 
-uint GetLikesJob::likeCount()
+uint GetLikesJob::likeCount() const
 {
-    return m_likeCount;
+    Q_D(const GetLikesJob);
+    return d->likeCount;
 }
 
-bool GetLikesJob::userLikes()
+bool GetLikesJob::userLikes() const
 {
-    return m_userLikes;
+    Q_D(const GetLikesJob);
+    return d->userLikes;
 }
 
-bool GetLikesJob::canLike()
+bool GetLikesJob::canLike() const
 {
-    return m_canLike;
+    Q_D(const GetLikesJob);
+    return d->canLike;
 }
 
-QString GetLikesJob::href()
+QString GetLikesJob::href() const
 {
-    return m_href;
+    Q_D(const GetLikesJob);
+    return d->href;
 }

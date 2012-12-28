@@ -26,6 +26,8 @@
 
 namespace KFbAPI {
 
+class AllEventsListJobPrivate;
+
 class LIBKFBAPI_EXPORT AllEventsListJob : public PagedListJob
 {
     Q_OBJECT
@@ -39,7 +41,7 @@ protected:
     virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next);
 
 private:
-    QList<EventInfo> m_events;
+    Q_DECLARE_PRIVATE(AllEventsListJob);
 };
 
 }

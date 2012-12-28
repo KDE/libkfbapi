@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class EventsListJobPrivate;
+
 class LIBKFBAPI_EXPORT EventsListJob : public ListJobBase
 {
   Q_OBJECT
@@ -37,7 +39,8 @@ protected:
     void handleItem(const QVariant &item);
 
 private:
-    QList<EventInfo> m_events;
+    EventsListJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(EventsListJob);
 };
 
 }

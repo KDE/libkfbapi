@@ -24,27 +24,38 @@
 
 using namespace KFbAPI;
 
+class KFbAPI::PostJobPrivate {
+public:
+    QList<PostInfo> postInfo;
+};
+
+//-----------------------------------------------------------------------------
+
 PostJob::PostJob(const QString &postId, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(postId, accessToken, parent)
+    : FacebookGetIdJob(postId, accessToken, parent),
+      d_ptr(new PostJobPrivate)
 {
 }
 
 PostJob::PostJob(const QStringList &postIds, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(postIds, accessToken, parent)
+    : FacebookGetIdJob(postIds, accessToken, parent),
+      d_ptr(new PostJobPrivate)
 {
 }
 
 QList<PostInfo> PostJob::postInfo() const
 {
-    return m_postInfo;
+    Q_D(const PostJob);
+    return d->postInfo;
 }
 
 void PostJob::handleSingleData(const QVariant &data)
 {
+    Q_D(PostJob);
     PostInfoParser parser;
     const QVariantMap dataMap = data.toMap();
     QJson::QObjectHelper::qvariant2qobject(dataMap, &parser);
-    m_postInfo.append(parser.dataObject());
+    d->postInfo.append(parser.dataObject());
 }
 
 #include "postjob.moc"

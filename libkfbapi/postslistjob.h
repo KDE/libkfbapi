@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class PostsListJobPrivate;
+
 class LIBKFBAPI_EXPORT PostsListJob : public ListJobBase
 {
   Q_OBJECT
@@ -38,7 +40,8 @@ protected:
     void handleItem(const QVariant &item);
 
 private:
-    QList<PostInfo> m_posts;
+    PostsListJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(PostsListJob);
 };
 
 }

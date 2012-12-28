@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class NotesListJobPrivate;
+
 class LIBKFBAPI_EXPORT NotesListJob : public ListJobBase
 {
   Q_OBJECT
@@ -37,7 +39,8 @@ protected:
     void handleItem(const QVariant &item);
 
 private:
-    QList<NoteInfo> m_notes;
+    NotesListJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(NotesListJob);
 };
 
 }

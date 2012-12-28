@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class UserInfoJobPrivate;
+
 /**
  * Get information about the currently authenticated user
  */
@@ -52,7 +54,7 @@ protected:
     virtual void handleData(const QVariant &data);
 
 private:
-    UserInfo m_userInfo;
+    Q_DECLARE_PRIVATE(UserInfoJob);
 };
 
 }

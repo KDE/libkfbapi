@@ -18,20 +18,24 @@
 */
 
 #include "listjobbase.h"
+#include "listjobbase_p.h"
 
 #include <QVariant>
 
 using namespace KFbAPI;
 
 ListJobBase::ListJobBase(const QString &path, const QString &accessToken, bool multiQuery, QObject *parent)
-    : FacebookGetJob(path, accessToken, parent)
+    : FacebookGetJob(*new ListJobBasePrivate, path, accessToken, parent)//,
+//       d_ptr(new ListJobBasePrivate)
 {
-    m_multiQuery = multiQuery;
+    Q_D(ListJobBase);
+    d->multiQuery = multiQuery;
 }
 
 void ListJobBase::handleData(const QVariant &root)
 {
-    if (!m_multiQuery) {
+    Q_D(ListJobBase);
+    if (!d->multiQuery) {
         handleItems(root);
     } else {
         const QVariant data = root.toMap()["data"];
@@ -41,8 +45,8 @@ void ListJobBase::handleData(const QVariant &root)
     }
 
     const QVariant paging = root.toMap()["paging"];
-    m_nextPage = paging.toMap().value("next").toString();
-    m_prevPage = paging.toMap().value("previous").toString();
+    d->nextPage = paging.toMap().value("next").toString();
+    d->prevPage = paging.toMap().value("previous").toString();
 }
 
 void ListJobBase::handleItems(const QVariant &root)
@@ -51,10 +55,12 @@ void ListJobBase::handleItems(const QVariant &root)
 
 QString ListJobBase::nextItems() const
 {
-    return m_nextPage;
+    Q_D(const ListJobBase);
+    return d->nextPage;
 }
 
 QString ListJobBase::previousItems() const
 {
-    return m_prevPage;
+    Q_D(const ListJobBase);
+    return d->prevPage;
 }

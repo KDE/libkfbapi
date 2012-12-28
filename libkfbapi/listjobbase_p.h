@@ -1,4 +1,4 @@
- /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
+/* Copyright 2012 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -17,33 +17,19 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef KFBAPI_GETCOMMENTSJOB_H
-#define KFBAPI_GETCOMMENTSJOB_H
+#ifndef KFBAPI_LISTJOBBASE_P_H
+#define KFBAPI_LISTJOBBASE_P_H
 
-#include "facebookjobs.h"
+#include "facebookjobs_p.h"
 
-#include <qjson/qobjecthelper.h>
+class QString;
 
-namespace KFbAPI
-{
+namespace KFbAPI {
 
-class GetCommentsJobPrivate;
-
-class LIBKFBAPI_EXPORT GetCommentsJob : public FacebookGetJob
-{
-    Q_OBJECT
-
+class ListJobBasePrivate : public FacebookGetJobPrivate {
 public:
-    GetCommentsJob(const QString &postId, const QString &accessToken, QObject *parent = 0);
-
-    uint commentCount() const;
-
-protected:
-    void handleData(const QVariant &data);
-
-private:
-    GetCommentsJobPrivate * const d_ptr;
-    Q_DECLARE_PRIVATE(GetCommentsJob);
+    QString nextPage;
+    QString prevPage;
 };
 
 }

@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class NotificationsListJobPrivate;
+
 class LIBKFBAPI_EXPORT NotificationsListJob : public ListJobBase
 {
     Q_OBJECT
@@ -37,7 +39,8 @@ protected:
     virtual void handleItem(const QVariant &item);
 
 private:
-    QList<NotificationInfo> m_notifications;
+    NotificationsListJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(NotificationsListJob);
 };
 
 }

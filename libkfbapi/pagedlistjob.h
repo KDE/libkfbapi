@@ -31,6 +31,7 @@
 namespace KFbAPI {
 
 class ListJobBase;
+class PagedListJobPrivate;
 
 class LIBKFBAPI_EXPORT PagedListJob : public KJob
 {
@@ -50,11 +51,16 @@ protected:
     virtual void appendItems(const ListJobBase *job) = 0;
     virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next) = 0;
 
-    QString m_accessToken;
-    KDateTime m_lowerLimit;
+    PagedListJob(PagedListJobPrivate &dd, const QString &accessToken, QObject *parent = 0);
+
+    PagedListJobPrivate * const d_ptr;
+
+//     QString m_accessToken;
+//     KDateTime m_lowerLimit;
 
 private:
-    QPointer<ListJobBase> m_currentJob;
+    Q_DECLARE_PRIVATE(PagedListJob);
+//     QPointer<ListJobBase> m_currentJob;
 };
 
 }

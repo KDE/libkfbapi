@@ -26,6 +26,8 @@
 
 namespace KFbAPI
 {
+
+class GetLikesJobPrivate;
 class LIBKFBAPI_EXPORT GetLikesJob : public FacebookGetJob
 {
     Q_OBJECT
@@ -33,20 +35,17 @@ class LIBKFBAPI_EXPORT GetLikesJob : public FacebookGetJob
 public:
     GetLikesJob(const QString &postId, const QString &accessToken, QObject *parent = 0);
 
-    uint likeCount();
-    bool userLikes();
-    bool canLike();
-    QString href();
+    uint likeCount() const;
+    bool userLikes() const;
+    bool canLike() const;
+    QString href() const;
 
 protected:
     void handleData(const QVariant& data);
 
 private:
-    QString m_postId;
-    QString m_href;
-    uint m_likeCount;
-    bool m_userLikes;
-    bool m_canLike;
+    GetLikesJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(GetLikesJob);
 };
 
 }

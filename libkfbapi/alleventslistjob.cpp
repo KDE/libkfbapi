@@ -18,6 +18,7 @@
 */
 
 #include "alleventslistjob.h"
+#include "pagedlistjob_p.h"
 
 #include "eventslistjob.h"
 
@@ -25,26 +26,36 @@
 
 using namespace KFbAPI;
 
+class KFbAPI::AllEventsListJobPrivate : public KFbAPI::PagedListJobPrivate {
+public:
+    QList<EventInfo> events;
+};
+
+//-----------------------------------------------------------------------------
+
 AllEventsListJob::AllEventsListJob(const QString &accessToken, QObject *parent)
-  : PagedListJob(accessToken, parent)
+  : PagedListJob(*new AllEventsListJobPrivate, accessToken, parent)
 {
 }
 
 QList<EventInfo> AllEventsListJob::allEvents() const
 {
-    return m_events;
+    Q_D(const AllEventsListJob);
+    return d->events;
 }
 
 void AllEventsListJob::appendItems(const ListJobBase *job)
 {
+    Q_D(AllEventsListJob);
     const EventsListJob * const listJob = dynamic_cast<const EventsListJob*>(job);
     Q_ASSERT(listJob);
-    m_events.append(listJob->events());
+    d->events.append(listJob->events());
 }
 
 bool AllEventsListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
 {
     Q_UNUSED(prev);
+    Q_D(AllEventsListJob);
     const QString until = next.queryItem("until");
     if (until.isEmpty()) {
         kDebug() << "Aborting events fetching, no date range found in URL!";
@@ -57,13 +68,14 @@ bool AllEventsListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
         return false;
     }
 
-    return (untilTime >= m_lowerLimit);
+    return (untilTime >= d->lowerLimit);
 }
 
 ListJobBase* AllEventsListJob::createJob(const KUrl &prev, const KUrl &next)
 {
     Q_UNUSED(prev);
-    EventsListJob * const job = new EventsListJob(m_accessToken);
+    Q_D(AllEventsListJob);
+    EventsListJob * const job = new EventsListJob(d->accessToken);
     if (!next.isEmpty()) {
         const QString limit = next.queryItem("limit");
         const QString until = next.queryItem("until");

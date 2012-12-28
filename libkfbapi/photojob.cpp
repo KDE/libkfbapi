@@ -18,25 +18,36 @@
 */
 
 #include "photojob.h"
+#include "facebookjobs_p.h"
 
 #include <KDebug>
 #include <KIO/Job>
 
 using namespace KFbAPI;
 
+class KFbAPI::PhotoJobPrivate : public KFbAPI::FacebookGetJobPrivate {
+public:
+    QImage image;
+};
+
+//-----------------------------------------------------------------------------
+
 PhotoJob::PhotoJob(const QString &friendId, const QString &accessToken, QObject *parent)
-  : FacebookGetJob("/" + friendId + "/picture", accessToken, parent)
+  : FacebookGetJob("/" + friendId + "/picture", accessToken, parent),
+    d_ptr(new PhotoJobPrivate)
 {
     addQueryItem("type", "large");
 }
 
 QImage PhotoJob::photo() const
 {
-    return m_image;
+    Q_D(const PhotoJob);
+    return d->image;
 }
 
 void PhotoJob::jobFinished(KJob *job)
 {
+    Q_D(PhotoJob);
     KIO::StoredTransferJob * const transferJob = dynamic_cast<KIO::StoredTransferJob *>(job);
     Q_ASSERT(transferJob);
     if (transferJob->error()) {
@@ -45,14 +56,14 @@ void PhotoJob::jobFinished(KJob *job)
         kWarning() << "Job error: " << transferJob->errorText();
     } else {
         kDebug() << "Got picture of" << transferJob->data().length() << "bytes.";
-        m_image = QImage::fromData(transferJob->data());
+        d->image = QImage::fromData(transferJob->data());
     }
 
     emitResult();
-    m_job = 0;
+    d->job = 0;
 }
 
-void PhotoJob::handleData(const QVariant& data)
+void PhotoJob::handleData(const QVariant &data)
 {
     Q_UNUSED(data);
 }

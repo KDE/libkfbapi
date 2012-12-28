@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class FriendJobPrivate;
+
 /**
  * A job to retrieve the data about one or multiple friends from facebook.
  */
@@ -55,13 +57,10 @@ public:
     QList<UserInfo> friendInfo() const;
 
 private:
-    QStringList friendFields() const;
-    void handleSingleData(const QVariant &data);
-    void handlePartner(UserInfo *userInfo, const QVariant &partner);
-    void handleLocation(UserInfo *userInfo, const QVariant &data);
-    void handleWork(UserInfo *userInfo, const QVariant &data);
+    FriendJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(FriendJob);
 
-    QList<UserInfo> m_friendInfo;
+    void handleSingleData(const QVariant &data);
 };
 
 }

@@ -1,4 +1,4 @@
-/* Copyright 2010 Thomas McGuire <mcguire@kde.org>
+/* Copyright 2012 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -17,42 +17,46 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "friendlistjob.h"
-#include "userinfoparser_p.h"
+#ifndef KFBAPI_FACEBOOKJOBS_P_H
+#define KFBAPI_FACEBOOKJOBS_P_H
 
-#include <qjson/qobjecthelper.h>
+#include <KUrl>
 
-using namespace KFbAPI;
+#include <QPointer>
 
-class KFbAPI::FriendListJobPrivate {
+class KJob;
+class QStringList;
+
+namespace KFbAPI {
+
+class FacebookJobPrivate {
 public:
-    QList<UserInfo> friends;
+    void init(const QString &path, const QString &accessToken) 
+    {
+        Q_ASSERT(path.startsWith('/'));
+        url.setProtocol("https");
+        url.setHost("graph.facebook.com");
+        url.setPath(path);
+        url.addQueryItem("access_token", accessToken);
+    }
+
+    virtual ~FacebookJobPrivate() {}
+
+    KUrl url;
+    QPointer<KJob> job;          /** Pointer to the running job */
 };
 
 //-----------------------------------------------------------------------------
 
-FriendListJob::FriendListJob(const QString &accessToken, QObject *parent)
-    : FacebookGetJob("/me/friends", accessToken, parent),
-      d_ptr(new FriendListJobPrivate)
-{
+class FacebookGetJobPrivate : public FacebookJobPrivate {
+public:
+    virtual ~FacebookGetJobPrivate() {}
+
+    QStringList fields; /** The field to retrieve from facebook */
+    QStringList ids;    /** The id's to retrieve from facebook */
+    bool multiQuery;
+};
+
 }
 
-QList<UserInfo> FriendListJob::friends() const
-{
-    Q_D(const FriendListJob);
-    return d->friends;
-}
-
-void FriendListJob::handleData(const QVariant &root)
-{
-    Q_D(FriendListJob);
-    UserInfoParser parser;
-    const QVariant data = root.toMap()["data"];
-    foreach (const QVariant &user, data.toList()) {
-        parser.setDataObject(UserInfo());
-        QJson::QObjectHelper::qvariant2qobject(user.toMap(), &parser);
-        d->friends.append(parser.dataObject());
-    }
-}
-
-#include "friendlistjob.moc"
+#endif

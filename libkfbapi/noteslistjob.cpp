@@ -24,24 +24,35 @@
 
 using namespace KFbAPI;
 
+class KFbAPI::NotesListJobPrivate {
+public:
+    QList<NoteInfo> notes;
+};
+
+//-----------------------------------------------------------------------------
+
 NotesListJob::NotesListJob(const QString &accessToken, QObject *parent)
-    : ListJobBase("/me/notes", accessToken, true, parent)
+    : ListJobBase("/me/notes", accessToken, true, parent),
+      d_ptr(new NotesListJobPrivate)
 {
 }
 
 QList<NoteInfo> NotesListJob::notes() const
 {
-    return m_notes;
+    Q_D(const NotesListJob);
+    return d->notes;
 }
 
 void NotesListJob::handleItem(const QVariant &item)
 {
+    Q_D(NotesListJob);
     NoteInfoParser parser;
     QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
-    m_notes.append(parser.dataObject());
+    d->notes.append(parser.dataObject());
 }
 
 int NotesListJob::entriesCount() const
 {
-    return m_notes.size();
+    Q_D(const NotesListJob);
+    return d->notes.size();
 }

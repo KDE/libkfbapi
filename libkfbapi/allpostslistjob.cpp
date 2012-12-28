@@ -21,31 +21,42 @@
 
 #include "allpostslistjob.h"
 #include "postslistjob.h"
+#include "pagedlistjob_p.h"
+
 #include <KDebug>
 
 using namespace KFbAPI;
 
-AllPostsListJob::AllPostsListJob(const QString &accessToken, QObject *parent)
-    : PagedListJob(accessToken, parent)
-{
+class KFbAPI::AllPostsListJobPrivate : public KFbAPI::PagedListJobPrivate {
+public:
+    QList<PostInfo> posts;
+};
 
+//-----------------------------------------------------------------------------
+
+AllPostsListJob::AllPostsListJob(const QString &accessToken, QObject *parent)
+    : PagedListJob(*new AllPostsListJobPrivate, accessToken, parent)
+{
 }
 
 QList<PostInfo> AllPostsListJob::allPosts() const
 {
-    return m_posts;
+    Q_D(const AllPostsListJob);
+    return d->posts;
 }
 
 void AllPostsListJob::appendItems(const ListJobBase *job)
 {
+    Q_D(AllPostsListJob);
     const PostsListJob * const listJob = dynamic_cast<const PostsListJob*>(job);
     Q_ASSERT(listJob);
-    m_posts.append(listJob->posts());
+    d->posts.append(listJob->posts());
 }
 
 bool AllPostsListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
 {
     Q_UNUSED(prev);
+    Q_D(AllPostsListJob);
     const QString until = next.queryItem("until");
     if (until.isEmpty()) {
         kDebug() << "Aborting posts fetching, no date range found in URL!";
@@ -57,13 +68,14 @@ bool AllPostsListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
         kDebug() << "Aborting posts fetching, invalid date range found in URL!";
         return false;
     }
-    return (untilTime >= m_lowerLimit);
+    return (untilTime >= d->lowerLimit);
 }
 
 ListJobBase* AllPostsListJob::createJob(const KUrl &prev, const KUrl &next)
 {
     Q_UNUSED(prev);
-    PostsListJob * const job = new PostsListJob(m_accessToken);
+    Q_D(AllPostsListJob);
+    PostsListJob * const job = new PostsListJob(d->accessToken);
     if (!next.isEmpty()) {
         const QString limit = next.queryItem("limit");
         const QString until = next.queryItem("until");
@@ -79,7 +91,7 @@ ListJobBase* AllPostsListJob::createJob(const KUrl &prev, const KUrl &next)
         }
     } else {
         //add default values for the first job
-        job->addQueryItem("since", m_lowerLimit.toString());
+        job->addQueryItem("since", d->lowerLimit.toString());
         job->addQueryItem("limit", QString::number(100));
     }
     return job;

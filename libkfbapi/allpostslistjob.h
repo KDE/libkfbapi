@@ -27,6 +27,8 @@
 
 namespace KFbAPI {
 
+class AllPostsListJobPrivate;
+
 class LIBKFBAPI_EXPORT AllPostsListJob  : public PagedListJob
 {
     Q_OBJECT
@@ -40,7 +42,7 @@ protected:
     virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next);
 
 private:
-    QList<PostInfo> m_posts;
+    Q_DECLARE_PRIVATE(AllPostsListJob);
 };
 
 }

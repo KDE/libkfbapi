@@ -26,6 +26,8 @@
 
 namespace KFbAPI {
 
+class ListJobBasePrivate;
+
 class LIBKFBAPI_EXPORT ListJobBase : public FacebookGetJob
 {
     Q_OBJECT
@@ -42,9 +44,8 @@ protected:
     virtual void handleItem(const QVariant &item) = 0;
 
 private:
-    QString m_nextPage;
-    QString m_prevPage;
-    bool m_multiQuery;
+//     ListJobBasePrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(ListJobBase);
 };
 
 }

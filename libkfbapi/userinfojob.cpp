@@ -19,33 +19,43 @@
 
 #include "userinfojob.h"
 #include "userinfoparser_p.h"
+#include "facebookjobs_p.h"
 
 #include <qjson/qobjecthelper.h>
 
 using namespace KFbAPI;
 
+class KFbAPI::UserInfoJobPrivate : public KFbAPI::FacebookGetJobPrivate {
+public:
+    UserInfo userInfo;
+};
+
+//-----------------------------------------------------------------------------
+
 UserInfoJob::UserInfoJob(const QString &accessToken, QObject *parent)
-    : FacebookGetJob("/me", accessToken, parent)
+    : FacebookGetJob(*new UserInfoJobPrivate, "/me", accessToken, parent)
 {
     setFields(QStringList() << "name");
 }
 
 UserInfoJob::UserInfoJob(const QString &userId, const QString &accessToken, QObject *parent)
-    : FacebookGetJob("/" + userId, accessToken, parent)
+    : FacebookGetJob(*new UserInfoJobPrivate, "/" + userId, accessToken, parent)
 {
 }
 
 UserInfo UserInfoJob::userInfo() const
 {
-    return m_userInfo;
+    Q_D(const UserInfoJob);
+    return d->userInfo;
 }
 
 void UserInfoJob::handleData(const QVariant &data)
 {
+    Q_D(UserInfoJob);
     UserInfoParser parser;
 
     QJson::QObjectHelper::qvariant2qobject(data.toMap(), &parser);
-    m_userInfo = parser.dataObject();
+    d->userInfo = parser.dataObject();
 }
 
 #include "userinfojob.moc"

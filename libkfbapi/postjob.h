@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class PostJobPrivate;
+
 /**
 * A job to retrieve one or multiple posts from facebook and convert them into
 * postInfo objects.
@@ -57,9 +59,10 @@ public:
     QList<PostInfo> postInfo() const;
 
 private:
-    void handleSingleData(const QVariant &data);
+    PostJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(PostJob);
 
-    QList<PostInfo> m_postInfo;
+    void handleSingleData(const QVariant &data);
 };
 
 }

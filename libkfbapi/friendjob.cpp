@@ -26,42 +26,15 @@
 
 using namespace KFbAPI;
 
-FriendJob::FriendJob(const QString &friendId, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(friendId, accessToken, parent)
-{
-    setFields(friendFields());
-}
+class KFbAPI::FriendJobPrivate {
+public:
+    QStringList friendFields() const;
+    void handlePartner(UserInfo *userInfo, const QVariant &partner);
+    void handleLocation(UserInfo *userInfo, const QVariant &data);
+    void handleWork(UserInfo *userInfo, const QVariant &data);
 
-FriendJob::FriendJob(const QStringList &friendIds, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(friendIds, accessToken, parent)
-{
-    setFields(friendFields());
-    setIds(friendIds);
-}
-
-QStringList FriendJob::friendFields() const
-{
-    QStringList fields;
-    fields << "first_name"
-           << "last_name"
-           << "name"
-           << "birthday"
-           << "email"
-           << "website"
-           << "location"
-           << "work"
-           << "significant_other"
-           << "timezone"
-           << "updated_time"
-           << "picture";
-
-    return fields;
-}
-
-QList<UserInfo> FriendJob::friendInfo() const
-{
-    return m_friendInfo;
-}
+    QList<UserInfo> friendInfo;  
+};
 
 struct WorkInfo
 {
@@ -72,7 +45,26 @@ struct WorkInfo
 };
 typedef QSharedPointer<WorkInfo> WorkInfoPtr;
 
-void FriendJob::handleLocation(UserInfo *userInfo, const QVariant &data)
+QStringList FriendJobPrivate::friendFields() const
+{
+    QStringList fields;
+    fields << "first_name"
+            << "last_name"
+            << "name"
+            << "birthday"
+            << "email"
+            << "website"
+            << "location"
+            << "work"
+            << "significant_other"
+            << "timezone"
+            << "updated_time"
+            << "picture";
+
+    return fields;
+}
+
+void FriendJobPrivate::handleLocation(UserInfo *userInfo, const QVariant &data)
 {
     if (data.isValid()) {
         const QVariant nameVariant = data.toMap()["name"];
@@ -89,7 +81,7 @@ void FriendJob::handleLocation(UserInfo *userInfo, const QVariant &data)
     }
 }
 
-void FriendJob::handleWork(UserInfo *userInfo, const QVariant &data)
+void FriendJobPrivate::handleWork(UserInfo *userInfo, const QVariant &data)
 {
     QList<QVariant> work = data.toList();
     QList<WorkInfoPtr> workInfos;
@@ -119,14 +111,14 @@ void FriendJob::handleWork(UserInfo *userInfo, const QVariant &data)
         workInfos.append(newWorkInfo);
     }
 
-  // Ok, non of the jobs is marked as current, simply take the first one
+    // Ok, non of the jobs is marked as current, simply take the first one
     if (!workInfos.isEmpty()) {
         userInfo->setCompany(workInfos.first()->company);
         userInfo->setProfession(workInfos.first()->position);
     }
 }
 
-void FriendJob::handlePartner(UserInfo *userInfo, const QVariant &partner)
+void FriendJobPrivate::handlePartner(UserInfo *userInfo, const QVariant &partner)
 {
     if (partner.isValid()) {
         const QVariantMap partnerMap = partner.toMap();
@@ -134,18 +126,44 @@ void FriendJob::handlePartner(UserInfo *userInfo, const QVariant &partner)
     }
 }
 
+//-----------------------------------------------------------------------------
+
+FriendJob::FriendJob(const QString &friendId, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(friendId, accessToken, parent),
+      d_ptr(new FriendJobPrivate)
+{
+    Q_D(FriendJob);
+    setFields(d->friendFields());
+}
+
+FriendJob::FriendJob(const QStringList &friendIds, const QString &accessToken, QObject *parent)
+    : FacebookGetIdJob(friendIds, accessToken, parent),
+      d_ptr(new FriendJobPrivate)
+{
+    Q_D(FriendJob);
+    setFields(d->friendFields());
+    setIds(friendIds);
+}
+
+QList<UserInfo> FriendJob::friendInfo() const
+{
+    Q_D(const FriendJob);
+    return d->friendInfo;
+}
+
 void FriendJob::handleSingleData(const QVariant &data)
 {
+    Q_D(FriendJob);
     UserInfoParser parser;
     QJson::QObjectHelper::qvariant2qobject(data.toMap(), &parser);
     const QVariant location = data.toMap()["location"];
     UserInfo friendInfo = parser.dataObject();
-    handleLocation(&friendInfo, location);
+    d->handleLocation(&friendInfo, location);
     const QVariant work = data.toMap()["work"];
-    handleWork(&friendInfo, work);
+    d->handleWork(&friendInfo, work);
     const QVariant partner = data.toMap()["significant_other"];
-    handlePartner(&friendInfo, partner);
-    m_friendInfo.append(friendInfo);
+    d->handlePartner(&friendInfo, partner);
+    d->friendInfo.append(friendInfo);
 }
 
 #include "friendjob.moc"

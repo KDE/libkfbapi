@@ -24,30 +24,42 @@
 
 using namespace KFbAPI;
 
+class KFbAPI::PostsListJobPrivate {
+public:
+    QList<PostInfo> posts;
+};
+
+//-----------------------------------------------------------------------------
+
 PostsListJob::PostsListJob(const QString &accessToken, QObject *parent)
-  : ListJobBase("/me/home", accessToken, true, parent)
+  : ListJobBase("/me/home", accessToken, true, parent),
+    d_ptr(new PostsListJobPrivate)
 {
 }
 
 PostsListJob::PostsListJob(const QString &userId, const QString &accessToken, QObject *parent)
-    : ListJobBase("/" + userId + "/feed", accessToken, true, parent)
+    : ListJobBase("/" + userId + "/feed", accessToken, true, parent),
+      d_ptr(new PostsListJobPrivate)
 {
 }
 
 QList<PostInfo> PostsListJob::posts() const
 {
-    return m_posts;
+    Q_D(const PostsListJob);
+    return d->posts;
 }
 
 void PostsListJob::handleItem(const QVariant &item)
 {
+    Q_D(PostsListJob);
     PostInfoParser parser;
     QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
-    m_posts.append(parser.dataObject());
+    d->posts.append(parser.dataObject());
 }
 
 int PostsListJob::entriesCount() const
 {
-    return m_posts.size();
+    Q_D(const PostsListJob);
+    return d->posts.size();
 }
 

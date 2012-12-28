@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class FriendListJobPrivate;
+
 /// Get a list of friends of the user
 class LIBKFBAPI_EXPORT FriendListJob : public FacebookGetJob
 {
@@ -37,7 +39,8 @@ protected:
     virtual void handleData(const QVariant &data);
 
 private:
-    QList<UserInfo> m_friends;
+    FriendListJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(FriendListJob);
 };
 
 }

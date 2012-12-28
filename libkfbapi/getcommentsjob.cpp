@@ -21,17 +21,28 @@
 
 using namespace KFbAPI;
 
+class KFbAPI::GetCommentsJobPrivate {
+public:
+    QString postId;
+    uint commentCount;  
+};
+
+//-----------------------------------------------------------------------------
+
 GetCommentsJob::GetCommentsJob(const QString &postId, const QString &accessToken, QObject *parent)
     : FacebookGetJob("/fql", accessToken, parent),
-      m_commentCount(0)
+      d_ptr(new GetCommentsJobPrivate)
 {
-    m_postId = postId;
-    QString query = QString("SELECT comments FROM stream WHERE post_id = \"%1\"").arg(m_postId);
+    Q_D(GetCommentsJob);
+    d->commentCount = 0;
+    d->postId = postId;
+    QString query = QString("SELECT comments FROM stream WHERE post_id = \"%1\"").arg(d->postId);
     addQueryItem("q", query);
 }
 
 void GetCommentsJob::handleData(const QVariant &data)
 {
+    Q_D(GetCommentsJob);
     QVariantMap dataMap = data.toMap();
 
     if (!dataMap.isEmpty()) {
@@ -44,7 +55,7 @@ void GetCommentsJob::handleData(const QVariant &data)
                 QVariantMap commentMap = map["comments"].toMap();
 
                 if (!commentMap.isEmpty()) {
-                    m_commentCount = commentMap["count"].toUInt();
+                    d->commentCount = commentMap["count"].toUInt();
                 }
             }
         }
@@ -53,5 +64,6 @@ void GetCommentsJob::handleData(const QVariant &data)
 
 uint GetCommentsJob::commentCount() const
 {
-    return m_commentCount;
+    Q_D(const GetCommentsJob);
+    return d->commentCount;
 }

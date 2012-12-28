@@ -25,6 +25,8 @@
 
 namespace KFbAPI {
 
+class NoteJobPrivate;
+
 /**
 * A job to retrieve one or multiple notes from facebook and convert them into
 * noteInfo objects.
@@ -56,10 +58,11 @@ public:
     */
     QList<NoteInfo> noteInfo() const;
 
-  private:
-    void handleSingleData(const QVariant &data);
+private:
+    NoteJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(NoteJob);
 
-    QList<NoteInfo> m_noteInfo;
+    void handleSingleData(const QVariant &data);
 };
 
 }

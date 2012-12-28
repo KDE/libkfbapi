@@ -30,6 +30,8 @@
 
 namespace KFbAPI {
 
+class PhotoJobPrivate;
+
 /**
  * A FacebookGetJob to retrieve the profile picture of a person.
  */
@@ -55,8 +57,10 @@ private Q_SLOTS:
     void jobFinished(KJob *job);
 
 private:
+    PhotoJobPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(PhotoJob);
+
     void handleData(const QVariant &data);
-    QImage m_image;
 };
 
 }

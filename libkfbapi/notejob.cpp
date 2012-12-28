@@ -26,27 +26,38 @@
 
 using namespace KFbAPI;
 
+class KFbAPI::NoteJobPrivate {
+public:
+    QList<NoteInfo> noteInfo;
+};
+
+//-----------------------------------------------------------------------------
+
 NoteJob::NoteJob(const QString &noteId, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(noteId, accessToken, parent)
+    : FacebookGetIdJob(noteId, accessToken, parent),
+      d_ptr(new NoteJobPrivate)
 {
 }
 
 NoteJob::NoteJob(const QStringList &noteIds, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(noteIds, accessToken, parent)
+    : FacebookGetIdJob(noteIds, accessToken, parent),
+      d_ptr(new NoteJobPrivate)
 {
 }
 
 QList<NoteInfo> NoteJob::noteInfo() const
 {
-    return m_noteInfo;
+    Q_D(const NoteJob);
+    return d->noteInfo;
 }
 
 void NoteJob::handleSingleData(const QVariant &data)
 {
+    Q_D(NoteJob);
     NoteInfoParser parser;
     const QVariantMap dataMap = data.toMap();
     QJson::QObjectHelper::qvariant2qobject(dataMap, &parser);
-    m_noteInfo.append(parser.dataObject());
+    d->noteInfo.append(parser.dataObject());
 }
 
 #include "notejob.moc"
