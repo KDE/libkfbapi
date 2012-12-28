@@ -53,7 +53,7 @@ typedef KCal::Attendee* AttendeePtr;
 /**
 * An attendee to an event
 */
-class AttendeeInfo
+class LIBKFBAPI_EXPORT AttendeeInfo
 {
 public:
 
