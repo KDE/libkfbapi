@@ -130,7 +130,6 @@ install( FILES
   propertyinfo.h
   userinfojob.h
   userinfo.h
-  util.h
   #connectioninfo.h
   #connectionslistjob.h
 
