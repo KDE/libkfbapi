@@ -55,12 +55,8 @@ protected:
 
     PagedListJobPrivate * const d_ptr;
 
-//     QString m_accessToken;
-//     KDateTime m_lowerLimit;
-
 private:
     Q_DECLARE_PRIVATE(PagedListJob);
-//     QPointer<ListJobBase> m_currentJob;
 };
 
 }
