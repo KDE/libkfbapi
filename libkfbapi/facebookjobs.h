@@ -87,6 +87,9 @@ public:
 
 private Q_SLOTS:
     void jobFinished(KJob *job);
+
+private:
+    Q_DECLARE_PRIVATE(FacebookJob);
 };
 
 /**
@@ -103,6 +106,9 @@ public:
 
 private Q_SLOTS:
     void jobFinished(KJob *job);
+
+private:
+    Q_DECLARE_PRIVATE(FacebookJob);
 };
 
 /**
@@ -168,12 +174,9 @@ protected:
      */
     virtual void handleSingleData(const QVariant &data) = 0;
 
-    //FacebookGetIdJob(FacebookGetJobPrivate &dd, const QString &path, const QString &accessToken, QObject *parent = 0);
-
 private:
     virtual void handleData(const QVariant &data);
 
-//     FacebookGetIdJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(FacebookGetJob);
 };
 

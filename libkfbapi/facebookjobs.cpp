@@ -96,15 +96,17 @@ FacebookAddJob::FacebookAddJob(const QString &path, const QString &accessToken, 
 
 void FacebookAddJob::start()
 {
-    kDebug() << "Starting add: " << d_ptr->url;
-    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), d_ptr->url, KIO::HideProgressInfo);
-    d_ptr->job = job;
+    Q_D(FacebookJob);
+    kDebug() << "Starting add: " << d->url;
+    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), d->url, KIO::HideProgressInfo);
+    d->job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     job->start();
 }
 
 void FacebookAddJob::jobFinished(KJob *job)
 {
+    Q_D(FacebookJob);
     KIO::StoredTransferJob *addJob = dynamic_cast<KIO::StoredTransferJob *>(job);
     Q_ASSERT(addJob);
     if (addJob->error()) {
@@ -133,7 +135,7 @@ void FacebookAddJob::jobFinished(KJob *job)
     }
 
     emitResult();
-    d_ptr->job = 0;
+    d->job = 0;
 }
 
 /*
@@ -146,17 +148,19 @@ FacebookDeleteJob::FacebookDeleteJob(const QString &id, const QString &accessTok
 
 void FacebookDeleteJob::start()
 {
-    d_ptr->url.addQueryItem("method", "delete");
+    Q_D(FacebookJob);
+    d->url.addQueryItem("method", "delete");
 
-    kDebug() << "Starting delete: " << d_ptr->url;
-    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), d_ptr->url, KIO::HideProgressInfo);
-    d_ptr->job = job;
+    kDebug() << "Starting delete: " << d->url;
+    KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), d->url, KIO::HideProgressInfo);
+    d->job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     job->start();
 }
 
 void FacebookDeleteJob::jobFinished(KJob *job)
 {
+    Q_D(FacebookJob);
     KIO::StoredTransferJob *deleteJob = dynamic_cast<KIO::StoredTransferJob *>(job);
     Q_ASSERT(deleteJob);
     if (deleteJob->error()) {
@@ -169,7 +173,7 @@ void FacebookDeleteJob::jobFinished(KJob *job)
     }
 
     emitResult();
-    d_ptr->job = 0;
+    d->job = 0;
 }
 
 /*
@@ -178,8 +182,6 @@ void FacebookDeleteJob::jobFinished(KJob *job)
 FacebookGetJob::FacebookGetJob(const QString &path, const QString &accessToken, QObject *parent)
     : FacebookJob(*new FacebookGetJobPrivate, path, accessToken, parent)
 {
-    Q_D(FacebookGetJob);
-    kDebug() << d->url << d_ptr->url;
 }
 
 FacebookGetJob::FacebookGetJob(FacebookGetJobPrivate &dd, const QString &path, const QString &accessToken, QObject *parent)
@@ -278,7 +280,6 @@ void FacebookGetIdJob::handleData(const QVariant &data)
         }
     }
 }
-
 }
 
 #include "facebookjobs.moc"
