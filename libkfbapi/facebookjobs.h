@@ -71,6 +71,7 @@ private Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(FacebookJob);
+    Q_DISABLE_COPY(FacebookJob);
 };
 
 /**
