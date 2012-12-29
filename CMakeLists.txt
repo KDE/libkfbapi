@@ -13,11 +13,6 @@ include(MacroLibrary)
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
 
-option(KDEPIM_44_COMPAT "Don't crash when using KDEPIM runtime 4.4.x, at the cost of using deprecated KCal API" TRUE)
-if(KDEPIM_44_COMPAT)
-  add_definitions(-DWANT_DEPRECATED_KCAL_API)
-endif(KDEPIM_44_COMPAT)
-
 find_package(KdepimLibs 4.5.63 REQUIRED)
 
 find_program(XSLTPROC_EXECUTABLE xsltproc)
