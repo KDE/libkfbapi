@@ -83,14 +83,8 @@ target_link_libraries(kfbapi
   ${KDEPIMLIBS_KABC_LIBS}
   ${KDEPIMLIBS_KPIMUTILS_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
+  ${KDEPIMLIBS_KCALCORE_LIBS}
 )
-
-
-if(KDEPIM_44_COMPAT)
-  target_link_libraries(kfbapi ${KDEPIMLIBS_KCAL_LIBS})
-else(KDEPIM_44_COMPAT)
-  target_link_libraries(kfbapi ${KDEPIMLIBS_KCALCORE_LIBS})
-endif(KDEPIM_44_COMPAT)
 
 set_target_properties(kfbapi PROPERTIES VERSION ${KFBAPI_LIB_VERSION} SOVERSION ${KFBAPI_LIB_SOVERSION})
 install(TARGETS kfbapi ${INSTALL_TARGETS_DEFAULT_ARGS})
