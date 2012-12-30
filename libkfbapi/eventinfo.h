@@ -21,7 +21,6 @@
 #define KFBAPI_EVENTINFO_H
 
 #include "libkfbapi_export.h"
-#include "config.h"
 
 #include <KDateTime>
 

@@ -22,8 +22,6 @@ set(QJSON_VERSION_REQUIRED 0.7)
 find_package(QJSON ${QJSON_VERSION_REQUIRED})
 macro_log_feature(QJSON_FOUND "QJSON" "Qt library for handling JSON data" "http://qjson.sourceforge.net/" TRUE "${QJSON_VERSION_REQUIRED}")
 
-configure_file(config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/config.h")
-
 # pkg-config
 if (NOT WIN32)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/LibKFbAPI.pc.in
