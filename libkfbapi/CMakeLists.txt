@@ -96,7 +96,6 @@ install( FILES
   appinfo.h
   authenticationdialog.h
   commentinfo.h
-  ${CMAKE_BINARY_DIR}/config.h
   eventjob.h
   eventinfo.h
   eventslistjob.h
