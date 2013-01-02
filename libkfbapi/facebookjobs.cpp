@@ -44,13 +44,18 @@ FacebookJob::FacebookJob(const QString &path, const QString &accessToken, QObjec
     setCapabilities(KJob::Killable);
 }
 
-FacebookJob::FacebookJob(FacebookJobPrivate& dd, const QString &path, const QString &accessToken, QObject* parent)
+FacebookJob::FacebookJob(FacebookJobPrivate& dd, const QString &path, const QString &accessToken, QObject *parent)
     : KJob(parent),
       d_ptr(&dd)
 {
     Q_D(FacebookJob);
     d->init(path, accessToken);
     setCapabilities(KJob::Killable);
+}
+
+FacebookJob::~FacebookJob()
+{
+    delete d_ptr;
 }
 
 void FacebookJob::addQueryItem(const QString &key, const QString &value)
@@ -189,6 +194,10 @@ FacebookGetJob::FacebookGetJob(FacebookGetJobPrivate &dd, const QString &path, c
 {
 }
 
+FacebookGetJob::~FacebookGetJob()
+{
+}
+
 void FacebookGetJob::setIds(const QStringList &ids)
 {
     Q_D(FacebookGetJob);
@@ -267,6 +276,25 @@ FacebookGetIdJob::FacebookGetIdJob(const QString &id, const QString &accessToken
 {
     Q_D(FacebookGetJob);
     d->multiQuery = false;
+}
+
+FacebookGetIdJob::~FacebookGetIdJob()
+{
+}
+
+FacebookGetIdJob::FacebookGetIdJob(FacebookGetJobPrivate &dd, const QString &id, const QString &accessToken, QObject *parent)
+    : FacebookGetJob(dd, "/" + id, accessToken, parent)
+{
+    Q_D(FacebookGetJob);
+    d->multiQuery = false;
+}
+
+FacebookGetIdJob::FacebookGetIdJob(FacebookGetJobPrivate &dd, const QStringList &ids, const QString &accessToken, QObject *parent)
+    : FacebookGetJob(dd, "/", accessToken, parent)
+{
+    Q_D(FacebookGetJob);
+    d->multiQuery = true;
+    setIds(ids);
 }
 
 void FacebookGetIdJob::handleData(const QVariant &data)

@@ -49,6 +49,7 @@ public:
      * @param accessToken The accessToken to access our data on facebook
      * */
     FacebookJob(const QString &path, const QString &accessToken, QObject *parent = 0);
+    virtual ~FacebookJob();
 
     /** Add a query item to the list */
     void addQueryItem(const QString &key, const QString &value);
@@ -121,6 +122,7 @@ class LIBKFBAPI_EXPORT FacebookGetJob : public FacebookJob
 
 public:
     FacebookGetJob(const QString &path, const QString &accessToken, QObject *parent = 0);
+    virtual ~FacebookGetJob();
 
     /** Set the fields the job should retrieve from facebook */
     void setFields(const QStringList &fields);
@@ -168,12 +170,17 @@ public:
      */
     FacebookGetIdJob(const QString &id, const QString &accessToken, QObject *parent = 0);
 
+    virtual ~FacebookGetIdJob();
+
 protected:
     /**
      * @brief Parse a single item that is returned by the FacebookGetJob and
      *        add it to the interl list of elements.
      */
     virtual void handleSingleData(const QVariant &data) = 0;
+
+    FacebookGetIdJob(FacebookGetJobPrivate &dd, const QString &id, const QString &accessToken, QObject *parent = 0);
+    FacebookGetIdJob(FacebookGetJobPrivate &dd, const QStringList &ids, const QString &accessToken, QObject *parent = 0);
 
 private:
     virtual void handleData(const QVariant &data);
