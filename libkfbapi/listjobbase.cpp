@@ -25,11 +25,14 @@
 using namespace KFbAPI;
 
 ListJobBase::ListJobBase(const QString &path, const QString &accessToken, bool multiQuery, QObject *parent)
-    : FacebookGetJob(*new ListJobBasePrivate, path, accessToken, parent)//,
-//       d_ptr(new ListJobBasePrivate)
+    : FacebookGetJob(*new ListJobBasePrivate, path, accessToken, parent)
 {
     Q_D(ListJobBase);
     d->multiQuery = multiQuery;
+}
+
+ListJobBase::~ListJobBase()
+{
 }
 
 void ListJobBase::handleData(const QVariant &root)

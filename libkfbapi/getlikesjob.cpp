@@ -18,10 +18,11 @@
 */
 
 #include "getlikesjob.h"
+#include "facebookjobs_p.h"
 
 using namespace KFbAPI;
 
-class KFbAPI::GetLikesJobPrivate {
+class KFbAPI::GetLikesJobPrivate : public KFbAPI::FacebookGetJobPrivate {
 public:
     QString postId;
     QString href;
@@ -31,8 +32,7 @@ public:
 };
 
 GetLikesJob::GetLikesJob(const QString &postId, const QString &accessToken, QObject *parent)
-    : FacebookGetJob("/fql", accessToken, parent),
-      d_ptr(new GetLikesJobPrivate)
+    : FacebookGetJob(*new GetLikesJobPrivate, "/fql", accessToken, parent)
 {
     Q_D(GetLikesJob);
     d->likeCount = 0;

@@ -59,11 +59,10 @@ public:
     * @return
     */
     QList<EventInfo> eventInfo() const;
-    
+
     void handleSingleData(const QVariant &data);
 
 private:
-    EventJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(EventJob);
 };
 

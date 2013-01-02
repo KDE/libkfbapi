@@ -33,8 +33,7 @@ public:
 //-----------------------------------------------------------------------------
 
 PhotoJob::PhotoJob(const QString &friendId, const QString &accessToken, QObject *parent)
-  : FacebookGetJob("/" + friendId + "/picture", accessToken, parent),
-    d_ptr(new PhotoJobPrivate)
+    : FacebookGetJob(*new PhotoJobPrivate, "/" + friendId + "/picture", accessToken, parent)
 {
     addQueryItem("type", "large");
 }

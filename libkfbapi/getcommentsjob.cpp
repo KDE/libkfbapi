@@ -18,10 +18,11 @@
 */
 
 #include "getcommentsjob.h"
+#include "facebookjobs_p.h"
 
 using namespace KFbAPI;
 
-class KFbAPI::GetCommentsJobPrivate {
+class KFbAPI::GetCommentsJobPrivate : public KFbAPI::FacebookGetJobPrivate {
 public:
     QString postId;
     uint commentCount;  
@@ -30,8 +31,7 @@ public:
 //-----------------------------------------------------------------------------
 
 GetCommentsJob::GetCommentsJob(const QString &postId, const QString &accessToken, QObject *parent)
-    : FacebookGetJob("/fql", accessToken, parent),
-      d_ptr(new GetCommentsJobPrivate)
+    : FacebookGetJob(*new GetCommentsJobPrivate, "/fql", accessToken, parent)
 {
     Q_D(GetCommentsJob);
     d->commentCount = 0;

@@ -28,6 +28,7 @@ namespace KFbAPI
 {
 
 class GetLikesJobPrivate;
+
 class LIBKFBAPI_EXPORT GetLikesJob : public FacebookGetJob
 {
     Q_OBJECT
@@ -44,7 +45,6 @@ protected:
     void handleData(const QVariant& data);
 
 private:
-    GetLikesJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(GetLikesJob);
 };
 

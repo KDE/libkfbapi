@@ -19,12 +19,13 @@
 
 #include "postjob.h"
 #include "postinfoparser_p.h"
+#include "facebookjobs_p.h"
 
 #include <qjson/qobjecthelper.h>
 
 using namespace KFbAPI;
 
-class KFbAPI::PostJobPrivate {
+class KFbAPI::PostJobPrivate : public KFbAPI::FacebookGetJobPrivate {
 public:
     QList<PostInfo> postInfo;
 };
@@ -32,14 +33,12 @@ public:
 //-----------------------------------------------------------------------------
 
 PostJob::PostJob(const QString &postId, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(postId, accessToken, parent),
-      d_ptr(new PostJobPrivate)
+    : FacebookGetIdJob(*new PostJobPrivate, postId, accessToken, parent)
 {
 }
 
 PostJob::PostJob(const QStringList &postIds, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(postIds, accessToken, parent),
-      d_ptr(new PostJobPrivate)
+    : FacebookGetIdJob(*new PostJobPrivate, postIds, accessToken, parent)
 {
 }
 

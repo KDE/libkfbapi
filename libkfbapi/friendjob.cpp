@@ -19,6 +19,7 @@
 
 #include "friendjob.h"
 #include "userinfoparser_p.h"
+#include "facebookjobs_p.h"
 
 #include <KDebug>
 
@@ -26,7 +27,7 @@
 
 using namespace KFbAPI;
 
-class KFbAPI::FriendJobPrivate {
+class KFbAPI::FriendJobPrivate : public KFbAPI::FacebookGetJobPrivate {
 public:
     QStringList friendFields() const;
     void handlePartner(UserInfo *userInfo, const QVariant &partner);
@@ -129,16 +130,14 @@ void FriendJobPrivate::handlePartner(UserInfo *userInfo, const QVariant &partner
 //-----------------------------------------------------------------------------
 
 FriendJob::FriendJob(const QString &friendId, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(friendId, accessToken, parent),
-      d_ptr(new FriendJobPrivate)
+    : FacebookGetIdJob(*new FriendJobPrivate, friendId, accessToken, parent)
 {
     Q_D(FriendJob);
     setFields(d->friendFields());
 }
 
 FriendJob::FriendJob(const QStringList &friendIds, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(friendIds, accessToken, parent),
-      d_ptr(new FriendJobPrivate)
+    : FacebookGetIdJob(*new FriendJobPrivate, friendIds, accessToken, parent)
 {
     Q_D(FriendJob);
     setFields(d->friendFields());

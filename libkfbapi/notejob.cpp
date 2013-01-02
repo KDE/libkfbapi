@@ -19,6 +19,7 @@
 
 #include "notejob.h"
 #include "noteinfoparser_p.h"
+#include "facebookjobs_p.h"
 
 #include <KDebug>
 
@@ -26,7 +27,7 @@
 
 using namespace KFbAPI;
 
-class KFbAPI::NoteJobPrivate {
+class KFbAPI::NoteJobPrivate : public KFbAPI::FacebookGetJobPrivate {
 public:
     QList<NoteInfo> noteInfo;
 };
@@ -34,14 +35,12 @@ public:
 //-----------------------------------------------------------------------------
 
 NoteJob::NoteJob(const QString &noteId, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(noteId, accessToken, parent),
-      d_ptr(new NoteJobPrivate)
+    : FacebookGetIdJob(*new NoteJobPrivate, noteId, accessToken, parent)
 {
 }
 
 NoteJob::NoteJob(const QStringList &noteIds, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(noteIds, accessToken, parent),
-      d_ptr(new NoteJobPrivate)
+    : FacebookGetIdJob(*new NoteJobPrivate, noteIds, accessToken, parent)
 {
 }
 

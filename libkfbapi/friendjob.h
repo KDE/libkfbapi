@@ -57,7 +57,6 @@ public:
     QList<UserInfo> friendInfo() const;
 
 private:
-    FriendJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(FriendJob);
 
     void handleSingleData(const QVariant &data);

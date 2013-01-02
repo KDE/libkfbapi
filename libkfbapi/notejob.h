@@ -59,7 +59,6 @@ public:
     QList<NoteInfo> noteInfo() const;
 
 private:
-    NoteJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(NoteJob);
 
     void handleSingleData(const QVariant &data);

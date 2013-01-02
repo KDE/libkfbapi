@@ -19,6 +19,7 @@
 
 #include "eventjob.h"
 #include "eventinfoparser_p.h"
+#include "facebookjobs_p.h"
 
 #include <KDebug>
 
@@ -26,7 +27,7 @@
 
 using namespace KFbAPI;
 
-class KFbAPI::EventJobPrivate {
+class KFbAPI::EventJobPrivate : public KFbAPI::FacebookGetJobPrivate {
 public:
     QStringList eventFields() const;
     QList<AttendeeInfoPtr> attendees(const QVariantMap &dataMap, const QString &facebookKey,
@@ -74,16 +75,14 @@ QList<AttendeeInfoPtr> EventJobPrivate::attendees(const QVariantMap &dataMap, co
 //-----------------------------------------------------------------------------
 
 EventJob::EventJob(const QString &eventId, const QString &accessToken, QObject *parent)
-    : FacebookGetIdJob(eventId, accessToken, parent),
-      d_ptr(new EventJobPrivate)
+    : FacebookGetIdJob(*new EventJobPrivate, eventId, accessToken, parent)
 {
     Q_D(EventJob);
     setFields(d->eventFields());
 }
 
 EventJob::EventJob(const QStringList &eventIds, const QString &accessToken, QObject *parent)
-  : FacebookGetIdJob(eventIds, accessToken, parent),
-    d_ptr(new EventJobPrivate)
+  : FacebookGetIdJob(*new EventJobPrivate, eventIds, accessToken, parent)
 {
     Q_D(EventJob);
     setFields(d->eventFields());

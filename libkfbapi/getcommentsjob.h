@@ -42,7 +42,6 @@ protected:
     void handleData(const QVariant &data);
 
 private:
-    GetCommentsJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(GetCommentsJob);
 };
 
