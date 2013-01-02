@@ -32,6 +32,7 @@ class LIBKFBAPI_EXPORT EventsListJob : public ListJobBase
   Q_OBJECT
 public:
     explicit EventsListJob(const QString &accessToken, QObject *parent = 0);
+    virtual ~EventsListJob();
     QList<EventInfo> events() const;
     int entriesCount() const;
 
@@ -41,6 +42,7 @@ protected:
 private:
     EventsListJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(EventsListJob);
+    Q_DISABLE_COPY(EventsListJob);
 };
 
 }

@@ -32,6 +32,7 @@ class LIBKFBAPI_EXPORT NotificationsListJob : public ListJobBase
     Q_OBJECT
 public:
     explicit NotificationsListJob(const QString &accessToken, QObject *parent = 0);
+    virtual ~NotificationsListJob();
     QList<NotificationInfo> notifications() const;
     virtual int entriesCount() const;
 
@@ -41,6 +42,7 @@ protected:
 private:
     NotificationsListJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(NotificationsListJob);
+    Q_DISABLE_COPY(NotificationsListJob);
 };
 
 }

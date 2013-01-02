@@ -39,7 +39,12 @@ PagedListJob::PagedListJob(PagedListJobPrivate &dd, const QString &accessToken, 
       d_ptr(&dd)
 {
     Q_D(PagedListJob);
-    d->accessToken = accessToken; 
+    d->accessToken = accessToken;
+}
+
+PagedListJob::~PagedListJob()
+{
+    delete d_ptr;
 }
 
 bool PagedListJob::doKill()

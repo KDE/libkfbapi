@@ -43,6 +43,11 @@ PostsListJob::PostsListJob(const QString &userId, const QString &accessToken, QO
 {
 }
 
+PostsListJob::~PostsListJob()
+{
+    delete d_ptr;
+}
+
 QList<PostInfo> PostsListJob::posts() const
 {
     Q_D(const PostsListJob);

@@ -38,6 +38,7 @@ class LIBKFBAPI_EXPORT PagedListJob : public KJob
     Q_OBJECT
 public:
     explicit PagedListJob(const QString &accessToken, QObject *parent = 0);
+    virtual ~PagedListJob();
 
     void setLowerLimit(const KDateTime &lowerLimit);
     virtual void start();
@@ -56,6 +57,7 @@ protected:
     PagedListJobPrivate * const d_ptr;
 
 private:
+    Q_DISABLE_COPY(PagedListJob);
     Q_DECLARE_PRIVATE(PagedListJob);
 };
 

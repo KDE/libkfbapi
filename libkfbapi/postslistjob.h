@@ -32,6 +32,7 @@ class LIBKFBAPI_EXPORT PostsListJob : public ListJobBase
   Q_OBJECT
 public:
     explicit PostsListJob(const QString &accessToken, QObject *parent = 0);
+    virtual ~PostsListJob();
     PostsListJob(const QString &userId, const QString &accessToken, QObject *parent = 0);
     QList<PostInfo> posts() const;
     int entriesCount() const;
@@ -42,6 +43,7 @@ protected:
 private:
     PostsListJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(PostsListJob);
+    Q_DISABLE_COPY(PostsListJob);
 };
 
 }

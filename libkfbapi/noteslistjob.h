@@ -32,6 +32,7 @@ class LIBKFBAPI_EXPORT NotesListJob : public ListJobBase
   Q_OBJECT
 public:
     explicit NotesListJob(const QString &accessToken, QObject *parent = 0);
+    virtual ~NotesListJob();
     QList<NoteInfo> notes() const;
     int entriesCount() const;
 
@@ -41,6 +42,7 @@ protected:
 private:
     NotesListJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(NotesListJob);
+    Q_DISABLE_COPY(NotesListJob);
 };
 
 }

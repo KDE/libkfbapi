@@ -37,6 +37,11 @@ NotesListJob::NotesListJob(const QString &accessToken, QObject *parent)
 {
 }
 
+NotesListJob::~NotesListJob()
+{
+    delete d_ptr;
+}
+
 QList<NoteInfo> NotesListJob::notes() const
 {
     Q_D(const NotesListJob);

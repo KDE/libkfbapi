@@ -33,6 +33,7 @@ class LIBKFBAPI_EXPORT FriendListJob : public FacebookGetJob
     Q_OBJECT
 public:
     explicit FriendListJob(const QString &accessToken, QObject *parent = 0);
+    virtual ~FriendListJob();
     QList<UserInfo> friends() const;
 
 protected:
@@ -41,6 +42,7 @@ protected:
 private:
     FriendListJobPrivate * const d_ptr;
     Q_DECLARE_PRIVATE(FriendListJob);
+    Q_DISABLE_COPY(FriendListJob);
 };
 
 }

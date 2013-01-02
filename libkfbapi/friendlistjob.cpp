@@ -37,6 +37,11 @@ FriendListJob::FriendListJob(const QString &accessToken, QObject *parent)
 {
 }
 
+FriendListJob::~FriendListJob()
+{
+    delete d_ptr;
+}
+
 QList<UserInfo> FriendListJob::friends() const
 {
     Q_D(const FriendListJob);

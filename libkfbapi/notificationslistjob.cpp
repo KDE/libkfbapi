@@ -39,6 +39,11 @@ NotificationsListJob::NotificationsListJob(const QString &accessToken, QObject *
     addQueryItem("include_read", "1");
 }
 
+NotificationsListJob::~NotificationsListJob()
+{
+    delete d_ptr;
+}
+
 void NotificationsListJob::handleItem(const QVariant &item)
 {
     Q_D(NotificationsListJob);

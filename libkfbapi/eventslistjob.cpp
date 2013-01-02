@@ -37,6 +37,11 @@ EventsListJob::EventsListJob(const QString &accessToken, QObject *parent)
 {
 }
 
+EventsListJob::~EventsListJob()
+{
+    delete d_ptr;
+}
+
 QList<EventInfo> EventsListJob::events() const
 {
     Q_D(const EventsListJob);
