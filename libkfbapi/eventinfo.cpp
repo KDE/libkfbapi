@@ -27,6 +27,14 @@
 
 using namespace KFbAPI;
 
+class AttendeeInfo::AttendeeInfoPrivate : public QSharedData
+{
+public:
+    QString name;
+    QString id;
+    Attendee::PartStat status;
+};
+
 class EventInfo::EventInfoPrivate : public QSharedData
 {
 public:
@@ -45,25 +53,43 @@ public:
 //============================================================================================
 
 AttendeeInfo::AttendeeInfo(const QString &name, const QString &id, const Attendee::PartStat &status)
-    : m_name(name),
-      m_id(id),
-      m_status(status)
+    : d(new AttendeeInfoPrivate)
+{
+    d->name = name;
+    d->id = id;
+    d->status = status;
+}
+
+AttendeeInfo::AttendeeInfo(const AttendeeInfo &other)
+{
+    d = other.d;
+}
+
+AttendeeInfo::~AttendeeInfo()
 {
 }
 
+AttendeeInfo& AttendeeInfo::operator=(const AttendeeInfo &other)
+{
+    if (this == &other) return *this; //Protect against self-assignment
+    d = other.d;
+    return *this;
+}
+
+
 QString AttendeeInfo::name() const
 {
-    return m_name;
+    return d->name;
 }
 
 QString AttendeeInfo::id() const
 {
-    return m_id;
+    return d->id;
 }
 
 Attendee::PartStat AttendeeInfo::status() const
 {
-    return m_status;
+    return d->status;
 }
 
 //============================================================================================

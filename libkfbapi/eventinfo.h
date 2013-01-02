@@ -50,6 +50,10 @@ public:
     * @param status The RSVP status of the attendee.
     */
     AttendeeInfo(const QString &name, const QString &id, const Attendee::PartStat &status);
+    AttendeeInfo(const AttendeeInfo &other);
+    ~AttendeeInfo();
+
+    AttendeeInfo &operator=(const AttendeeInfo &other);
 
     /**
     * @return The name of the attendee.
@@ -65,9 +69,8 @@ public:
     Attendee::PartStat status() const;
 
 private:
-    QString m_name;
-    QString m_id;
-    Attendee::PartStat m_status;
+    class AttendeeInfoPrivate;
+    QSharedDataPointer<AttendeeInfoPrivate> d;
 };
 
 typedef QSharedPointer<AttendeeInfo> AttendeeInfoPtr;
