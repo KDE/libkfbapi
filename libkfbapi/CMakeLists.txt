@@ -87,7 +87,7 @@ target_link_libraries(kfbapi
 )
 
 set_target_properties(kfbapi PROPERTIES VERSION ${KFBAPI_LIB_VERSION} SOVERSION ${KFBAPI_LIB_SOVERSION})
-install(TARGETS kfbapi ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kfbapi EXPORT kfbapiLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install( FILES
   alleventslistjob.h

@@ -19,5 +19,10 @@ set(LibKFbAPI_VERSION ${LibKFbAPI_VERSION_MAJOR}.${LibKFbAPI_VERSION_MINOR}.${Li
 set(LibKFbAPI_INSTALL_PREFIX "${rootDir}")
 set(LibKFbAPI_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@")
 
+# import the exported targets (only once)
+if(NOT TARGET kfbapi)
+  include(${_currentDir}/LibKFbAPITargetsWithPrefix.cmake)
+endif()
+
 # Set the library variable
 set(LibKFbAPI_LIBRARY kfbapi)

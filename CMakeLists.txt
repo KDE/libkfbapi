@@ -43,6 +43,11 @@ macro_write_basic_cmake_version_file(${CMAKE_CURRENT_BINARY_DIR}/LibKFbAPIConfig
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LibKFbAPIConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/LibKFbAPIConfigVersion.cmake
         DESTINATION ${LIB_INSTALL_DIR}/cmake/LibKFbAPI)
 
+# Install the file with the exported targets
+install(EXPORT kfbapiLibraryTargets
+        DESTINATION ${LIB_INSTALL_DIR}/cmake/LibKFbAPI
+        FILE LibKFbAPITargetsWithPrefix.cmake)
+
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
