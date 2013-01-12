@@ -22,6 +22,8 @@
 
 #include <KDebug>
 
+#include <qjson/qobjecthelper.h>
+
 using namespace KFbAPI;
 
 class KFbAPI::NotificationsListJobPrivate {

@@ -22,8 +22,6 @@
 
 #include "facebookjobs.h"
 
-#include <qjson/qobjecthelper.h>
-
 namespace KFbAPI
 {
 

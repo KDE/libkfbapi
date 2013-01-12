@@ -24,8 +24,6 @@
 #include "userinfo.h"
 #include "appinfo.h"
 
-#include <qjson/qobjecthelper.h>
-
 #include <KDateTime>
 
 namespace KFbAPI {

@@ -24,6 +24,8 @@
 #include "userinfoparser_p.h"
 #include "appinfoparser_p.h"
 
+#include <qjson/qobjecthelper.h>
+
 using namespace KFbAPI;
 
 class NotificationInfo::NotificationInfoPrivate : public QSharedData {
