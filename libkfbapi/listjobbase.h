@@ -45,7 +45,7 @@ protected:
     virtual void handleItem(const QVariant &item) = 0;
 
 private:
-    Q_DECLARE_PRIVATE(ListJobBase);
+    Q_DECLARE_PRIVATE(ListJobBase)
 };
 
 }

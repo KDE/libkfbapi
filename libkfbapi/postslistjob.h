@@ -42,8 +42,8 @@ protected:
 
 private:
     PostsListJobPrivate * const d_ptr;
-    Q_DECLARE_PRIVATE(PostsListJob);
-    Q_DISABLE_COPY(PostsListJob);
+    Q_DECLARE_PRIVATE(PostsListJob)
+    Q_DISABLE_COPY(PostsListJob)
 };
 
 }

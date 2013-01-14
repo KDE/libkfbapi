@@ -265,6 +265,6 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(KFbAPI::PostInfo);
+Q_DECLARE_METATYPE(KFbAPI::PostInfo)
 
 #endif

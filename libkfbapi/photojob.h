@@ -57,7 +57,7 @@ private Q_SLOTS:
     void jobFinished(KJob *job);
 
 private:
-    Q_DECLARE_PRIVATE(PhotoJob);
+    Q_DECLARE_PRIVATE(PhotoJob)
 
     void handleData(const QVariant &data);
 };

@@ -177,6 +177,6 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(KFbAPI::NotificationInfo);
+Q_DECLARE_METATYPE(KFbAPI::NotificationInfo)
 
 #endif // NOTIFICATIONINFO_H

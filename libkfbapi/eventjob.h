@@ -63,7 +63,7 @@ public:
     void handleSingleData(const QVariant &data);
 
 private:
-    Q_DECLARE_PRIVATE(EventJob);
+    Q_DECLARE_PRIVATE(EventJob)
 };
 
 }

@@ -41,8 +41,8 @@ protected:
 
 private:
     FriendListJobPrivate * const d_ptr;
-    Q_DECLARE_PRIVATE(FriendListJob);
-    Q_DISABLE_COPY(FriendListJob);
+    Q_DECLARE_PRIVATE(FriendListJob)
+    Q_DISABLE_COPY(FriendListJob)
 };
 
 }

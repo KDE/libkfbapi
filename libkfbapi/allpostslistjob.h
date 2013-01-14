@@ -42,7 +42,7 @@ protected:
     virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next);
 
 private:
-    Q_DECLARE_PRIVATE(AllPostsListJob);
+    Q_DECLARE_PRIVATE(AllPostsListJob)
 };
 
 }

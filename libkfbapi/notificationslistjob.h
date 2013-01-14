@@ -41,8 +41,8 @@ protected:
 
 private:
     NotificationsListJobPrivate * const d_ptr;
-    Q_DECLARE_PRIVATE(NotificationsListJob);
-    Q_DISABLE_COPY(NotificationsListJob);
+    Q_DECLARE_PRIVATE(NotificationsListJob)
+    Q_DISABLE_COPY(NotificationsListJob)
 };
 
 }

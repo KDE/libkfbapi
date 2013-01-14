@@ -71,8 +71,8 @@ private Q_SLOTS:
     virtual void jobFinished(KJob *job) = 0;
 
 private:
-    Q_DECLARE_PRIVATE(FacebookJob);
-    Q_DISABLE_COPY(FacebookJob);
+    Q_DECLARE_PRIVATE(FacebookJob)
+    Q_DISABLE_COPY(FacebookJob)
 };
 
 /**
@@ -91,7 +91,7 @@ private Q_SLOTS:
     void jobFinished(KJob *job);
 
 private:
-    Q_DECLARE_PRIVATE(FacebookJob);
+    Q_DECLARE_PRIVATE(FacebookJob)
 };
 
 /**
@@ -110,7 +110,7 @@ private Q_SLOTS:
     void jobFinished(KJob *job);
 
 private:
-    Q_DECLARE_PRIVATE(FacebookJob);
+    Q_DECLARE_PRIVATE(FacebookJob)
 };
 
 /**
@@ -142,7 +142,7 @@ protected Q_SLOTS:
     void jobFinished(KJob *job);
 
 private:
-    Q_DECLARE_PRIVATE(FacebookGetJob);
+    Q_DECLARE_PRIVATE(FacebookGetJob)
 
 };
 
@@ -185,7 +185,7 @@ protected:
 private:
     virtual void handleData(const QVariant &data);
 
-    Q_DECLARE_PRIVATE(FacebookGetJob);
+    Q_DECLARE_PRIVATE(FacebookGetJob)
 };
 
 }

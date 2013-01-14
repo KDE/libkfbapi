@@ -59,7 +59,7 @@ public:
     QList<PostInfo> postInfo() const;
 
 private:
-    Q_DECLARE_PRIVATE(PostJob);
+    Q_DECLARE_PRIVATE(PostJob)
 
     void handleSingleData(const QVariant &data);
 };

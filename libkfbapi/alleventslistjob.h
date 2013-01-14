@@ -41,7 +41,7 @@ protected:
     virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next);
 
 private:
-    Q_DECLARE_PRIVATE(AllEventsListJob);
+    Q_DECLARE_PRIVATE(AllEventsListJob)
 };
 
 }
