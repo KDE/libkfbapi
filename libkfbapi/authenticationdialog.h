@@ -24,8 +24,6 @@
 
 #include <KDialog>
 
-class KWebView;
-class QProgressBar;
 
 namespace KFbAPI {
 
