@@ -34,6 +34,7 @@ class LIBKFBAPI_EXPORT AuthenticationDialog : public KDialog
   Q_OBJECT
 public:
     explicit AuthenticationDialog(QWidget *parent);
+    ~AuthenticationDialog();
     void setAppId(const QString &appId);
     void setPermissions(const QStringList &permissions);
     void start();

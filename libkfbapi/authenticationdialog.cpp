@@ -83,6 +83,11 @@ AuthenticationDialog::AuthenticationDialog(QWidget *parent)
     connect(d->webView, SIGNAL(loadProgress(int)), d->progressBar, SLOT(setValue(int)));
 }
 
+AuthenticationDialog::~AuthenticationDialog()
+{
+    delete d;
+}
+
 void AuthenticationDialog::setAppId(const QString &appId)
 {
 //     Q_D(AuthenticationDialog);
