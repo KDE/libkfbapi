@@ -54,7 +54,7 @@ protected:
     virtual void handleData(const QVariant &data);
 
 private:
-    Q_DECLARE_PRIVATE(UserInfoJob);
+    Q_DECLARE_PRIVATE(UserInfoJob)
 };
 
 }
