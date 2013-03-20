@@ -225,7 +225,7 @@ void FacebookGetJob::start()
         //check if we are requesting more than 15 ids
         if (d->multiQuery && d->ids.size() > 15) {
             kDebug() << "Got multiquery with more than 15 items";
-            //if yes, we take the first 10 ids and query for those
+            //if yes, we take the first 15 ids and query for those
             QStringList l;
             for (int i = 0; i < 15 && d->ids.size() > 0; i++) {
                 l << d->ids.takeFirst();
