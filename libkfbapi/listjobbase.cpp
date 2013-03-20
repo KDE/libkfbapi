@@ -24,11 +24,11 @@
 
 using namespace KFbAPI;
 
-ListJobBase::ListJobBase(const QString &path, const QString &accessToken, bool multiQuery, QObject *parent)
+ListJobBase::ListJobBase(const QString &path, const QString &accessToken, bool multiResult, QObject *parent)
     : FacebookGetJob(*new ListJobBasePrivate, path, accessToken, parent)
 {
     Q_D(ListJobBase);
-    d->multiQuery = multiQuery;
+    d->multiResult = multiResult;
 }
 
 ListJobBase::~ListJobBase()
@@ -38,7 +38,7 @@ ListJobBase::~ListJobBase()
 void ListJobBase::handleData(const QVariant &root)
 {
     Q_D(ListJobBase);
-    if (!d->multiQuery) {
+    if (!d->multiResult) {
         handleItems(root);
     } else {
         const QVariant data = root.toMap()["data"];

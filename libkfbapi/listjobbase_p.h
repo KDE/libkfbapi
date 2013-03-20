@@ -30,6 +30,7 @@ class ListJobBasePrivate : public FacebookGetJobPrivate {
 public:
     QString nextPage;
     QString prevPage;
+    bool multiResult;
 };
 
 }
