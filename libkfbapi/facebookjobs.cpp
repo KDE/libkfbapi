@@ -187,11 +187,15 @@ void FacebookDeleteJob::jobFinished(KJob *job)
 FacebookGetJob::FacebookGetJob(const QString &path, const QString &accessToken, QObject *parent)
     : FacebookJob(*new FacebookGetJobPrivate, path, accessToken, parent)
 {
+    Q_D(FacebookGetJob);
+    d->multiQuery = false;
 }
 
 FacebookGetJob::FacebookGetJob(FacebookGetJobPrivate &dd, const QString &path, const QString &accessToken, QObject *parent)
     : FacebookJob(dd, path, accessToken, parent)
 {
+    Q_D(FacebookGetJob);
+    d->multiQuery = false;
 }
 
 FacebookGetJob::~FacebookGetJob()
@@ -213,16 +217,39 @@ void FacebookGetJob::setFields(const QStringList &fields)
 void FacebookGetJob::start()
 {
     Q_D(FacebookGetJob);
+
+    //let's keep our d->url intact
+    KUrl jobUrl = d->url;
+
     if (!d->ids.isEmpty()) {
-        d->url.addQueryItem("ids", d->ids.join(","));
+        //check if we are requesting more than 15 ids
+        if (d->multiQuery && d->ids.size() > 15) {
+            kDebug() << "Got multiquery with more than 15 items";
+            //if yes, we take the first 10 ids and query for those
+            QStringList l;
+            for (int i = 0; i < 15 && d->ids.size() > 0; i++) {
+                l << d->ids.takeFirst();
+            }
+            jobUrl.addQueryItem("ids", l.join(","));
+        } else {
+            //we have less than 15 ids
+            jobUrl.addQueryItem("ids", d->ids.join(","));
+            d->ids.clear();
+        }
+    } else if (d->ids.isEmpty() && d->multiQuery) {
+        //if we have no ids to query for, return
+        kDebug() << "No more ids to query for, job done";
+        emitResult();
+        d->job = 0;
+        return;
     }
 
     if (!d->fields.isEmpty()) {
-        d->url.addQueryItem("fields", d->fields.join(","));
+        jobUrl.addQueryItem("fields", d->fields.join(","));
     }
 
-    kDebug() << "Starting query" << d->url;
-    KIO::StoredTransferJob * const job = KIO::storedGet(d->url, KIO::Reload, KIO::HideProgressInfo);
+    kDebug() << "Starting query" << jobUrl;
+    KIO::StoredTransferJob * const job = KIO::storedGet(jobUrl, KIO::Reload, KIO::HideProgressInfo);
     d->job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     job->start();
@@ -238,7 +265,7 @@ void FacebookGetJob::jobFinished(KJob *job)
         setErrorText(KIO::buildErrorString(error(), transferJob->errorText()));
         kWarning() << "Job error: " << transferJob->errorString();
     } else {
-    //     kDebug() << "Got data: " << QString::fromAscii(transferJob->data().data());
+//         kDebug() << "Got data: " << QString::fromAscii(transferJob->data().data());
         QJson::Parser parser;
         bool ok;
         const QVariant data = parser.parse(transferJob->data(), &ok);
@@ -254,6 +281,15 @@ void FacebookGetJob::jobFinished(KJob *job)
             setError(KJob::UserDefinedError);
             setErrorText(i18n("Unable to parse data returned by the Facebook server: %1", parser.errorString()));
         }
+    }
+
+    if (d->multiQuery && !d->ids.isEmpty()) {
+        //we have some ids left to query for, restarting the job, this will append the new data
+        //to the existing data, then it will be returned altogether
+        kDebug() << d->ids.size() << "ids left, restarting job";
+
+        start();
+        return;
     }
 
     emitResult();
@@ -300,6 +336,7 @@ FacebookGetIdJob::FacebookGetIdJob(FacebookGetJobPrivate &dd, const QStringList 
 void FacebookGetIdJob::handleData(const QVariant &data)
 {
     Q_D(FacebookGetJob);
+
     if (!d->multiQuery) {
         handleSingleData(data);
     } else {
