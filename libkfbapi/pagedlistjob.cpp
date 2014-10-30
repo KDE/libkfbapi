@@ -1,4 +1,5 @@
 /* Copyright 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -22,7 +23,7 @@
 
 #include "listjobbase.h"
 
-#include <KDebug>
+#include <QDebug>
 
 using namespace KFbAPI;
 
@@ -58,7 +59,7 @@ bool PagedListJob::doKill()
     return KJob::doKill();
 }
 
-void PagedListJob::setLowerLimit(const KDateTime &lowerLimit)
+void PagedListJob::setLowerLimit(const QDateTime &lowerLimit)
 {
     Q_D(PagedListJob);
     d->lowerLimit = lowerLimit;
@@ -71,7 +72,7 @@ void PagedListJob::start()
     Q_ASSERT(d->lowerLimit.isValid());
     Q_ASSERT(!d->currentJob);
 
-    d->currentJob = createJob(KUrl(), KUrl());
+    d->currentJob = createJob(QUrl(), QUrl());
 
     connect(d->currentJob, SIGNAL(result(KJob*)),
             this, SLOT(listJobFinished(KJob*)));
@@ -92,14 +93,14 @@ void PagedListJob::listJobFinished(KJob *job)
         setErrorText(listJob->errorString());
         emitResult();
     } else {
-        kDebug() << "Got" << listJob->entriesCount() << "items from our subjob.";
+        qDebug() << "Got" << listJob->entriesCount() << "items from our subjob.";
 
-        const KUrl next = KUrl::fromUserInput(listJob->nextItems());
-        const KUrl prev = KUrl::fromUserInput(listJob->previousItems());
+        const QUrl next = QUrl::fromUserInput(listJob->nextItems());
+        const QUrl prev = QUrl::fromUserInput(listJob->previousItems());
 
         // Stop when we got all items after a certain dates, or no items at all
         if (listJob->entriesCount() == 0 || !shouldStartNewJob(prev, next)) {
-            kDebug() << "All items fetched.";
+            qDebug() << "All items fetched.";
             d->currentJob = 0;
             emitResult();
         } else {

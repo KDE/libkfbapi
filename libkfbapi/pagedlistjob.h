@@ -1,4 +1,5 @@
 /* Copyright 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -23,9 +24,9 @@
 #include "libkfbapi_export.h"
 
 #include <KJob>
-#include <KUrl>
-#include <KDateTime>
 
+#include <QUrl>
+#include <QDateTime>
 #include <QPointer>
 
 namespace KFbAPI {
@@ -40,7 +41,7 @@ public:
     explicit PagedListJob(const QString &accessToken, QObject *parent = 0);
     virtual ~PagedListJob();
 
-    void setLowerLimit(const KDateTime &lowerLimit);
+    void setLowerLimit(const QDateTime &lowerLimit);
     virtual void start();
 
 protected Q_SLOTS:
@@ -48,9 +49,9 @@ protected Q_SLOTS:
 
 protected:
     virtual bool doKill();
-    virtual ListJobBase* createJob(const KUrl &prev, const KUrl &next) = 0;
+    virtual ListJobBase* createJob(const QUrl &prev, const QUrl &next) = 0;
     virtual void appendItems(const ListJobBase *job) = 0;
-    virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next) = 0;
+    virtual bool shouldStartNewJob(const QUrl &prev, const QUrl &next) = 0;
 
     PagedListJob(PagedListJobPrivate &dd, const QString &accessToken, QObject *parent = 0);
 

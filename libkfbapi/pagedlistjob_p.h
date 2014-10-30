@@ -1,4 +1,5 @@
 /* Copyright 2012 Martin Klapetek <mklapetek@kde.org>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -23,7 +24,7 @@
 #include <QPointer>
 
 class QString;
-class KDateTime;
+class QDateTime;
 
 namespace KFbAPI {
 
@@ -33,7 +34,7 @@ class PagedListJobPrivate {
 public:
     virtual ~PagedListJobPrivate() {}
     QString accessToken;
-    KDateTime lowerLimit;  
+    QDateTime lowerLimit;
     QPointer<ListJobBase> currentJob;
 };
 
