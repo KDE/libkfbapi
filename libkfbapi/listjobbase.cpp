@@ -21,6 +21,9 @@
 #include "listjobbase_p.h"
 
 #include <QVariant>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QDebug>
 
 using namespace KFbAPI;
 
@@ -35,24 +38,30 @@ ListJobBase::~ListJobBase()
 {
 }
 
-void ListJobBase::handleData(const QVariant &root)
+void ListJobBase::handleData(const QJsonDocument &data)
 {
     Q_D(ListJobBase);
     if (!d->multiResult) {
-        handleItems(root);
+        handleItems(data);
     } else {
-        const QVariant data = root.toMap()["data"];
-        foreach(const QVariant &user, data.toList()) {
-            handleItem(user);
+        const QJsonArray dataArray = data.object().value(QStringLiteral("data")).toArray();
+
+        qDebug() << data.toJson();
+
+        for (int i = 0; i < dataArray.size(); i++) {
+            handleItem(dataArray.at(i).toObject());
         }
     }
 
-    const QVariant paging = root.toMap()["paging"];
-    d->nextPage = paging.toMap().value("next").toString();
-    d->prevPage = paging.toMap().value("previous").toString();
+    QJsonObject pagingObject = data.object().value(QStringLiteral("paging")).toObject();
+
+    qDebug() << pagingObject;
+
+    d->nextPage = pagingObject.value(QStringLiteral("next")).toString();
+    d->prevPage = pagingObject.value(QStringLiteral("previous")).toString();
 }
 
-void ListJobBase::handleItems(const QVariant &root)
+void ListJobBase::handleItems(const QJsonDocument &data)
 {
 }
 

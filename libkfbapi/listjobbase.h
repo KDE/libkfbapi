@@ -40,9 +40,9 @@ public:
     QString nextItems() const;
 
 protected:
-    virtual void handleData(const QVariant &data);
-    virtual void handleItems(const QVariant &data);
-    virtual void handleItem(const QVariant &item) = 0;
+    virtual void handleData(const QJsonDocument &data);
+    virtual void handleItems(const QJsonDocument &data);
+    virtual void handleItem(const QJsonObject &item) = 0;
 
 private:
     Q_DECLARE_PRIVATE(ListJobBase)
