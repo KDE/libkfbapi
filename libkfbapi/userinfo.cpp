@@ -1,4 +1,5 @@
 /* Copyright 2010, 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -19,37 +20,27 @@
 #include "userinfo.h"
 
 #include "util.h"
-
-#include <KDebug>
+#include <QUrl>
 
 using namespace KFbAPI;
 
-static const int invalidTimezone = 42;
-
 class UserInfo::UserInfoPrivate : public QSharedData {
 public:
-    QString id;
-    QString name;
-    QString firstName;
-    QString lastName;
-    QDate birthday;
-    QUrl website;
-    QString username;
-    QString country;
-    QString city;
-    QString company;
-    QString profession;
-    QString partner;
-    QString updatedTime;
-    int timezone;
-    QUrl pictureUrl;
+    QJsonObject jsonData;
 };
 
 UserInfo::UserInfo()
     : d(new UserInfoPrivate)
 {
-    d->timezone = invalidTimezone;
+
 }
+
+UserInfo::UserInfo(const QJsonObject &jsonData)
+    : d(new UserInfoPrivate)
+{
+    d->jsonData = jsonData;
+}
+
 
 UserInfo::UserInfo(const UserInfo &other)
 {
@@ -70,196 +61,115 @@ UserInfo& UserInfo::operator=(const UserInfo &other)
 
 QString UserInfo::name() const
 {
-    return d->name;
+    return d->jsonData.value(QStringLiteral("name")).toString();
 }
 
 QString UserInfo::id() const
 {
-    return d->id;
-}
-
-void UserInfo::setName(const QString &name)
-{
-    d->name = name;
-}
-
-void UserInfo::setId(const QString &id)
-{
-    d->id = id;
+    return d->jsonData.value(QStringLiteral("id")).toString();
 }
 
 QDate UserInfo::birthday() const
 {
-    return d->birthday;
+    QString dateString = d->jsonData.value(QStringLiteral("birthday")).toString();
+
+    if (dateString.count(QLatin1Char('/')) == 2) {
+        // the date contains a year too
+        return QDate::fromString(dateString, QStringLiteral("MM/dd/yyyy"));
+    } else if (dateString.count(QLatin1Char('/')) == 1) {
+        // the date has only month/day
+        return QDate::fromString(dateString, QStringLiteral("MM/dd"));
+    }
+
+    return QDate();
 }
 
 QString UserInfo::birthdayString() const
 {
-    return d->birthday.toString();
+    return d->jsonData.value(QStringLiteral("birthday")).toString();
 }
 
 QString UserInfo::firstName() const
 {
-    return d->firstName;
+    return d->jsonData.value(QStringLiteral("first_name")).toString();
 }
 
 QString UserInfo::lastName() const
 {
-    return d->lastName;
-}
-
-void UserInfo::setBirthday(const QString &birthday)
-{
-    d->birthday = QDate::fromString(birthday, "MM/dd/yyyy");
-    if (!d->birthday.isValid()) {
-        // Some users don't tell the year of their birthday.
-        d->birthday = QDate::fromString(birthday + "/0001", "MM/dd/yyyy");
-    }
-}
-
-void UserInfo::setFirstName(const QString &firstName)
-{
-    d->firstName = firstName;
-}
-
-void UserInfo::setLastName(const QString &lastName)
-{
-    d->lastName = lastName;
+    return d->jsonData.value(QStringLiteral("last_name")).toString();
 }
 
 QUrl UserInfo::website() const
 {
-    return d->website;
-}
-
-void UserInfo::setWebsite(const QUrl &website)
-{
-    if (website.toString().contains('\r') || website.toString().contains('\n')) {
-        QString normalized = website.toString();
-        normalized.replace("\r\n", "\n");
-        normalized.replace("\r", "\n");
-        const QStringList websites = normalized.split('\n');
-        d->website = QUrl(websites[0]);
-    } else {
-        d->website = website;
-    }
-}
-
-QString UserInfo::city() const
-{
-    return d->city;
-}
-
-void UserInfo::setCity(const QString &city)
-{
-    d->city = city;
-}
-
-QString UserInfo::country() const
-{
-    return d->country;
-}
-
-void UserInfo::setCountry(const QString &country)
-{
-    d->country = country;
+    return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("website")).toString());
 }
 
 QString UserInfo::username() const
 {
-    return d->username;
+    return d->jsonData.value(QStringLiteral("username")).toString();
 }
 
-void UserInfo::setUsername(const QString &username)
-{
-    d->username = username;
-}
-
-QString UserInfo::company() const
-{
-    return d->company;
-}
-
-QString UserInfo::profession() const
-{
-    return d->profession;
-}
-
-void UserInfo::setCompany(const QString &company)
-{
-    d->company = company;
-}
-
-void UserInfo::setProfession(const QString &profession)
-{
-    d->profession = profession;
-}
+// QString UserInfo::company() const
+// {
+//     return d->jsonData.value(QStringLiteral("")).toString();
+// }
+//
+// QString UserInfo::profession() const
+// {
+//     return d->profession;
+// }
 
 QString UserInfo::partner() const
 {
-    return d->partner;
-}
-
-void UserInfo::setPartner(const QString &partner)
-{
-    d->partner = partner;
-}
-
-void UserInfo::setTimezone(int timezone)
-{
-    d->timezone = timezone;
+    return d->jsonData.value(QStringLiteral("partner")).toString();
 }
 
 int UserInfo::timezone() const
 {
-    return d->timezone;
+    return d->jsonData.value(QStringLiteral("timezone")).toInt();
 }
 
-KABC::Addressee UserInfo::toAddressee() const
-{
-    KABC::Addressee addressee;
-    addressee.setGivenName(firstName());
-    addressee.setUid(id());
-    addressee.setFamilyName(lastName());
-    addressee.setFormattedName(name());
-    addressee.setUrl(website());
-    addressee.setBirthday(QDateTime(birthday()));
-    addressee.setOrganization(d->company);
-    if (d->timezone != invalidTimezone) {
-        addressee.setTimeZone(KABC::TimeZone(d->timezone));
-    }
-    addressee.insertCustom("KADDRESSBOOK", "X-Profession", d->profession);
-    addressee.insertCustom("KADDRESSBOOK", "X-SpousesName", d->partner);
-    if (!d->city.isEmpty() || !d->country.isEmpty()) {
-        KABC::Address address(KABC::Address::Home);
-        address.setRegion(d->country);
-        address.setLocality(d->city);
-        addressee.insertAddress(address);
-    }
-    return addressee;
-}
-
-void UserInfo::setUpdatedTimeString(const QString &updatedTime)
-{
-    d->updatedTime = updatedTime;
-}
+// KABC::Addressee UserInfo::toAddressee() const
+// {
+//     KABC::Addressee addressee;
+//     addressee.setGivenName(firstName());
+//     addressee.setUid(id());
+//     addressee.setFamilyName(lastName());
+//     addressee.setFormattedName(name());
+//     addressee.setUrl(website());
+//     addressee.setBirthday(QDateTime(birthday()));
+//     addressee.setOrganization(d->company);
+//     if (d->timezone != invalidTimezone) {
+//         addressee.setTimeZone(KABC::TimeZone(d->timezone));
+//     }
+//     addressee.insertCustom("KADDRESSBOOK", "X-Profession", d->profession);
+//     addressee.insertCustom("KADDRESSBOOK", "X-SpousesName", d->partner);
+//     if (!d->city.isEmpty() || !d->country.isEmpty()) {
+//         KABC::Address address(KABC::Address::Home);
+//         address.setRegion(d->country);
+//         address.setLocality(d->city);
+//         addressee.insertAddress(address);
+//     }
+//     return addressee;
+// }
 
 QString UserInfo::updatedTimeString() const
 {
-    return d->updatedTime;
+    return d->jsonData.value(QStringLiteral("updated_time")).toString();
 }
 
-KDateTime UserInfo::updatedTime() const
+QDateTime UserInfo::updatedTime() const
 {
-    return facebookTimeToKDateTime(d->updatedTime);
-}
-
-void UserInfo::setPicture(const QUrl &pictureUrl)
-{
-    d->pictureUrl = pictureUrl;
+    return QDateTime::fromString(d->jsonData.value(QStringLiteral("updated_time")).toString(), Qt::ISODate);
 }
 
 QUrl UserInfo::picture() const
 {
-    return d->pictureUrl;
+    QJsonObject pictureObject = d->jsonData.value(QStringLiteral("picture")).toObject();
+    if (pictureObject.value(QStringLiteral("is_silhouette")).toBool() == true) {
+        //TODO: return our custom silhouette icon here
+        return QUrl::fromUserInput(pictureObject.value(QStringLiteral("url")).toString());
+    } else {
+        return QUrl::fromUserInput(pictureObject.value(QStringLiteral("url")).toString());
+    }
 }

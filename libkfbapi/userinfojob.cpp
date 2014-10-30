@@ -1,4 +1,5 @@
 /* Copyright 2010 Thomas McGuire <mcguire@kde.org>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -18,10 +19,11 @@
 */
 
 #include "userinfojob.h"
-#include "userinfoparser_p.h"
+#include "userinfo.h"
 #include "facebookjobs_p.h"
 
-#include <qjson/qobjecthelper.h>
+#include <QDebug>
+#include <QJsonObject>
 
 using namespace KFbAPI;
 
@@ -33,14 +35,33 @@ public:
 //-----------------------------------------------------------------------------
 
 UserInfoJob::UserInfoJob(const QString &accessToken, QObject *parent)
-    : FacebookGetJob(*new UserInfoJobPrivate, "/me", accessToken, parent)
+    : FacebookGetJob(*new UserInfoJobPrivate, QStringLiteral("/me"), accessToken, parent)
 {
-    setFields(QStringList() << "name");
+    // this is querying /me, ie. the user that is logged in
+    setFields(QStringList() << QStringLiteral("id")
+                            << QStringLiteral("name")
+                            << QStringLiteral("first_name")
+                            << QStringLiteral("last_name")
+                            << QStringLiteral("birthday")
+                            << QStringLiteral("website")
+                            << QStringLiteral("timezone")
+                            << QStringLiteral("updated_time")
+                            << QStringLiteral("location"));
 }
 
 UserInfoJob::UserInfoJob(const QString &userId, const QString &accessToken, QObject *parent)
-    : FacebookGetJob(*new UserInfoJobPrivate, "/" + userId, accessToken, parent)
+    : FacebookGetJob(*new UserInfoJobPrivate, QStringLiteral("/") + userId, accessToken, parent)
 {
+    // this is querying the user with the given userId
+    setFields(QStringList() << QStringLiteral("id")
+                            << QStringLiteral("name")
+                            << QStringLiteral("first_name")
+                            << QStringLiteral("last_name")
+                            << QStringLiteral("birthday")
+                            << QStringLiteral("website")
+                            << QStringLiteral("timezone")
+                            << QStringLiteral("updated_time")
+                            << QStringLiteral("location"));
 }
 
 UserInfo UserInfoJob::userInfo() const
@@ -49,13 +70,13 @@ UserInfo UserInfoJob::userInfo() const
     return d->userInfo;
 }
 
-void UserInfoJob::handleData(const QVariant &data)
+void UserInfoJob::handleData(const QJsonDocument &data)
 {
     Q_D(UserInfoJob);
-    UserInfoParser parser;
 
-    QJson::QObjectHelper::qvariant2qobject(data.toMap(), &parser);
-    d->userInfo = parser.dataObject();
+    if (data.isEmpty() || data.isNull()) {
+        qWarning() << "Received invalid data";
+    }
+
+    d->userInfo = UserInfo(data.object());
 }
-
-#include "userinfojob.moc"
