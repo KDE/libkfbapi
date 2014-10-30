@@ -18,44 +18,30 @@
 */
 
 #include "postinfo.h"
-#include "util.h"
-#include "commentinfo.h"
+#include "likeinfo.h"
 
-#include "propertyinfoparser_p.h"
-#include "likeinfoparser_p.h"
-#include "commentinfoparser_p.h"
-#include "appinfoparser_p.h"
-#include "userinfoparser_p.h"
+#include <QJsonArray>
+#include <QDebug>
 
-#include <qjson/qobjecthelper.h>
+// #include "commentinfo.h"
 
 using namespace KFbAPI;
 
 class PostInfo::PostInfoPrivate : public QSharedData {
 public:
-    QString id;            /* Facebook id of the post. */
-    UserInfo from;         /* Creator of the post. */
-    QString message;       /* Actual content of the post. */
-    QUrl pictureUrl;       /* Picture assocauted with the Post. */
-    QUrl link;             /* Link associated with the post */
-    QString name;          /* Name of the Link */
-    QString caption;       /* Caption of the Link */
-    QString description;   /* Description of the Link. */
-    QUrl source;           /* Source of the Link */
-    QList<PropertyInfo> properties;     /* Properties of the Link */
-    QString icon;          /* Icon of the post */
-    QString type;          /* Type of  post */
-    LikeInfo likes;        /* Likes of  post */
-    QString story;         /* Story of  post */
-    CommentInfo comments;  /* Comments on  post */
-    AppInfo application;   /*App associated with the post*/
-    QString createdTime;   /* Creation time of the post. */
-    QString updatedTime;   /* Last update time of the post. */
+    QJsonObject jsonData;
+    LikeInfo likes;
 };
 
 PostInfo::PostInfo()
     : d(new PostInfoPrivate)
 {
+}
+
+PostInfo::PostInfo(const QJsonObject &jsonData)
+    : d(new PostInfoPrivate)
+{
+    d->jsonData = jsonData;
 }
 
 PostInfo::PostInfo(const PostInfo &other)
@@ -74,161 +60,68 @@ PostInfo& PostInfo::operator=(const PostInfo &other)
     return *this;
 }
 
-void PostInfo::setId(const QString &id)
-{
-    d->id = id;
-}
-
 QString PostInfo::id() const
 {
-    return d->id;
-}
-
-void PostInfo::setFrom(const QVariantMap &from)
-{
-    UserInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(from, &parser);
-    d->from = parser.dataObject();
+    return d->jsonData.value(QStringLiteral("id")).toString();
 }
 
 UserInfo PostInfo::from() const
 {
-    return d->from;
-}
-
-QVariantMap PostInfo::fromMap() const
-{
-    UserInfoParser parser;
-    parser.setDataObject(d->from);
-    return QJson::QObjectHelper::qobject2qvariant(&parser);
-}
-
-void PostInfo::setMessage(const QString &message)
-{
-    d->message = message;
+    return UserInfo(d->jsonData.value(QStringLiteral("from")).toObject());
 }
 
 QString PostInfo::message() const
 {
-    return d->message;
+    return d->jsonData.value(QStringLiteral("message")).toString();
 }
 
 QUrl PostInfo::pictureUrl() const
 {
-    return d->pictureUrl;
-}
-
-void PostInfo::setPictureUrl(const QUrl &pictureUrl)
-{
-    d->pictureUrl = pictureUrl;
-}
-
-void PostInfo::setLink(const QUrl &link)
-{
-    d->link = link;
+    return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("picture")).toString());
 }
 
 QUrl PostInfo::link() const
 {
-    return d->link;
-}
-
-void PostInfo::setName(const QString &name)
-{
-    d->name = name;
+    return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("link")).toString());
 }
 
 QString PostInfo::name() const
 {
-    return d->name;
-}
-
-void PostInfo::setCaption(const QString &caption)
-{
-    d->caption = caption;
+    return d->jsonData.value(QStringLiteral("name")).toString();
 }
 
 QString PostInfo::caption() const
 {
-    return d->caption;
-}
-
-void PostInfo::setDescription(const QString &description)
-{
-    d->description = description;
-}
-
-QString PostInfo::description() const
-{
-    return d->description;
-}
-
-void PostInfo::setSourceUrl(const QUrl &source)
-{
-    d->source = source;
+    return d->jsonData.value(QStringLiteral("caption")).toString();
 }
 
 QUrl PostInfo::sourceUrl() const
 {
-    return d->source;
-}
-
-void PostInfo::setProperties(const QVariantList &properties)
-{
-    PropertyInfoParser parser;
-    d->properties = QList<PropertyInfo>();
-
-    Q_FOREACH (const QVariant &v, properties) {
-        QVariantMap vMap = v.toMap();
-        parser.setDataObject(PropertyInfo());
-        QJson::QObjectHelper::qvariant2qobject(vMap, &parser);
-        d->properties << parser.dataObject();
-    }
+    return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("source")).toString());
 }
 
 QList<PropertyInfo> PostInfo::properties() const
 {
-    return d->properties;
-}
+    QJsonArray propertyArray = d->jsonData.value(QStringLiteral("properties")).toArray();
 
-QVariantList PostInfo::propertiesList() const
-{
-    PropertyInfoParser parser;
-    QVariantList vList;
+    //TODO: cache this?
+    QList<PropertyInfo> returnList;
 
-    Q_FOREACH (const PropertyInfo &propertyInfo, d->properties) {
-        parser.setDataObject(propertyInfo);
-        vList.append(QJson::QObjectHelper::qobject2qvariant(&parser));
+    for (int i = 0; i < propertyArray.size(); i++) {
+        returnList << PropertyInfo(propertyArray.at(i).toObject());
     }
 
-    return vList;
+    return returnList;
 }
 
-void PostInfo::setIcon(const QString &icon)
+QUrl PostInfo::iconUrl() const
 {
-    d->icon = icon;
-}
-
-QString PostInfo::icon() const
-{
-    return d->icon;
-}
-
-void PostInfo::setType(const QString &type)
-{
-    d->type = type;
+    return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("icon")).toString());
 }
 
 QString PostInfo::type() const
 {
-    return d->type;
-}
-
-void PostInfo::setLikes(const QVariantMap &likes)
-{
-    LikeInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(likes, &parser);
-    d->likes = parser.dataObject();
+    return d->jsonData.value(QStringLiteral("type")).toString();
 }
 
 LikeInfo PostInfo::likes() const
@@ -236,87 +129,42 @@ LikeInfo PostInfo::likes() const
     return d->likes;
 }
 
-QVariantMap PostInfo::likesMap() const
-{
-    LikeInfoParser parser;
-    parser.setDataObject(d->likes);
-    return QJson::QObjectHelper::qobject2qvariant(&parser);
-}
-
-void PostInfo::setStory(const QString &story)
-{
-    d->story = story;
-}
-
 QString PostInfo::story() const
 {
-    return d->story;
+    return d->jsonData.value(QStringLiteral("story")).toString();
 }
 
-void PostInfo::setComments(const QVariantMap &comments)
-{
-    CommentInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(comments, &parser);
-    d->comments = parser.dataObject();
-}
-
-CommentInfo PostInfo::comments() const
-{
-    return d->comments;
-}
-
-QVariantMap PostInfo::commentsMap() const
-{
-    CommentInfoParser parser;
-    parser.setDataObject(d->comments);
-    return QJson::QObjectHelper::qobject2qvariant(&parser);
-}
-
-void PostInfo::setApplication(const QVariantMap &application)
-{
-    AppInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(application, &parser);
-    d->application = parser.dataObject();
-}
+// CommentInfo PostInfo::comments() const
+// {
+//     return d->comments;
+// }
 
 AppInfo PostInfo::application() const
 {
-    return d->application;
-}
-
-QVariantMap PostInfo::applicationMap() const
-{
-    AppInfoParser parser;
-    parser.setDataObject(d->application);
-    return QJson::QObjectHelper::qobject2qvariant(&parser);
-}
-
-void PostInfo::setCreatedTimeString(const QString &createdTime)
-{
-    d->createdTime = createdTime;
+    return AppInfo(d->jsonData.value(QStringLiteral("application")).toObject());
 }
 
 QString PostInfo::createdTimeString() const
 {
-    return d->createdTime;
+    return d->jsonData.value(QStringLiteral("created_time")).toString();
 }
 
-KDateTime PostInfo::createdTime() const
+QDateTime PostInfo::createdTime() const
 {
-    return facebookTimeToKDateTime(d->createdTime);
-}
-
-void PostInfo::setUpdatedTimeString(const QString &updatedTime)
-{
-    d->updatedTime = updatedTime;
+    return QDateTime::fromString(d->jsonData.value(QStringLiteral("created_time")).toString(), Qt::ISODate);
 }
 
 QString PostInfo::updatedTimeString() const
 {
-    return d->updatedTime;
+    return d->jsonData.value(QStringLiteral("updated_time")).toString();
 }
 
-KDateTime PostInfo::updatedTime() const
+QDateTime PostInfo::updatedTime() const
 {
-    return facebookTimeToKDateTime(d->updatedTime);
+    return QDateTime::fromString(d->jsonData.value(QStringLiteral("id")).toString(), Qt::ISODate);
+}
+
+void PostInfo::setLikes(const LikeInfo &likes)
+{
+    d->likes = likes;
 }
