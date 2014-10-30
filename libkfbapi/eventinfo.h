@@ -1,4 +1,5 @@
 /* Copyright 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -22,18 +23,19 @@
 
 #include "libkfbapi_export.h"
 
-#include <KDateTime>
+#include <QDateTime>
+#include <QJsonObject>
 
-#include <KCalCore/Event>
-#include <KCalCore/Attendee>
+// #include <KCalCore/Event>
+// #include <KCalCore/Attendee>
 
 namespace KFbAPI {
 
-typedef KCalCore::Event Event;
-typedef KCalCore::Attendee Attendee;
-typedef KCalCore::Event::Ptr EventPtr;
-typedef KCalCore::Incidence::Ptr IncidencePtr;
-typedef KCalCore::Attendee::Ptr AttendeePtr;
+// typedef KCalCore::Event Event;
+// typedef KCalCore::Attendee Attendee;
+// typedef KCalCore::Event::Ptr EventPtr;
+// typedef KCalCore::Incidence::Ptr IncidencePtr;
+// typedef KCalCore::Attendee::Ptr AttendeePtr;
 
 /**
 * An attendee to an event
@@ -49,7 +51,7 @@ public:
     * @param id The facebook id of the attendee.
     * @param status The RSVP status of the attendee.
     */
-    AttendeeInfo(const QString &name, const QString &id, const Attendee::PartStat &status);
+    AttendeeInfo(const QString &name, const QString &id, const QString &status);
     AttendeeInfo(const AttendeeInfo &other);
     ~AttendeeInfo();
 
@@ -59,14 +61,16 @@ public:
     * @return The name of the attendee.
     */
     QString name() const;
+
     /**
     * @return Returns the facebook id of the attendee.
     */
     QString id() const;
+
     /**
     * @return Returns the RSVP state of the attendee.
     */
-    Attendee::PartStat status() const;
+    QString status() const;
 
 private:
     class AttendeeInfoPrivate;
@@ -82,6 +86,7 @@ typedef QSharedPointer<AttendeeInfo> AttendeeInfoPtr;
 class LIBKFBAPI_EXPORT EventInfo
 {
 public:
+    EventInfo(const QJsonObject &jsonData);
     EventInfo();
     EventInfo(const EventInfo &other);
     ~EventInfo();
@@ -89,108 +94,69 @@ public:
     EventInfo &operator=(const EventInfo &other);
 
     /**
-    * @brief Set the name of the event.
-    * @param name The name of the event.
-    */
-    void setName(const QString &name);
-    /**
     * @return The name of the event.
     */
     QString name() const;
 
     /**
-    * @brief Set the start time of the event.
-    * @param startTime The start time of the event as a QString in the
-    *                  "facebook format".
-    */
-    void setStartTimeString(const QString &startTime);
-    /**
     * @return The start time of the event as a QString in the "facebook format".
     */
     QString startTimeString() const;
-    /**
-    * @return The start time of the event as a KDateTime object.
-    */
-    KDateTime startTime() const;
 
     /**
-    * @brief Set the end time of the event.
-    * @param endTime The end time of the event as a QString in the
-    *                "facebook format".
+    * @return The start time of the event as a QDateTime.
     */
-    void setEndTimeString(const QString &endTime);
+    QDateTime startTime() const;
+
     /**
     * @return The end time of the event as a QString in the "facebook format".
     */
     QString endTimeString() const;
-    /**
-    * @return The end time of the event as a KDateTime object.
-    */
-    KDateTime endTime() const;
 
     /**
-    * @brief Set the location of the event,
-    * @param location The location of the event,
+    * @return The end time of the event as a QDateTime.
     */
-    void setLocation(const QString &location);
+    QDateTime endTime() const;
+
     /**
     * @return The location of the event
     */
     QString location() const;
 
     /**
-    * @brief Set the facebook id of the event.
-    * @param id The facebook id of the event.
-    */
-    void setId(const QString &id);
-    /**
     * @return The facebook id of the event.
     */
     QString id() const;
 
-    /**
-    * @brief Set the description of the event.
-    * @param description The description of the event.
-    */
-    void setDescription(const QString &description);
     /**
     * @return The description of the event.
     */
     QString description() const;
 
     /**
-    * @brief Set the organizer of the event.
-    * @param organizer The organizer of the event.
-    */
-    void setOrganizer(const QString &organizer);
-    /**
     * @return The organizer of the event as a QString.
     */
     QString organizer() const;
 
     /**
-    * @brief Set the time the event is last updated.
-    * @param updatedTime The last update time of the event in "facebook format".
-    */
-    void setUpdatedTimeString(const QString  &updatedTime);
-    /**
     * @return The time of the last update of the event in "facebook format".
     */
     QString updatedTimeString() const;
+
     /**
-    * @return The time of the last update of the event as a KDateTime object.
+    * @return The time of the last update of the event as a QDateTime.
     */
-    KDateTime updatedTime() const;
+    QDateTime updatedTime() const;
 
     /**
     * @brief Add a list of attendee objects to this event.
     * @param attendees A list of attendee objects of people that have responded
     *                  or are requested to respond to this event.
     */
-    void addAttendees(const QList<AttendeeInfoPtr> &attendees);
+//     void addAttendees(const QList<AttendeeInfoPtr> &attendees);
     QList<AttendeeInfoPtr> attendees() const;
 
-    EventPtr asEvent() const;
+//     EventPtr asEvent() const;
 
 private:
     class EventInfoPrivate;
