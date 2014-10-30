@@ -1,4 +1,5 @@
  /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
+    Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -18,9 +19,11 @@
 */
 
 #include "likeinfo.h"
-#include "userinfoparser_p.h"
+#include "userinfo.h"
 
-#include <qjson/qobjecthelper.h>
+#include <QJsonArray>
+#include <QStringList>
+#include <QDebug>
 
 using namespace KFbAPI;
 
@@ -33,6 +36,24 @@ public:
 LikeInfo::LikeInfo()
     : d(new LikeInfoPrivate)
 {
+}
+
+LikeInfo::LikeInfo(const QJsonObject &jsonData)
+    : d(new LikeInfoPrivate)
+{
+    QJsonObject summary = jsonData.value(QStringLiteral("summary")).toObject();
+
+    if (!summary.isEmpty() && summary.contains(QStringLiteral("total_count"))) {
+        d->count = summary.value(QStringLiteral("total_count")).toInt();
+    } else {
+        // TODO: maybe set it to -1 to indicate "unknown" ?
+        d->count = 0;
+    }
+
+    QJsonArray likesArray = jsonData.value(QStringLiteral("data")).toArray();
+    for (int i = 0; i < likesArray.size(); i++) {
+        d->data.append(UserInfo(likesArray.at(i).toObject()));
+    }
 }
 
 LikeInfo::LikeInfo(const LikeInfo &other)
@@ -51,48 +72,12 @@ LikeInfo& LikeInfo::operator=(const LikeInfo &other)
     return *this;
 }
 
-void LikeInfo::setData(const QVariantList &data)
-{
-    UserInfoParser parser;
-    d->data = QList<UserInfo>();
-
-    Q_FOREACH (const QVariant &v, data) {
-        QVariantMap vMap = v.toMap();
-        parser.setDataObject(UserInfo());
-        QJson::QObjectHelper::qvariant2qobject(vMap, &parser);
-        d->data << parser.dataObject();
-    }
-}
-
 QList<UserInfo> LikeInfo::data() const
 {
     return d->data;
 }
 
-QVariantList LikeInfo::dataList() const
-{
-    UserInfoParser parser;
-    QVariantList list;
-
-    Q_FOREACH (const UserInfo &user, d->data) {
-        parser.setDataObject(user);
-        list.append(QJson::QObjectHelper::qobject2qvariant(&parser));
-    }
-
-    return list;
-}
-
-void LikeInfo::setCount(const int &count)
-{
-    d->count = count;
-}
-
 int LikeInfo::count() const
 {
     return d->count;
-}
-
-QString LikeInfo::path() const
-{
-    return "/likes";
 }

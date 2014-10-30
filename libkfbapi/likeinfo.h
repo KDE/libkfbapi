@@ -1,4 +1,5 @@
  /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
+    Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -32,6 +33,7 @@ namespace KFbAPI {
 class LIBKFBAPI_EXPORT LikeInfo
 {
 public:
+    LikeInfo(const QJsonObject &jsonData);
     LikeInfo();
     LikeInfo(const LikeInfo &other);
     ~LikeInfo();
@@ -39,33 +41,14 @@ public:
     LikeInfo &operator=(const LikeInfo &other);
 
     /**
-     * Set the data of this like (list of people who like the post)
-     * @param data the like data
-     */
-    void setData(const QVariantList &data);
-    /**
      * Returns the like data
      */
     QList<UserInfo> data() const;
-    /**
-     * Return the like data as VariantList
-     */
-    QVariantList dataList() const;
 
-    /**
-     * Set the count of this like (number of people who like the post)
-     * @param count the like count
-     */
-    void setCount(const int &count);
     /**
      * Returns the like count
      */
     int count() const;
-
-    /**
-     * Returns relative REST path w.r.t FacebookObject, "/" included
-     */
-    QString path() const;
 
 private:
     class LikeInfoPrivate;
