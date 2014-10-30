@@ -1,4 +1,5 @@
 /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -23,20 +24,18 @@ using namespace KFbAPI;
 
 class AppInfo::AppInfoPrivate : public QSharedData {
 public:
-    QString id;            /* Facebook id of the Application. */
-    QString name;          /* Name of the Application */
-    QString description;   /* Description of the Application. */
-    QString category;      /* Category of the Application */
-    QString company;       /* Company of the Application */
-    QUrl iconUrl;          /* IconUrl of the Application */
-    QString subcategory;   /* Subcategory of the Application */
-    QUrl link;             /* Link of the Application */
-    QUrl logoUrl;          /* LogoUrl of the Application */
+    QJsonObject jsonData;
 };
 
 AppInfo::AppInfo()
     : d(new AppInfoPrivate)
 {
+}
+
+AppInfo::AppInfo(const QJsonObject &jsonData)
+    : d(new AppInfoPrivate)
+{
+    d->jsonData = jsonData;
 }
 
 AppInfo::AppInfo(const AppInfo &other)
@@ -56,92 +55,47 @@ AppInfo& AppInfo::operator=(const AppInfo &other)
     return *this;
 }
 
-void AppInfo::setId(const QString &id)
-{
-    d->id = id;
-}
-
 QString AppInfo::id() const
 {
-    return d->id;
-}
-
-void AppInfo::setName(const QString &name)
-{
-    d->name = name;
+    return d->jsonData.value(QStringLiteral("id")).toString();
 }
 
 QString AppInfo::name() const
 {
-    return d->name;
-}
-
-void AppInfo::setDescription(const QString &description)
-{
-    d->description = description;
+    return d->jsonData.value(QStringLiteral("name")).toString();
 }
 
 QString AppInfo::description() const
 {
-    return d->description;
-}
-
-void AppInfo::setCategory(const QString &category)
-{
-    d->category = category;
+    return d->jsonData.value(QStringLiteral("description")).toString();
 }
 
 QString AppInfo::category() const
 {
-    return d->category;
-}
-
-void AppInfo::setCompany(const QString &company)
-{
-    d->company = company;
+    return d->jsonData.value(QStringLiteral("category")).toString();
 }
 
 QString AppInfo::company() const
 {
-    return d->company;
-}
-
-void AppInfo::setIconUrl(const QUrl &iconUrl)
-{
-    d->iconUrl = iconUrl;
+    return d->jsonData.value(QStringLiteral("company")).toString();
 }
 
 QUrl AppInfo::iconUrl() const
 {
-    return d->iconUrl;
-}
-
-void AppInfo::setSubcategory(const QString &subCategory)
-{
-    d->subcategory = subCategory;
+    return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("icon_url")).toString());
 }
 
 QString AppInfo::subcategory() const
 {
-    return d->subcategory;
-}
-
-void AppInfo::setLink(const QUrl &link)
-{
-    d->link = link;
+    return d->jsonData.value(QStringLiteral("subcategory")).toString();
 }
 
 QUrl AppInfo::link() const
 {
-    return d->link;
-}
-
-void AppInfo::setLogoUrl(const QUrl &logoUrl)
-{
-    d->logoUrl = logoUrl;
+    return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("link")).toString());
 }
 
 QUrl AppInfo::logoUrl() const
 {
-    return d->logoUrl;
+    return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("logo_url")).toString());
 }

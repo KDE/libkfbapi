@@ -24,6 +24,7 @@
 
 #include <QSharedPointer>
 #include <QUrl>
+#include <QJsonObject>
 
 namespace KFbAPI {
 
@@ -35,6 +36,7 @@ class LIBKFBAPI_EXPORT AppInfo
 {
 public:
     AppInfo();
+    AppInfo(const QJsonObject &jsonData);
     AppInfo(const AppInfo &other);
     ~AppInfo();
 
@@ -51,80 +53,40 @@ public:
     QString id() const;
 
     /**
-     * Set the facebook name of this application
-     * @param  the facebook name
-     */
-    void setName(const QString &name);
-    /**
      * Returns the facebook name
      */
     QString name() const;
 
-    /**
-     * Set the description of this application
-     * @param  the description
-     */
-    void setDescription(const QString &description);
     /**
      * Returns the description
      */
     QString description() const;
 
     /**
-     * Set the category of this application
-     * @param  the category
-     */
-    void setCategory(const QString &category);
-    /**
      * Returns the category
      */
     QString category() const;
 
-    /**
-     * Set the company of this application
-     * @param  the company
-     */
-    void setCompany(const QString &company);
     /**
      * Returns the company
      */
     QString company() const;
 
     /**
-     * Set the Icon URL of this application
-     * @param  the Icon URL
-     */
-    void setIconUrl(const QUrl &iconUrl);
-    /**
      * Returns the Icon Url
      */
     QUrl iconUrl() const;
 
-    /**
-     * Set the subcategory of this application
-     * @param  the subcategory
-     */
-    void setSubcategory(const QString &subcategory);
     /**
      * Returns the subcategory
      */
     QString subcategory() const;
 
     /**
-     * Set the Logo URL of this application
-     * @param  the Logo URL
-     */
-    void setLogoUrl(const QUrl &logoUrl);
-    /**
      * Returns the Logo URL
      */
     QUrl logoUrl() const;
 
-    /**
-     * Set the link of this application
-     * @param  the link
-     */
-    void setLink(const QUrl &link);
     /**
      * Returns the link
      */
