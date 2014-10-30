@@ -22,21 +22,26 @@
 #include "allpostslistjob.h"
 #include "postslistjob.h"
 #include "pagedlistjob_p.h"
+#include "postcompositejob.h"
 
-#include <KDebug>
+#include <QDebug>
+#include <QUrlQuery>
 
 using namespace KFbAPI;
 
 class KFbAPI::AllPostsListJobPrivate : public KFbAPI::PagedListJobPrivate {
 public:
     QList<PostInfo> posts;
+    PostInfo::PostFetchOptions options;
 };
 
 //-----------------------------------------------------------------------------
 
-AllPostsListJob::AllPostsListJob(const QString &accessToken, QObject *parent)
+AllPostsListJob::AllPostsListJob(const PostInfo::PostFetchOptions &options, const QString &accessToken, QObject *parent)
     : PagedListJob(*new AllPostsListJobPrivate, accessToken, parent)
 {
+    Q_D(AllPostsListJob);
+    d->options = options;
 }
 
 QList<PostInfo> AllPostsListJob::allPosts() const
@@ -53,46 +58,49 @@ void AllPostsListJob::appendItems(const ListJobBase *job)
     d->posts.append(listJob->posts());
 }
 
-bool AllPostsListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
+bool AllPostsListJob::shouldStartNewJob(const QUrl &prev, const QUrl &next)
 {
     Q_UNUSED(prev);
     Q_D(AllPostsListJob);
-    const QString until = next.queryItem("until");
+    QUrlQuery query(next);
+    const QString until = query.queryItemValue(QStringLiteral("until"));
     if (until.isEmpty()) {
-        kDebug() << "Aborting posts fetching, no date range found in URL!";
+        qDebug() << "Aborting posts fetching, no date range found in URL!";
         return false;
     }
-    KDateTime untilTime;
+    QDateTime untilTime;
     untilTime.setTime_t(until.toLongLong());
     if (!untilTime.isValid()) {
-        kDebug() << "Aborting posts fetching, invalid date range found in URL!";
+        qDebug() << "Aborting posts fetching, invalid date range found in URL!";
         return false;
     }
     return (untilTime >= d->lowerLimit);
 }
 
-ListJobBase* AllPostsListJob::createJob(const KUrl &prev, const KUrl &next)
+ListJobBase* AllPostsListJob::createJob(const QUrl &prev, const QUrl &next)
 {
     Q_UNUSED(prev);
     Q_D(AllPostsListJob);
+//     PostCompositeJob * const job = new PostCompositeJob(QString(), d->options, d->accessToken, this);
     PostsListJob * const job = new PostsListJob(d->accessToken);
     if (!next.isEmpty()) {
-        const QString limit = next.queryItem("limit");
-        const QString until = next.queryItem("until");
-        const QString since = next.queryItem("since");
+        QUrlQuery query(next);
+        const QString limit = query.queryItemValue(QStringLiteral("limit"));
+        const QString until = query.queryItemValue(QStringLiteral("until"));
+        const QString since = query.queryItemValue(QStringLiteral("since"));
         if (!limit.isEmpty()) {
-            job->addQueryItem("limit", limit);
+            job->addQueryItem(QStringLiteral("limit"), limit);
         }
         if (!until.isEmpty()) {
-            job->addQueryItem("until", until);
+            job->addQueryItem(QStringLiteral("until"), until);
         }
         if (!since.isEmpty()) {
-            job->addQueryItem("since", since);
+            job->addQueryItem(QStringLiteral("since"), since);
         }
     } else {
         //add default values for the first job
-        job->addQueryItem("since", d->lowerLimit.toString());
-        job->addQueryItem("limit", QString::number(100));
+        job->addQueryItem(QStringLiteral("since"), d->lowerLimit.toString());
+        job->addQueryItem(QStringLiteral("limit"), QString::number(100));
     }
     return job;
 }

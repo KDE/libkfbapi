@@ -33,13 +33,13 @@ class LIBKFBAPI_EXPORT AllPostsListJob  : public PagedListJob
 {
     Q_OBJECT
 public:
-    explicit AllPostsListJob(const QString &accessToken, QObject *parent = 0);
+    explicit AllPostsListJob(const PostInfo::PostFetchOptions &options, const QString &accessToken, QObject *parent = 0);
     QList<PostInfo> allPosts() const;
 
 protected:
     virtual void appendItems(const ListJobBase *job);
-    virtual ListJobBase* createJob(const KUrl &prev, const KUrl &next);
-    virtual bool shouldStartNewJob(const KUrl &prev, const KUrl &next);
+    virtual ListJobBase* createJob(const QUrl &prev, const QUrl &next);
+    virtual bool shouldStartNewJob(const QUrl &prev, const QUrl &next);
 
 private:
     Q_DECLARE_PRIVATE(AllPostsListJob)
