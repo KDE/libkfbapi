@@ -21,8 +21,6 @@
 #include "userinfo.h"
 #include "appinfo.h"
 #include "util.h"
-#include "userinfoparser_p.h"
-#include "appinfoparser_p.h"
 
 #include <qjson/qobjecthelper.h>
 
@@ -30,22 +28,20 @@ using namespace KFbAPI;
 
 class NotificationInfo::NotificationInfoPrivate : public QSharedData {
 public:
-    QString id;          /* Facebook notification id */
-    UserInfo from;       /* User from whom the notification originates */
-    UserInfo to;         /* User receiving the notification */
-    QString createdTime; /* Creation time of the post. */
-    QString updatedTime; /* Last update time of the post. */
-    QString title;       /* Title of the notification */
-    QString message;     /* Comment posted by the user (if it's a comment notification) */
-    QUrl link;           /* Link for the notification */
-    AppInfo app;         /* App causing the notification */
-    bool unread;         /* Status of the notification, true if unread, false otherwise */
+    QJsonObject jsonData;
 };
 
 NotificationInfo::NotificationInfo()
     : d(new NotificationInfoPrivate)
 {
 }
+
+NotificationInfo::NotificationInfo(const QJsonObject &jsonData)
+    : d(new NotificationInfoPrivate)
+{
+    d->jsonData = jsonData;
+}
+
 
 NotificationInfo::NotificationInfo(const NotificationInfo &other)
 {
@@ -63,139 +59,72 @@ NotificationInfo& NotificationInfo::operator=(const NotificationInfo &other)
     return *this;
 }
 
-void NotificationInfo::setId(const QString &id)
-{
-    d->id = id;
-}
-
 QString NotificationInfo::id() const
 {
-    return d->id;
-}
-
-void NotificationInfo::setFrom(const QVariantMap &from)
-{
-    UserInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(from, &parser);
-    d->from = parser.dataObject();
+    return d->jsonData.value(QStringLiteral("id")).toString();
 }
 
 UserInfo NotificationInfo::from() const
 {
-    return d->from;
+    return UserInfo(d->jsonData.value(QStringLiteral("from")).toObject());
 }
 
 QVariantMap NotificationInfo::fromMap() const
 {
-    UserInfoParser parser;
-    parser.setDataObject(d->from);
-    return QJson::QObjectHelper::qobject2qvariant(&parser);
-}
-
-void NotificationInfo::setTo(const QVariantMap &to)
-{
-    UserInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(to, &parser);
-    d->to = parser.dataObject();
+    return d->jsonData.value(QStringLiteral("from")).toVariant().toMap();
 }
 
 UserInfo NotificationInfo::to() const
 {
-    return d->to;
+    return UserInfo(d->jsonData.value(QStringLiteral("to")).toObject());
 }
 
 QVariantMap NotificationInfo::toMap() const
 {
-    UserInfoParser parser;
-    parser.setDataObject(d->to);
-    return QJson::QObjectHelper::qobject2qvariant(&parser);
-}
-
-void NotificationInfo::setCreatedTimeString(const QString &time)
-{
-    d->createdTime = time;
+    return d->jsonData.value(QStringLiteral("to")).toVariant().toMap();
 }
 
 QString NotificationInfo::createdTimeString() const
 {
-    return d->createdTime;
+    return d->jsonData.value(QStringLiteral("created_time")).toString();
 }
 
-KDateTime NotificationInfo::createdTime() const
+QDateTime NotificationInfo::createdTime() const
 {
-    return facebookTimeToKDateTime(d->createdTime);
-}
-
-void NotificationInfo::setUpdatedTimeString(const QString &time)
-{
-    d->updatedTime = time;
+    return QDateTime::fromString(d->jsonData.value(QStringLiteral("created_time")).toString(), Qt::ISODate);
 }
 
 QString NotificationInfo::updatedTimeString() const
 {
-    return d->updatedTime;
+    return d->jsonData.value(QStringLiteral("updated_time")).toString();
 }
 
-KDateTime NotificationInfo::updatedTime() const
+QDateTime NotificationInfo::updatedTime() const
 {
-    return facebookTimeToKDateTime(d->updatedTime);
-}
-
-void NotificationInfo::setTitle(const QString &title)
-{
-    d->title = title;
+    return QDateTime::fromString(d->jsonData.value(QStringLiteral("updated_time")).toString(), Qt::ISODate);
 }
 
 QString NotificationInfo::title() const
 {
-    return d->title;
-}
-
-void NotificationInfo::setMessage(const QString &message)
-{
-    d->message = message;
-}
-
-QString NotificationInfo::message() const
-{
-    return d->message;
-}
-
-void NotificationInfo::setLink(const QUrl &link)
-{
-    d->link = link;
+    return d->jsonData.value(QStringLiteral("title")).toString();
 }
 
 QUrl NotificationInfo::link() const
 {
-    return d->link;
-}
-
-void NotificationInfo::setApplication(const QVariantMap &app)
-{
-    AppInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(app, &parser);
-    d->app = parser.dataObject();
+    return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("link")).toString());
 }
 
 AppInfo NotificationInfo::application() const
 {
-    return d->app;
+    return AppInfo(d->jsonData.value(QStringLiteral("application")).toObject());
 }
 
 QVariantMap NotificationInfo::applicationMap() const
 {
-    AppInfoParser parser;
-    parser.setDataObject(d->app);
-    return QJson::QObjectHelper::qobject2qvariant(&parser);
-}
-
-void NotificationInfo::setUnread(bool unread)
-{
-    d->unread = unread;
+    return d->jsonData.value(QStringLiteral("application")).toVariant().toMap();
 }
 
 bool NotificationInfo::unread() const
 {
-    return d->unread;
+    return d->jsonData.value(QStringLiteral("unread")).toBool();
 }

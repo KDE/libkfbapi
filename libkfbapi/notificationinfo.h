@@ -24,7 +24,7 @@
 #include "userinfo.h"
 #include "appinfo.h"
 
-#include <KDateTime>
+#include <QJsonObject>
 
 namespace KFbAPI {
 
@@ -36,6 +36,7 @@ namespace KFbAPI {
 class LIBKFBAPI_EXPORT NotificationInfo
 {
 public:
+    NotificationInfo(const QJsonObject &jsonData);
     NotificationInfo();
     NotificationInfo(const NotificationInfo &other);
     ~NotificationInfo();
@@ -43,20 +44,10 @@ public:
     NotificationInfo &operator=(const NotificationInfo &other);
 
     /**
-     * Set the notification id of the post
-     * @param id of the notification
-     */
-    void setId(const QString &id);
-    /**
      * Returns notification id
      */
     QString id() const;
 
-    /**
-     * Set the user creating the notification
-     * @param from the user causing the notification
-     */
-    void setFrom(const QVariantMap &from);
     /**
      * Returns the user causing the notification as a User Info Object
      */
@@ -68,11 +59,6 @@ public:
     QVariantMap fromMap() const;
 
     /**
-     * Set the user receiving the notification
-     * @param to the user receiving the notification
-     */
-    void setTo(const QVariantMap &to);
-    /**
      * Returns the user receiving the notification as a User Info Object
      */
     UserInfo to() const;
@@ -83,52 +69,29 @@ public:
     QVariantMap toMap() const;
 
     /**
-     * Set the creation time of the notification
-     * @param createdTime Time in "facebook format"
-     */
-    void setCreatedTimeString(const QString &time);
-    /**
      * Returns the creation time as a string in "facebook format"
      */
     QString createdTimeString() const;
+
     /**
      * Returns the creation time in KDateTime
      */
-    KDateTime createdTime() const;
+    QDateTime createdTime() const;
 
-    /**
-     * Set the time of the last update of the notification
-     * @param updatedTime The time, in "facebook format", of the last update of
-     *                    the notification.
-     */
-    void setUpdatedTimeString(const QString &time);
     /**
      * Returns the time of the last update of the notification in "facebook format"
      */
     QString updatedTimeString() const;
+
     /**
      * Returns the time of the last update of the notification as a KDateTime
      */
-    KDateTime updatedTime() const;
+    QDateTime updatedTime() const;
 
-
-    /**
-     * Set the title of the notification (it's the notification text itself)
-     * @param title Title of the notification
-     */
-    void setTitle(const QString &title);
     /**
      * Returns notification title (which is the notification text itself)
      */
     QString title() const;
-
-    /**
-     * Sets the message of the notification, which is for example the comment itself
-     * If there was no commenting involved etc, this is empty
-     *
-     * @param message The notification message
-     */
-    void setMessage(const QString &message);
 
     /**
      * Returns notification message (usually a comment posted by the user)
@@ -136,20 +99,10 @@ public:
     QString message() const;
 
     /**
-     * Set the link for the notification
-     * @param link Link for the notification
-     */
-    void setLink(const QUrl &link);
-    /**
      * Returns link for the notification
      */
     QUrl link() const;
 
-    /**
-     * Set application details that caused the notification
-     * @param app The app that caused the notification
-     */
-    void setApplication(const QVariantMap &app);
     /**
      * Returns the creator app that caused the notification
      */
@@ -161,14 +114,10 @@ public:
     QVariantMap applicationMap() const;
 
     /**
-     * Set the notification as read/unread
-     * @param unread True if the notification is read, false otherwise
-     */
-    void setUnread(bool unread);
-    /**
      * Returns whether the user has read the notification or not
      */
     bool unread() const;
+
 
 private:
     class NotificationInfoPrivate;
