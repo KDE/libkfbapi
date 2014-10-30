@@ -24,11 +24,16 @@
 
 #include <qjson/parser.h>
 
-#include <KIO/Job>
-#include <KDebug>
-#include <KLocale>
+#include <KJob>
+#include <KLocalizedString>
+#include <KIO/StoredTransferJob>
+#include <KIO/Job> //for KIO::buildErrorString
 
-static const KCatalogLoader loader("libkfbapi");
+#include <QUrl>
+#include <QDebug>
+#include <qjsondocument.h>
+
+// static const KCatalogLoader loader(QStringLiteral("libkfbapi"));
 
 namespace KFbAPI {
 
@@ -61,7 +66,9 @@ FacebookJob::~FacebookJob()
 void FacebookJob::addQueryItem(const QString &key, const QString &value)
 {
     Q_D(FacebookJob);
-    d->url.addQueryItem(key, value);
+    QUrlQuery query(d->url);
+    query.addQueryItem(key, value);
+    d->url.setQuery(query);
 }
 
 bool FacebookJob::doKill()
@@ -77,12 +84,12 @@ bool FacebookJob::doKill()
 void FacebookJob::handleError(const QVariant &data)
 {
     const QVariantMap errorMap = data.toMap();
-    const QString type = errorMap["type"].toString();
-    const QString message = errorMap["message"].toString();
+    const QString type = errorMap[QStringLiteral("type")].toString();
+    const QString message = errorMap[QStringLiteral("message")].toString();
 
-    kWarning() << "An error of type" << type << "occurred:" << message;
+    qWarning() << "An error of type" << type << "occurred:" << message;
 
-    if (type.toLower() != "oauthexception") {
+    if (type.toLower() != QLatin1String("oauthexception")) {
         setError(KJob::UserDefinedError);
         setErrorText(i18n("The Facebook server returned an error of type <i>%1</i>: <i>%2</i>" , type, message));
     } else {
@@ -102,7 +109,7 @@ FacebookAddJob::FacebookAddJob(const QString &path, const QString &accessToken, 
 void FacebookAddJob::start()
 {
     Q_D(FacebookJob);
-    kDebug() << "Starting add: " << d->url;
+    qDebug() << "Starting add: " << d->url;
     KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), d->url, KIO::HideProgressInfo);
     d->job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
@@ -117,23 +124,23 @@ void FacebookAddJob::jobFinished(KJob *job)
     if (addJob->error()) {
         setError(addJob->error());
         setErrorText(KIO::buildErrorString(error(), addJob->errorText()));
-        kWarning() << "Job error: " << addJob->errorString();
+        qWarning() << "Job error: " << addJob->errorString();
     } else {
-        QJson::Parser parser;
-        bool ok;
-        const QVariant result = parser.parse(addJob->data(), &ok);
-        if (!ok) {
-            kWarning() << "Unable to parse JSON data: " << QString::fromAscii(addJob->data().data());
+        QJsonParseError *error;
+        QJsonDocument response = QJsonDocument::fromJson(addJob->data(), error);
+        const QVariant result = response.toVariant();
+        if (error->error == QJsonParseError::NoError) {
+            qWarning() << "Unable to parse JSON data: " << addJob->data();
             setError(KJob::UserDefinedError);
-            setErrorText(i18n("Unable to parse data returned by the Facebook server: %1", parser.errorString()));
+            setErrorText(i18n("Unable to parse data returned by the Facebook server: %1", error->errorString()));
         } else {
-            const QVariant error = result.toMap()["error"];
-            if (error.isValid()) {
-                handleError(error);
+            const QVariant errorData = result.toMap()[QStringLiteral("error")];
+            if (errorData.isValid()) {
+                handleError(errorData);
             } else {
                 const QVariantMap dataMap = result.toMap();
-                if (dataMap.contains("id")) {
-                    setProperty("id", dataMap["id"]);
+                if (dataMap.contains(QLatin1String("id"))) {
+                    setProperty("id", dataMap[QStringLiteral("id")]);
                 }
             }
         }
@@ -147,16 +154,18 @@ void FacebookAddJob::jobFinished(KJob *job)
  * Facebook Delete job
  */
 FacebookDeleteJob::FacebookDeleteJob(const QString &id, const QString &accessToken, QObject *parent)
-    : FacebookJob("/" + id, accessToken, parent)
+    : FacebookJob(QStringLiteral("/") + id, accessToken, parent)
 {
 }
 
 void FacebookDeleteJob::start()
 {
     Q_D(FacebookJob);
-    d->url.addQueryItem("method", "delete");
+    QUrlQuery query(d->url);
+    query.addQueryItem(QStringLiteral("method"), QStringLiteral("delete"));
+    d->url.setQuery(query);
 
-    kDebug() << "Starting delete: " << d->url;
+    qDebug() << "Starting delete: " << d->url;
     KIO::StoredTransferJob * const job = KIO::storedHttpPost(QByteArray(), d->url, KIO::HideProgressInfo);
     d->job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
@@ -171,10 +180,10 @@ void FacebookDeleteJob::jobFinished(KJob *job)
     if (deleteJob->error()) {
         setError(deleteJob->error());
         setErrorText(KIO::buildErrorString(error(), deleteJob->errorText()));
-        kWarning() << "Job error: " << deleteJob->errorString();
+        qWarning() << "Job error: " << deleteJob->errorString();
     } else {
         // TODO: error handling. Does the server return the error as a JSON string?
-    //     kDebug() << "Got data: " << QString::fromAscii(deleteJob->data().data());
+    //     qDebug() << "Got data: " << QString::fromAscii(deleteJob->data().data());
     }
 
     emitResult();
@@ -219,36 +228,39 @@ void FacebookGetJob::start()
     Q_D(FacebookGetJob);
 
     //let's keep our d->url intact
-    KUrl jobUrl = d->url;
+    QUrl jobUrl = d->url;
+    QUrlQuery query(jobUrl);
 
     if (!d->ids.isEmpty()) {
         //check if we are requesting more than 15 ids
         if (d->multiQuery && d->ids.size() > 15) {
-            kDebug() << "Got multiquery with more than 15 items";
+            qDebug() << "Got multiquery with more than 15 items";
             //if yes, we take the first 15 ids and query for those
             QStringList l;
             for (int i = 0; i < 15 && d->ids.size() > 0; i++) {
                 l << d->ids.takeFirst();
             }
-            jobUrl.addQueryItem("ids", l.join(","));
+            query.addQueryItem(QStringLiteral("ids"), l.join(QStringLiteral(",")));
         } else {
             //we have less than 15 ids
-            jobUrl.addQueryItem("ids", d->ids.join(","));
+            query.addQueryItem(QStringLiteral("ids"), d->ids.join(QStringLiteral(",")));
             d->ids.clear();
         }
     } else if (d->ids.isEmpty() && d->multiQuery) {
         //if we have no ids to query for, return
-        kDebug() << "No more ids to query for, job done";
+        qDebug() << "No more ids to query for, job done";
         emitResult();
         d->job = 0;
         return;
     }
 
     if (!d->fields.isEmpty()) {
-        jobUrl.addQueryItem("fields", d->fields.join(","));
+        query.addQueryItem(QStringLiteral("fields"), d->fields.join(QStringLiteral(",")));
     }
 
-    kDebug() << "Starting query" << jobUrl;
+    jobUrl.setQuery(query);
+
+    qDebug() << "Starting query" << jobUrl;
     KIO::StoredTransferJob * const job = KIO::storedGet(jobUrl, KIO::Reload, KIO::HideProgressInfo);
     d->job = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
@@ -263,30 +275,32 @@ void FacebookGetJob::jobFinished(KJob *job)
     if (transferJob->error()) {
         setError(transferJob->error());
         setErrorText(KIO::buildErrorString(error(), transferJob->errorText()));
-        kWarning() << "Job error: " << transferJob->errorString();
+        qWarning() << "Job error: " << transferJob->errorString();
     } else {
-//         kDebug() << "Got data: " << QString::fromAscii(transferJob->data().data());
-        QJson::Parser parser;
-        bool ok;
-        const QVariant data = parser.parse(transferJob->data(), &ok);
-        if (ok) {
-            const QVariant error = data.toMap()["error"];
-            if (error.isValid()) {
-                handleError(error);
+
+        QJsonParseError *error;
+        QJsonDocument response = QJsonDocument::fromJson(transferJob->data(), error);
+        const QVariant data = response.toVariant();
+
+        if (error->error == QJsonParseError::NoError) {
+            const QVariant errorData = data.toMap()[QStringLiteral("error")];
+            if (errorData.isValid()) {
+                handleError(errorData);
             } else {
-                handleData(data);
+                handleData(response);
             }
         } else {
-            kWarning() << "Unable to parse JSON data: " << QString::fromAscii(transferJob->data().data());
+            qWarning() << "Unable to parse JSON data: " << error->errorString();
+            qDebug() << "Received data:" << transferJob->data();
             setError(KJob::UserDefinedError);
-            setErrorText(i18n("Unable to parse data returned by the Facebook server: %1", parser.errorString()));
+            setErrorText(i18n("Unable to parse data returned by the Facebook server: %1", error->errorString()));
         }
     }
 
     if (d->multiQuery && !d->ids.isEmpty()) {
         //we have some ids left to query for, restarting the job, this will append the new data
         //to the existing data, then it will be returned altogether
-        kDebug() << d->ids.size() << "ids left, restarting job";
+        qDebug() << d->ids.size() << "ids left, restarting job";
 
         start();
         return;
@@ -300,7 +314,7 @@ void FacebookGetJob::jobFinished(KJob *job)
  * FacebookGetIdJob
  */
 FacebookGetIdJob::FacebookGetIdJob(const QStringList &ids, const QString &accessToken, QObject *parent)
-    : FacebookGetJob("/", accessToken, parent)
+    : FacebookGetJob(QStringLiteral("/"), accessToken, parent)
 {
     Q_D(FacebookGetJob);
     d->multiQuery = true;
@@ -308,7 +322,7 @@ FacebookGetIdJob::FacebookGetIdJob(const QStringList &ids, const QString &access
 }
 
 FacebookGetIdJob::FacebookGetIdJob(const QString &id, const QString &accessToken, QObject *parent)
-    : FacebookGetJob("/" + id, accessToken, parent)
+    : FacebookGetJob(QStringLiteral("/") + id, accessToken, parent)
 {
     Q_D(FacebookGetJob);
     d->multiQuery = false;
@@ -319,32 +333,32 @@ FacebookGetIdJob::~FacebookGetIdJob()
 }
 
 FacebookGetIdJob::FacebookGetIdJob(FacebookGetJobPrivate &dd, const QString &id, const QString &accessToken, QObject *parent)
-    : FacebookGetJob(dd, "/" + id, accessToken, parent)
+    : FacebookGetJob(dd, QStringLiteral("/") + id, accessToken, parent)
 {
     Q_D(FacebookGetJob);
     d->multiQuery = false;
 }
 
 FacebookGetIdJob::FacebookGetIdJob(FacebookGetJobPrivate &dd, const QStringList &ids, const QString &accessToken, QObject *parent)
-    : FacebookGetJob(dd, "/", accessToken, parent)
+    : FacebookGetJob(dd, QStringLiteral("/"), accessToken, parent)
 {
     Q_D(FacebookGetJob);
     d->multiQuery = true;
     setIds(ids);
 }
 
-void FacebookGetIdJob::handleData(const QVariant &data)
+void FacebookGetIdJob::handleData(const QJsonDocument &data)
 {
     Q_D(FacebookGetJob);
 
     if (!d->multiQuery) {
         handleSingleData(data);
     } else {
-        foreach (const QVariant &item, data.toMap()) {
-            handleSingleData(item);
-        }
+        //TODO: finish this
+        qWarning() << data.toVariant();
+//         foreach (const QVariant &item, data.toMap()) {
+//             handleSingleData(item);
+//         }
     }
 }
 }
-
-#include "facebookjobs.moc"

@@ -20,8 +20,8 @@
 #ifndef KFBAPI_FACEBOOKJOBS_P_H
 #define KFBAPI_FACEBOOKJOBS_P_H
 
-#include <KUrl>
-
+#include <QUrl>
+#include <QUrlQuery>
 #include <QPointer>
 
 class KJob;
@@ -33,16 +33,20 @@ class FacebookJobPrivate {
 public:
     void init(const QString &path, const QString &accessToken) 
     {
-        Q_ASSERT(path.startsWith('/'));
-        url.setProtocol("https");
-        url.setHost("graph.facebook.com");
-        url.setPath(path);
-        url.addQueryItem("access_token", accessToken);
+        Q_ASSERT(path.startsWith(QLatin1Char('/')));
+        url.setScheme(QStringLiteral("https"));
+        url.setHost(QStringLiteral("graph.facebook.com"));
+        url.setPath(QStringLiteral("/v2.1") + path);
+
+        QUrlQuery query(url);
+        query.addQueryItem(QStringLiteral("access_token"), accessToken);
+
+        url.setQuery(query);
     }
 
     virtual ~FacebookJobPrivate() {}
 
-    KUrl url;
+    QUrl url;
     QPointer<KJob> job;          /** Pointer to the running job */
 };
 

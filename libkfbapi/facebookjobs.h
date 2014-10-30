@@ -25,10 +25,10 @@
 #include "libkfbapi_export.h"
 
 #include <KJob>
-#include <KUrl>
 
 #include <QStringList>
 #include <QPointer>
+#include <QJsonDocument>
 
 namespace KFbAPI {
 
@@ -134,7 +134,7 @@ public:
     virtual void start();
 
 protected:
-    virtual void handleData(const QVariant &data) = 0;
+    virtual void handleData(const QJsonDocument &data) = 0;
 
     FacebookGetJob(FacebookGetJobPrivate &dd, const QString &path, const QString &accessToken, QObject *parent = 0);
 
@@ -177,13 +177,13 @@ protected:
      * @brief Parse a single item that is returned by the FacebookGetJob and
      *        add it to the interl list of elements.
      */
-    virtual void handleSingleData(const QVariant &data) = 0;
+    virtual void handleSingleData(const QJsonDocument &data) = 0;
 
     FacebookGetIdJob(FacebookGetJobPrivate &dd, const QString &id, const QString &accessToken, QObject *parent = 0);
     FacebookGetIdJob(FacebookGetJobPrivate &dd, const QStringList &ids, const QString &accessToken, QObject *parent = 0);
 
 private:
-    virtual void handleData(const QVariant &data);
+    virtual void handleData(const QJsonDocument &data);
 
     Q_DECLARE_PRIVATE(FacebookGetJob)
 };
