@@ -37,7 +37,7 @@ public:
     virtual int entriesCount() const;
 
 protected:
-    virtual void handleItem(const QVariant &item);
+    virtual void handleItem(const QJsonObject &item);
 
 private:
     NotificationsListJobPrivate * const d_ptr;

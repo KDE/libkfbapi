@@ -18,11 +18,6 @@
 */
 
 #include "notificationslistjob.h"
-#include "notificationinfoparser_p.h"
-
-#include <KDebug>
-
-#include <qjson/qobjecthelper.h>
 
 using namespace KFbAPI;
 
@@ -34,11 +29,11 @@ public:
 //-----------------------------------------------------------------------------
 
 NotificationsListJob::NotificationsListJob(const QString &accessToken, QObject *parent)
-    : ListJobBase("/me/notifications", accessToken, true, parent),
+    : ListJobBase(QStringLiteral("/me/notifications"), accessToken, true, parent),
       d_ptr(new NotificationsListJobPrivate)
 {
     // Fetch also read notification
-    addQueryItem("include_read", "1");
+    addQueryItem(QStringLiteral("include_read"), QStringLiteral("1"));
 }
 
 NotificationsListJob::~NotificationsListJob()
@@ -46,12 +41,10 @@ NotificationsListJob::~NotificationsListJob()
     delete d_ptr;
 }
 
-void NotificationsListJob::handleItem(const QVariant &item)
+void NotificationsListJob::handleItem(const QJsonObject &item)
 {
     Q_D(NotificationsListJob);
-    NotificationInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
-    d->notifications.append(parser.dataObject());
+    d->notifications.append(NotificationInfo(item));
 }
 
 int NotificationsListJob::entriesCount() const
