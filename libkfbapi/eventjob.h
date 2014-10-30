@@ -1,4 +1,5 @@
 /* Copyright 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -60,7 +61,7 @@ public:
     */
     QList<EventInfo> eventInfo() const;
 
-    void handleSingleData(const QVariant &data);
+    void handleSingleData(const QJsonDocument &data);
 
 private:
     Q_DECLARE_PRIVATE(EventJob)

@@ -1,4 +1,5 @@
 /* Copyright 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -18,20 +19,15 @@
 */
 
 #include "eventjob.h"
-#include "eventinfoparser_p.h"
 #include "facebookjobs_p.h"
-
-#include <KDebug>
-
-#include <qjson/qobjecthelper.h>
 
 using namespace KFbAPI;
 
 class KFbAPI::EventJobPrivate : public KFbAPI::FacebookGetJobPrivate {
 public:
     QStringList eventFields() const;
-    QList<AttendeeInfoPtr> attendees(const QVariantMap &dataMap, const QString &facebookKey,
-                                     Attendee::PartStat status);
+//     QList<AttendeeInfoPtr> attendees(const QVariantMap &dataMap, const QString &facebookKey,
+//                                      Attendee::PartStat status);
 
     QList<EventInfo> eventInfo;
 };
@@ -39,23 +35,23 @@ public:
 QStringList EventJobPrivate::eventFields() const
 {
     QStringList fields;
-    fields << "owner"
-            << "name"
-            << "description"
-            << "start_time"
-            << "end_time"
-            << "location"
-            << "venue"
-            << "privacy"
-            << "updated_time"
-            << "noreply"
-            << "maybe"
-            << "attending"
-            << "declined";
+    fields << QStringLiteral("owner")
+            << QStringLiteral("name")
+            << QStringLiteral("description")
+            << QStringLiteral("start_time")
+            << QStringLiteral("end_time")
+            << QStringLiteral("location")
+            << QStringLiteral("venue")
+            << QStringLiteral("privacy")
+            << QStringLiteral("updated_time")
+            << QStringLiteral("noreply")
+            << QStringLiteral("maybe")
+            << QStringLiteral("attending")
+            << QStringLiteral("declined");
 
     return fields;
 }
-
+/*
 QList<AttendeeInfoPtr> EventJobPrivate::attendees(const QVariantMap &dataMap, const QString &facebookKey,
                                                   Attendee::PartStat status)
 {
@@ -70,7 +66,7 @@ QList<AttendeeInfoPtr> EventJobPrivate::attendees(const QVariantMap &dataMap, co
     }
 
     return retVal;
-}
+}*/
 
 //-----------------------------------------------------------------------------
 
@@ -94,25 +90,16 @@ QList<EventInfo> EventJob::eventInfo() const
     return d->eventInfo;
 }
 
-void EventJob::handleSingleData(const QVariant &data)
+void EventJob::handleSingleData(const QJsonDocument &data)
 {
     Q_D(EventJob);
-    EventInfoParser parser;
 
-    const QVariantMap dataMap = data.toMap();
-    QJson::QObjectHelper::qvariant2qobject(dataMap, &parser);
-    const QVariant owner = dataMap.value("owner");
+    EventInfo eventInfo(data.object());
 
-    EventInfo eventInfo = parser.dataObject();
-
-    if (!owner.isNull() && owner.isValid()) {
-        eventInfo.setOrganizer(owner.toMap().value("name").toString());
-    }
-
-    eventInfo.addAttendees(d->attendees(dataMap, "noreply", Attendee::NeedsAction));
-    eventInfo.addAttendees(d->attendees(dataMap, "maybe", Attendee::Tentative));
-    eventInfo.addAttendees(d->attendees(dataMap, "attending", Attendee::Accepted));
-    eventInfo.addAttendees(d->attendees(dataMap, "declined", Attendee::Declined));
+//     eventInfo.addAttendees(d->attendees(dataMap, "noreply", Attendee::NeedsAction));
+//     eventInfo.addAttendees(d->attendees(dataMap, "maybe", Attendee::Tentative));
+//     eventInfo.addAttendees(d->attendees(dataMap, "attending", Attendee::Accepted));
+//     eventInfo.addAttendees(d->attendees(dataMap, "declined", Attendee::Declined));
 
     d->eventInfo.append(eventInfo);
 }

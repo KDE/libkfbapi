@@ -1,4 +1,5 @@
 /* Copyright 2011 Thomas McGuire <mcguire@kde.org>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -18,11 +19,6 @@
 */
 
 #include "eventslistjob.h"
-#include "eventinfoparser_p.h"
-
-#include <KDebug>
-
-#include <qjson/qobjecthelper.h>
 
 using namespace KFbAPI;
 
@@ -32,7 +28,7 @@ public:
 };
 
 EventsListJob::EventsListJob(const QString &accessToken, QObject *parent)
-    : ListJobBase("/me/events", accessToken, true, parent),
+    : ListJobBase(QStringLiteral("/me/events"), accessToken, true, parent),
       d_ptr(new EventsListJobPrivate)
 {
 }
@@ -48,12 +44,11 @@ QList<EventInfo> EventsListJob::events() const
     return d->events;
 }
 
-void EventsListJob::handleItem(const QVariant &item)
+void EventsListJob::handleItem(const QJsonObject &item)
 {
     Q_D(EventsListJob);
-    EventInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
-    d->events.append(parser.dataObject());
+
+    d->events.append(EventInfo(item));
 }
 
 int EventsListJob::entriesCount() const
