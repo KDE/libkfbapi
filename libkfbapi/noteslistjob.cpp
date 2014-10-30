@@ -17,10 +17,6 @@
    Boston, MA 02110-1301, USA.
 */
 #include "noteslistjob.h"
-#include "noteinfoparser_p.h"
-
-#include <KDebug>
-#include <qjson/qobjecthelper.h>
 
 using namespace KFbAPI;
 
@@ -32,7 +28,7 @@ public:
 //-----------------------------------------------------------------------------
 
 NotesListJob::NotesListJob(const QString &accessToken, QObject *parent)
-    : ListJobBase("/me/notes", accessToken, true, parent),
+    : ListJobBase(QStringLiteral("/me/notes"), accessToken, true, parent),
       d_ptr(new NotesListJobPrivate)
 {
 }
@@ -48,12 +44,10 @@ QList<NoteInfo> NotesListJob::notes() const
     return d->notes;
 }
 
-void NotesListJob::handleItem(const QVariant &item)
+void NotesListJob::handleItem(const QJsonObject &item)
 {
     Q_D(NotesListJob);
-    NoteInfoParser parser;
-    QJson::QObjectHelper::qvariant2qobject(item.toMap(), &parser);
-    d->notes.append(parser.dataObject());
+    d->notes.append(NoteInfo(item));
 }
 
 int NotesListJob::entriesCount() const

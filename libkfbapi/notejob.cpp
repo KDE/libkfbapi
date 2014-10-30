@@ -18,12 +18,7 @@
 */
 
 #include "notejob.h"
-#include "noteinfoparser_p.h"
 #include "facebookjobs_p.h"
-
-#include <KDebug>
-
-#include <qjson/qobjecthelper.h>
 
 using namespace KFbAPI;
 
@@ -50,13 +45,11 @@ QList<NoteInfo> NoteJob::noteInfo() const
     return d->noteInfo;
 }
 
-void NoteJob::handleSingleData(const QVariant &data)
+void NoteJob::handleSingleData(const QJsonDocument &data)
 {
     Q_D(NoteJob);
-    NoteInfoParser parser;
-    const QVariantMap dataMap = data.toMap();
-    QJson::QObjectHelper::qvariant2qobject(dataMap, &parser);
-    d->noteInfo.append(parser.dataObject());
+
+    d->noteInfo.append(NoteInfo(data.object()));
 }
 
 #include "notejob.moc"
