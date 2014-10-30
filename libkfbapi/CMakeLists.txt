@@ -1,124 +1,102 @@
-project(libkfbapi)
-
-include_directories(
-  ${CMAKE_SOURCE_DIR}
-  ${CMAKE_BINARY_DIR}
-  ${Boost_INCLUDE_DIR}
-)
-
-qt4_generate_moc(appinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_appinfoparser_p.cpp)
-qt4_generate_moc(commentinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_commentinfoparser_p.cpp)
-qt4_generate_moc(eventinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_eventinfoparser_p.cpp)
-qt4_generate_moc(likeinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_likeinfoparser_p.cpp)
-qt4_generate_moc(noteinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_noteinfoparser_p.cpp)
-qt4_generate_moc(notificationinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_notificationinfoparser_p.cpp)
-qt4_generate_moc(postinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_postinfoparser_p.cpp)
-qt4_generate_moc(propertyinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_propertyinfoparser_p.cpp)
-qt4_generate_moc(userinfoparser_p.h ${CMAKE_CURRENT_BINARY_DIR}/moc_userinfoparser_p.cpp)
+# project(libkfbapi)
+#
+# include_directories(
+#   ${CMAKE_SOURCE_DIR}
+#   ${CMAKE_BINARY_DIR}
+#   ${Boost_INCLUDE_DIR}
+# )
 
 set(kfbapi_SRCS
-  allpostslistjob.cpp
-  authenticationdialog.cpp
-  userinfojob.cpp
-  userinfo.cpp
-  friendlistjob.cpp
-  friendjob.cpp
-  photojob.cpp
-  eventslistjob.cpp
-  eventinfo.cpp
-  util.cpp
   alleventslistjob.cpp
-  eventjob.cpp
-  noteinfo.cpp
-  noteslistjob.cpp
-  allnoteslistjob.cpp
-  notejob.cpp
-  noteaddjob.cpp
-  facebookjobs.cpp
-  pagedlistjob.cpp
-  listjobbase.cpp
-  postinfo.cpp
-  postjob.cpp
-  postaddjob.cpp
-  postslistjob.cpp
-  propertyinfo.cpp
+#   allnoteslistjob.cpp
+  allpostslistjob.cpp
   appinfo.cpp
-  commentinfo.cpp
+#   authenticationdialog.cpp
+#   commentinfo.cpp
+  eventinfo.cpp
+  eventjob.cpp
+  eventslistjob.cpp
+  facebookjobs.cpp
+#   friendjob.cpp
+#   friendlistjob.cpp
+#   getcommentsjob.cpp
+  likesjob.cpp
   likeinfo.cpp
+  listjobbase.cpp
+#   noteaddjob.cpp
+  noteinfo.cpp
+  notejob.cpp
+  noteslistjob.cpp
   notificationinfo.cpp
   notificationslistjob.cpp
-  getlikesjob.cpp
-  getcommentsjob.cpp
-  notificationsmarkreadjob.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/moc_appinfoparser_p.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/moc_commentinfoparser_p.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/moc_eventinfoparser_p.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/moc_likeinfoparser_p.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/moc_noteinfoparser_p.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/moc_notificationinfoparser_p.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/moc_postinfoparser_p.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/moc_propertyinfoparser_p.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/moc_userinfoparser_p.cpp
+#   notificationsmarkreadjob.cpp
+  pagedlistjob.cpp
+#   photojob.cpp
+#   postaddjob.cpp
+  postinfo.cpp
+  postjob.cpp
+  postcompositejob.cpp
+  postslistjob.cpp
+  propertyinfo.cpp
+  userinfo.cpp
+  userinfojob.cpp
 
   #connectioninfo.cpp
   #connectionslistjob.cpp
 )
 
-kde4_add_library(kfbapi SHARED ${kfbapi_SRCS})
+add_library(KF5FbAPI SHARED ${kfbapi_SRCS})
+generate_export_header(KF5FbAPI BASE_NAME LibKFbAPI EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/libkfbapi_export.h)
+add_library(KF5::FbAPI ALIAS KF5FbAPI)
+
+target_include_directories(KF5FbAPI PUBLIC "$<BUILD_INTERFACE:${KFbAPI_BINARY_DIR};${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(KF5FbAPI INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/KFbAPI>")
 
 set(CMAKE_INSTALL_NAME_DIR ${LIB_INSTALL_DIR})
 
-# Yes, QJSON_LIBRARIES and QJSON_LIBRARY are both needed, as otherwise it will break either
-# on Linux or on Mac.
-target_link_libraries(kfbapi
-  ${KDE4_KDECORE_LIBS}
-  ${KDE4_KDEUI_LIBS}
-  ${QT_QTGUI_LIBRARY}
-  ${QT_QTWEBKIT_LIBRARY}
-  ${KDE4_KDEWEBKIT_LIBS}
-  ${KDE4_KIO_LIBS}
-  ${QJSON_LIBRARIES}
-  ${QJSON_LIBRARY}
-  ${qjson_LIBRARIES} # for Debian
-  ${KDEPIMLIBS_KABC_LIBS}
-  ${KDEPIMLIBS_KPIMUTILS_LIBS}
-  ${KDEPIMLIBS_KMIME_LIBS}
-  ${KDEPIMLIBS_KCALCORE_LIBS}
+target_link_libraries(KF5FbAPI PUBLIC Qt5::Core
+                                      KF5::CoreAddons
+                                      KF5::KIOCore
+                                      KF5::I18n
 )
 
-set_target_properties(kfbapi PROPERTIES VERSION ${KFBAPI_LIB_VERSION} SOVERSION ${KFBAPI_LIB_SOVERSION})
-install(TARGETS kfbapi EXPORT kfbapiLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+set_target_properties(KF5FbAPI PROPERTIES VERSION ${KFBAPI_VERSION_STRING}
+                                                   SOVERSION ${KFBAPI_SOVERSION}
+                                                   EXPORT_NAME FbAPI
+)
+install(TARGETS KF5FbAPI EXPORT KF5FbAPITargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install( FILES
   alleventslistjob.h
-  allnoteslistjob.h
-  allpostslistjob.h
+#   allnoteslistjob.h
+#   allpostslistjob.h
   appinfo.h
-  authenticationdialog.h
-  commentinfo.h
+#   authenticationdialog.h
+#   commentinfo.h
   eventjob.h
   eventinfo.h
   eventslistjob.h
   facebookjobs.h
-  friendlistjob.h
-  friendjob.h
-  getcommentsjob.h
-  getlikesjob.h
-  libkfbapi_export.h
+#   friendlistjob.h
+#   friendjob.h
+#   getcommentsjob.h
+#   getlikesjob.h
+#   libkfbapi_export.h
   likeinfo.h
+  likesjob.h
   listjobbase.h
   noteinfo.h
   noteslistjob.h
   notejob.h
-  noteaddjob.h
+#   noteaddjob.h
   notificationinfo.h
   notificationslistjob.h
-  notificationsmarkreadjob.h
+#   notificationsmarkreadjob.h
   pagedlistjob.h
-  photojob.h
+#   photojob.h
   postinfo.h
   postjob.h
-  postaddjob.h
+#   postaddjob.h
   postslistjob.h
   propertyinfo.h
   userinfojob.h
@@ -126,5 +104,8 @@ install( FILES
   #connectioninfo.h
   #connectionslistjob.h
 
- DESTINATION ${INCLUDE_INSTALL_DIR}/libkfbapi COMPONENT Devel
+  ${CMAKE_CURRENT_BINARY_DIR}/libkfbapi_export.h
+
+
+ DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KFbAPI COMPONENT Devel
 )

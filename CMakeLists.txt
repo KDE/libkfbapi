@@ -1,60 +1,63 @@
 project(libkfbapi)
 
-set(KFBAPI_VERSION_MAJOR 1)
-set(KFBAPI_VERSION_MINOR 0)
-set(KFBAPI_VERSION_RELEASE 0)
-set(KFBAPI_LIB_VERSION 1.0)
-set(KFBAPI_LIB_SOVERSION 1)
+cmake_minimum_required(VERSION 2.8.12)
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
-find_package(KDE4 REQUIRED)
-include(KDE4Defaults)
-include(MacroLibrary)
+find_package(ECM 1.3.0 REQUIRED NO_MODULE)
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
-find_package(KdepimLibs 4.5.63 REQUIRED)
+set(REQUIRED_QT_VERSION "5.2")
+find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Core Network)
 
-set(QJSON_VERSION_REQUIRED 0.7)
-find_package(QJSON ${QJSON_VERSION_REQUIRED})
-macro_log_feature(QJSON_FOUND "QJSON" "Qt library for handling JSON data" "http://qjson.sourceforge.net/" TRUE "${QJSON_VERSION_REQUIRED}")
+include(KDEInstallDirs)
+include(KDEFrameworkCompilerSettings)
+include(KDECMakeSettings)
 
-# pkg-config
-if (NOT WIN32)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/LibKFbAPI.pc.in
-                  ${CMAKE_CURRENT_BINARY_DIR}/LibKFbAPI.pc
-                  @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LibKFbAPI.pc
-          DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
-endif(NOT WIN32)
+include(FeatureSummary)
+include(GenerateExportHeader)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/LibKFbAPIConfig.cmake.in
-               ${CMAKE_CURRENT_BINARY_DIR}/LibKFbAPIConfig.cmake
-               @ONLY
-)
+include(ECMSetupVersion)
+include(ECMGenerateHeaders)
 
-# this file is used by to check if the installed version can be used.
-macro_write_basic_cmake_version_file(${CMAKE_CURRENT_BINARY_DIR}/LibKFbAPIConfigVersion.cmake
-                                     ${KFBAPI_VERSION_MAJOR} ${KFBAPI_VERSION_MINOR} ${KFBAPI_VERSION_RELEASE})
+set(KF5_VERSION "5.3.0") # handled by release scripts
+set(KF5_DEP_VERSION "5.3.0") # handled by release scripts
+ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX KFBAPI
+                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kf5fbapi_version.h"
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5FbAPIConfigVersion.cmake"
+                        SOVERSION 5)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LibKFbAPIConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/LibKFbAPIConfigVersion.cmake
-        DESTINATION ${LIB_INSTALL_DIR}/cmake/LibKFbAPI)
+find_package(KF5CoreAddons ${KF5_DEP_VERSION} REQUIRED)
+find_package(KF5KIO ${KF5_DEP_VERSION} REQUIRED)
+find_package(KF5I18n ${KF5_DEP_VERSION} REQUIRED)
 
-# Install the file with the exported targets
-install(EXPORT kfbapiLibraryTargets
-        DESTINATION ${LIB_INSTALL_DIR}/cmake/LibKFbAPI
-        FILE LibKFbAPITargetsWithPrefix.cmake)
-
-add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}
-  ${CMAKE_BINARY_DIR}
-  ${KDEPIMLIBS_INCLUDE_DIRS}
-  ${KDE4_INCLUDES}
-  ${QJSON_INCLUDE_DIR}
-  ${Boost_INCLUDE_DIR}
+add_subdirectory(libkfbapi)
+add_subdirectory(tests)
+
+# create a Config.cmake and a ConfigVersion.cmake file and install them
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5FbAPI")
+
+include(ECMPackageConfigHelpers)
+
+ecm_configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/KF5FbAPIConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/KF5FbAPIConfig.cmake"
+  INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
 )
 
-add_subdirectory(libkfbapi)
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/KF5FbAPIConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/KF5FbAPIConfigVersion.cmake"
+  DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+  COMPONENT Devel
+)
+
+install(EXPORT KF5FbAPITargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KF5FbAPITargets.cmake NAMESPACE KF5:: )
+
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/kf5fbapi_version.h
+  DESTINATION ${KF5_INCLUDE_INSTALL_DIR} COMPONENT Devel
+)
+
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
