@@ -38,7 +38,7 @@ public:
     int entriesCount() const;
 
 protected:
-    void handleItem(const QVariant &item);
+    void handleItem(const QJsonObject &item);
 
 private:
     PostsListJobPrivate * const d_ptr;

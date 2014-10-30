@@ -18,16 +18,37 @@
 */
 
 #include "postjob.h"
-#include "postinfoparser_p.h"
 #include "facebookjobs_p.h"
+#include "likesjob.h"
 
-#include <qjson/qobjecthelper.h>
+#include <QDebug>
 
 using namespace KFbAPI;
 
 class KFbAPI::PostJobPrivate : public KFbAPI::FacebookGetJobPrivate {
 public:
-    QList<PostInfo> postInfo;
+    PostJobPrivate() {
+        fields << QStringLiteral("application")
+               << QStringLiteral("caption")
+               << QStringLiteral("created_time")
+               << QStringLiteral("from")
+               << QStringLiteral("icon")
+               << QStringLiteral("id")
+               << QStringLiteral("link")
+               << QStringLiteral("message")
+               << QStringLiteral("name")
+               << QStringLiteral("picture")
+               << QStringLiteral("properties")
+               << QStringLiteral("source")
+               << QStringLiteral("story")
+               << QStringLiteral("type")
+               << QStringLiteral("updated_time");
+    }
+
+    QHash<QString, PostInfo> posts;
+    QStringList fields;
+//     PostInfo::PostFetchOptions options;
+//     QString accessToken;
 };
 
 //-----------------------------------------------------------------------------
@@ -35,26 +56,59 @@ public:
 PostJob::PostJob(const QString &postId, const QString &accessToken, QObject *parent)
     : FacebookGetIdJob(*new PostJobPrivate, postId, accessToken, parent)
 {
+    Q_D(PostJob);
+
+//     d->options = options;
+//     d->accessToken = accessToken;
+//     setFields(d->fields);
 }
 
 PostJob::PostJob(const QStringList &postIds, const QString &accessToken, QObject *parent)
     : FacebookGetIdJob(*new PostJobPrivate, postIds, accessToken, parent)
 {
+    Q_D(PostJob);
+
+//     d->options = options;
+//     d->accessToken = accessToken;
+//     setFields(d->fields);
 }
 
 QList<PostInfo> PostJob::postInfo() const
 {
     Q_D(const PostJob);
-    return d->postInfo;
+    return d->posts.values();
 }
 
-void PostJob::handleSingleData(const QVariant &data)
+void PostJob::handleSingleData(const QJsonDocument &data)
 {
     Q_D(PostJob);
-    PostInfoParser parser;
-    const QVariantMap dataMap = data.toMap();
-    QJson::QObjectHelper::qvariant2qobject(dataMap, &parser);
-    d->postInfo.append(parser.dataObject());
+    PostInfo post(data.object());
+    d->posts.insert(post.id(), post);
+/*
+    if (d->options & PostInfo::FetchAllLikes || d->options & PostInfo::FetchLikesCountOnly) {
+        // start likes job for the post id, keep a map so the result can be added to the post
+        LikesJob *likesJob = new LikesJob(post.id(), d->options, d->accessToken);
+        connect(likesJob, &KFbAPI::LikesJob::finished, [&post](KJob *job) mutable {
+            LikesJob *likesJob2 = qobject_cast<LikesJob*>(job);
+
+            if (job->error()) {
+                qDebug() << "Erroor! Erroor!" << job->errorString() << job->errorText();
+            }
+
+            if (!likesJob2) {
+                qWarning() << "Casting job to LikesJob failed";
+//                 return;
+            }
+
+            post.setLikes(likesJob2->likeInfo());
+        });
+
+        likesJob->start();
+    }
+
+    if (d->options & PostInfo::FetchAllComments || d->options & PostInfo::FetchCommentsCountOnly) {
+        // start comments job for the post id, keep a map
+    }*/
 }
 
 #include "postjob.moc"

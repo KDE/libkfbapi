@@ -61,7 +61,7 @@ public:
 private:
     Q_DECLARE_PRIVATE(PostJob)
 
-    void handleSingleData(const QVariant &data);
+    void handleSingleData(const QJsonDocument &data);
 };
 
 }
