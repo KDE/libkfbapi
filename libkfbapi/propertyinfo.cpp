@@ -1,4 +1,5 @@
 /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -23,14 +24,18 @@ using namespace KFbAPI;
 
 class PropertyInfo::PropertyInfoPrivate : public QSharedData {
 public:
-    QString name;      /* Name of the property. */
-    QString text;      /* Text of the property. */
-    QString href;      /* Href Link of the property. */
+    QJsonObject jsonData;
 };
 
 PropertyInfo::PropertyInfo()
     : d(new PropertyInfoPrivate)
 {
+}
+
+PropertyInfo::PropertyInfo(const QJsonObject &jsonData)
+    : d(new PropertyInfoPrivate)
+{
+    d->jsonData = jsonData;
 }
 
 PropertyInfo::PropertyInfo(const PropertyInfo &other)
@@ -49,32 +54,17 @@ PropertyInfo& PropertyInfo::operator=(const PropertyInfo &other)
     return *this;
 }
 
-void PropertyInfo::setName(const QString &name)
-{
-    d->name = name;
-}
-
 QString PropertyInfo::name() const
 {
-    return d->name;
-}
-
-void PropertyInfo::setText(const QString &text)
-{
-    d->text = text;
+    return d->jsonData.value(QStringLiteral("name")).toString();
 }
 
 QString PropertyInfo::text() const
 {
-    return d->text;
-}
-
-void PropertyInfo::setHref(const QString &href)
-{
-    d->href = href;
+    return d->jsonData.value(QStringLiteral("text")).toString();
 }
 
 QString PropertyInfo::href() const
 {
-    return d->href;
+    return d->jsonData.value(QStringLiteral("href")).toString();
 }

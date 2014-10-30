@@ -1,4 +1,5 @@
 /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -23,6 +24,7 @@
 #include "libkfbapi_export.h"
 
 #include <QSharedPointer>
+#include <QJsonObject>
 
 namespace KFbAPI {
 
@@ -33,6 +35,7 @@ namespace KFbAPI {
 class LIBKFBAPI_EXPORT PropertyInfo
 {
 public:
+    PropertyInfo(const QJsonObject &jsonData);
     PropertyInfo();
     PropertyInfo(const PropertyInfo &other);
     ~PropertyInfo();
@@ -40,30 +43,15 @@ public:
     PropertyInfo &operator=(const PropertyInfo &other);
 
     /**
-    * Set the name of this property
-    * @param name the property name
-    */
-    void setName(const QString &name);
-    /**
     * Returns the property name
     */
     QString name() const;
 
     /**
-    * Set the text of this property
-    * @param text the property text
-    */
-    void setText(const QString &text);
-    /**
     * Returns the property text
     */
     QString text() const;
 
-    /**
-    * Set the href link of this property
-    * @param href the property href
-    */
-    void setHref(const QString &href);
     /**
     * Returns the property href
     */
