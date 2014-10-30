@@ -1,4 +1,5 @@
 /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
+   Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
