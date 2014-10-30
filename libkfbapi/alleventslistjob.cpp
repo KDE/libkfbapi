@@ -18,11 +18,11 @@
 */
 
 #include "alleventslistjob.h"
+#include "eventslistjob.h"
 #include "pagedlistjob_p.h"
 
-#include "eventslistjob.h"
-
-#include <KDebug>
+#include <QDebug>
+#include <QUrlQuery>
 
 using namespace KFbAPI;
 
@@ -52,42 +52,44 @@ void AllEventsListJob::appendItems(const ListJobBase *job)
     d->events.append(listJob->events());
 }
 
-bool AllEventsListJob::shouldStartNewJob(const KUrl &prev, const KUrl &next)
+bool AllEventsListJob::shouldStartNewJob(const QUrl &prev, const QUrl &next)
 {
     Q_UNUSED(prev);
     Q_D(AllEventsListJob);
-    const QString until = next.queryItem("until");
+    QUrlQuery query(next);
+    const QString until = query.queryItemValue(QStringLiteral("until"));
     if (until.isEmpty()) {
-        kDebug() << "Aborting events fetching, no date range found in URL!";
+        qDebug() << "Aborting events fetching, no date range found in URL!";
         return false;
     }
-    KDateTime untilTime;
+    QDateTime untilTime;
     untilTime.setTime_t(until.toLongLong());
     if (!untilTime.isValid()) {
-        kDebug() << "Aborting events fetching, invalid date range found in URL!";
+        qDebug() << "Aborting events fetching, invalid date range found in URL!";
         return false;
     }
 
     return (untilTime >= d->lowerLimit);
 }
 
-ListJobBase* AllEventsListJob::createJob(const KUrl &prev, const KUrl &next)
+ListJobBase* AllEventsListJob::createJob(const QUrl &prev, const QUrl &next)
 {
     Q_UNUSED(prev);
     Q_D(AllEventsListJob);
+    QUrlQuery query(next);
     EventsListJob * const job = new EventsListJob(d->accessToken);
     if (!next.isEmpty()) {
-        const QString limit = next.queryItem("limit");
-        const QString until = next.queryItem("until");
-        const QString since = next.queryItem("since");
+        const QString limit = query.queryItemValue(QStringLiteral("limit"));
+        const QString until = query.queryItemValue(QStringLiteral("until"));
+        const QString since = query.queryItemValue(QStringLiteral("since"));
         if (!limit.isEmpty()) {
-            job->addQueryItem("limit", limit);
+            job->addQueryItem(QStringLiteral("limit"), limit);
         }
         if (!until.isEmpty()) {
-            job->addQueryItem("until", until);
+            job->addQueryItem(QStringLiteral("until"), until);
         }
         if (!since.isEmpty()) {
-            job->addQueryItem("since", since);
+            job->addQueryItem(QStringLiteral("since"), since);
         }
     }
 
