@@ -104,4 +104,3 @@ void EventJob::handleSingleData(const QJsonDocument &data)
     d->eventInfo.append(eventInfo);
 }
 
-#include "eventjob.moc"

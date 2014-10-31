@@ -52,4 +52,3 @@ void NoteJob::handleSingleData(const QJsonDocument &data)
     d->noteInfo.append(NoteInfo(data.object()));
 }
 
-#include "notejob.moc"

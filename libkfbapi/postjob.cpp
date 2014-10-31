@@ -111,4 +111,3 @@ void PostJob::handleSingleData(const QJsonDocument &data)
     }*/
 }
 
-#include "postjob.moc"
