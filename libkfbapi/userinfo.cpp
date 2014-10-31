@@ -19,7 +19,6 @@
 */
 #include "userinfo.h"
 
-#include "util.h"
 #include <QUrl>
 
 using namespace KFbAPI;

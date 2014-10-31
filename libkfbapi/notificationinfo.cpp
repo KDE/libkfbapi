@@ -20,7 +20,6 @@
 #include "notificationinfo.h"
 #include "userinfo.h"
 #include "appinfo.h"
-#include "util.h"
 
 #include <qjson/qobjecthelper.h>
 
