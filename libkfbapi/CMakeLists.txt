@@ -29,7 +29,7 @@ set(kfbapi_SRCS
   noteslistjob.cpp
   notificationinfo.cpp
   notificationslistjob.cpp
-#   notificationsmarkreadjob.cpp
+  notificationsmarkreadjob.cpp
   pagedlistjob.cpp
 #   photojob.cpp
 #   postaddjob.cpp
@@ -91,7 +91,7 @@ install( FILES
 #   noteaddjob.h
   notificationinfo.h
   notificationslistjob.h
-#   notificationsmarkreadjob.h
+  notificationsmarkreadjob.h
   pagedlistjob.h
 #   photojob.h
   postinfo.h
