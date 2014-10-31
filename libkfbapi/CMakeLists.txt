@@ -8,7 +8,7 @@
 
 set(kfbapi_SRCS
   alleventslistjob.cpp
-#   allnoteslistjob.cpp
+  allnoteslistjob.cpp
   allpostslistjob.cpp
   appinfo.cpp
 #   authenticationdialog.cpp
@@ -68,8 +68,8 @@ install(TARGETS KF5FbAPI EXPORT KF5FbAPITargets ${KF5_INSTALL_TARGETS_DEFAULT_AR
 
 install( FILES
   alleventslistjob.h
-#   allnoteslistjob.h
-#   allpostslistjob.h
+  allnoteslistjob.h
+  allpostslistjob.h
   appinfo.h
 #   authenticationdialog.h
 #   commentinfo.h
