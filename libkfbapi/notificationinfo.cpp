@@ -21,7 +21,7 @@
 #include "userinfo.h"
 #include "appinfo.h"
 
-#include <qjson/qobjecthelper.h>
+#include <QVariant>
 
 using namespace KFbAPI;
 
