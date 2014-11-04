@@ -32,4 +32,3 @@ void NotificationsMarkReadJob::abort()
     doKill();
 }
 
-#include "notificationsmarkreadjob.moc"
