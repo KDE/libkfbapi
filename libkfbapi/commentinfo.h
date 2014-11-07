@@ -1,4 +1,5 @@
  /* Copyright 2012 Pankaj Bhambhani <pankajb64@gmail.com>
+    Copyright (c) 2014 Martin Klapetek <mklapetek@kde.org>
 
    This library is free software; you can redistribute it and/or modify
    it under the terms of the GNU Library General Public License as published
@@ -23,7 +24,8 @@
 #include "libkfbapi_export.h"
 #include "userinfo.h"
 
-#include <KDateTime>
+#include <QDateTime>
+#include <QJsonObject>
 
 namespace KFbAPI {
 
@@ -33,6 +35,7 @@ namespace KFbAPI {
 class LIBKFBAPI_EXPORT CommentData
 {
 public:
+    CommentData(const QJsonObject &jsonData);
     CommentData();
     CommentData(const CommentData &other);
     ~CommentData();
@@ -40,57 +43,29 @@ public:
     CommentData &operator=(const CommentData &other);
 
     /**
-     * Set the facebook id of comment
-     * @param id the facebook id
-     */
-    void setId(const QString &id);
-    /**
      * Returns the facebook id of comment
      */
     QString id() const;
 
     /**
-     * Set the person who commented the post
-     * @param from the person
-     */
-    void setFrom(const QVariantMap &from);
-    /**
      * Returns the person who commented the post
      */
     UserInfo from() const;
-    /**
-     * Returns the person who commented the post as a QVariantMap
-     */
-    QVariantMap fromMap() const;
-    /**
-     * Set the actual content of the comment
-     * @param message The actual content of the comment
-     */
-    void setMessage(const QString &message);
+
     /**
      * Returns the content of the comment.
      */
     QString message() const;
 
     /**
-     * Set the creation time of the comment
-     * @param createdTime Time in "facebook format"
-     */
-    void setCreatedTimeString(const QString &createdTime);
-    /**
      * Returns the creation time as a string in "facebook format"
      */
     QString createdTimeString() const;
     /**
-     * Returns the creation time in KDateTime
+     * Returns the creation time in QDateTime
      */
-    KDateTime createdTime() const;
+    QDateTime createdTime() const;
 
-    /**
-     * Set the no. of likes of comment
-     * @param likes the no. of likes
-     */
-    void setLikes(int likes);
     /**
      * Returns the no. of likes
      */
@@ -108,6 +83,7 @@ private:
 class LIBKFBAPI_EXPORT CommentInfo
 {
 public:
+    CommentInfo(const QJsonObject &jsonData);
     CommentInfo();
     CommentInfo(const CommentInfo &other);
     ~CommentInfo();
@@ -115,40 +91,19 @@ public:
     CommentInfo &operator=(const CommentInfo &other);
 
     /**
-     * Set the data of this like (list of people who like the post)
-     * @param data the like data
-     */
-    void setData(const QVariantList &data);
-    /**
      * Returns the comment data
      */
     QList<CommentData> data() const;
-    /**
-     * Returns the comment data as Variant List
-     */
-    QVariantList dataList() const;
 
-    /**
-     * Set the count of this like (number of people who like the post)
-     * @param count the like count
-     */
-    void setCount(int count);
     /**
      * Returns the comment count
      */
     int count() const;
 
-    /**
-     * Returns relative REST path w.r.t FacebookObject, "/" included
-     * */
-    QString path() const;
-
-
 private:
     class CommentInfoPrivate;
     QSharedDataPointer<CommentInfoPrivate> d;
 };
-
 
 }
 

@@ -12,14 +12,14 @@ set(kfbapi_SRCS
   allpostslistjob.cpp
   appinfo.cpp
 #   authenticationdialog.cpp
-#   commentinfo.cpp
+  commentinfo.cpp
+  commentsjob.cpp
   eventinfo.cpp
   eventjob.cpp
   eventslistjob.cpp
   facebookjobs.cpp
 #   friendjob.cpp
 #   friendlistjob.cpp
-#   getcommentsjob.cpp
   likesjob.cpp
   likeinfo.cpp
   listjobbase.cpp
@@ -72,15 +72,14 @@ install( FILES
   allpostslistjob.h
   appinfo.h
 #   authenticationdialog.h
-#   commentinfo.h
+  commentinfo.h
+  commentsjob.h
   eventjob.h
   eventinfo.h
   eventslistjob.h
   facebookjobs.h
 #   friendlistjob.h
 #   friendjob.h
-#   getcommentsjob.h
-#   getlikesjob.h
 #   libkfbapi_export.h
   likeinfo.h
   likesjob.h
