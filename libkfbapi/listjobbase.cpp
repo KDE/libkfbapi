@@ -47,7 +47,6 @@ void ListJobBase::handleData(const QJsonDocument &data)
     } else {
         const QJsonArray dataArray = data.object().value(QStringLiteral("data")).toArray();
 
-        qDebug() << data.toJson();
 
         for (int i = 0; i < dataArray.size(); i++) {
             handleItem(dataArray.at(i).toObject());
