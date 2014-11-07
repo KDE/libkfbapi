@@ -88,6 +88,7 @@ private Q_SLOTS:
     void onPostJobFinished(KJob *job);
     void onPostListJobFinished(KJob *job);
     void onLikesJobFinished(KJob *job);
+    void onCommentsJobFinished(KJob *job);
 
 protected:
     virtual bool doKill();

@@ -18,12 +18,10 @@
 */
 
 #include "postinfo.h"
-#include "likeinfo.h"
 
 #include <QJsonArray>
 #include <QDebug>
 
-// #include "commentinfo.h"
 
 using namespace KFbAPI;
 
@@ -31,6 +29,7 @@ class PostInfo::PostInfoPrivate : public QSharedData {
 public:
     QJsonObject jsonData;
     LikeInfo likes;
+    CommentInfo comments;
 };
 
 PostInfo::PostInfo()
@@ -167,4 +166,9 @@ QDateTime PostInfo::updatedTime() const
 void PostInfo::setLikes(const LikeInfo &likes)
 {
     d->likes = likes;
+}
+
+void PostInfo::setComments(const CommentInfo &comments)
+{
+    d->comments = comments;
 }

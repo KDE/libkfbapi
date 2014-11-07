@@ -21,6 +21,7 @@
 #include "postslistjob.h"
 #include "postjob.h"
 #include "likesjob.h"
+#include "commentsjob.h"
 
 #include <QDebug>
 
@@ -38,6 +39,7 @@ public:
     PostInfo::PostFetchOptions options;
     QHash<QString, PostInfo> posts;
     QList<LikesJob*> likeJobs;
+    QList<CommentsJob*> commentJobs;
     uint jobsRef;
 
 private:
@@ -92,12 +94,10 @@ void PostCompositeJob::start()
 {
     Q_D(PostCompositeJob);
 
-
     if (d->postIds.isEmpty()) {
         PostsListJob *postListJob = new PostsListJob(d->accessToken, this);
         connect(postListJob, &KFbAPI::PostsListJob::finished, this, &KFbAPI::PostCompositeJob::onPostListJobFinished);
         postListJob->start();
-        d->jobRef();
     } else {
         PostJob *postJob;
 
@@ -109,9 +109,9 @@ void PostCompositeJob::start()
 
         connect(postJob, &KFbAPI::PostJob::finished, this, &KFbAPI::PostCompositeJob::onPostJobFinished);
         postJob->start();
-        d->jobRef();
     }
 
+    d->jobRef();
 }
 
 bool PostCompositeJob::doKill()
@@ -128,6 +128,8 @@ void PostCompositeJob::onPostJobFinished(KJob *job)
 {
     Q_D(PostCompositeJob);
 
+    d->jobDeref();
+
     PostJob *postJob = qobject_cast<PostJob*>(job);
     if (!postJob) {
         qWarning() << "Unable to cast job to PostJob";
@@ -135,6 +137,7 @@ void PostCompositeJob::onPostJobFinished(KJob *job)
     }
 
     bool shouldStartLikesJob = (d->options & PostInfo::FetchLikesCountOnly || d->options & PostInfo::FetchAllLikes);
+    bool shouldStartCommentsJob = (d->options & PostInfo::FetchCommentsCountOnly || d->options & PostInfo::FetchAllComments);
 
     Q_FOREACH (const PostInfo &post, postJob->postInfo()) {
         QString postId = post.id();
@@ -143,21 +146,32 @@ void PostCompositeJob::onPostJobFinished(KJob *job)
         if (shouldStartLikesJob) {
             d->likeJobs << new LikesJob(postId, d->options, d->accessToken, this);
             d->likeJobs.last()->setProperty("postId", postId);
+        }
 
-            d->jobRef();
+        if (shouldStartCommentsJob) {
+            d->commentJobs << new CommentsJob(postId, d->options, d->accessToken, this);
+            d->commentJobs.last()->setProperty("postId", postId);
         }
     }
 
     if (!d->likeJobs.isEmpty()) {
+        connect(d->likeJobs.first(), &KFbAPI::LikesJob::finished, this, &KFbAPI::PostCompositeJob::onLikesJobFinished);
         d->likeJobs.first()->start();
+        d->jobRef();
     }
 
-    d->jobDeref();
+    if (!d->commentJobs.isEmpty()) {
+        connect(d->commentJobs.first(), &KFbAPI::CommentsJob::finished, this, &KFbAPI::PostCompositeJob::onCommentsJobFinished);
+        d->commentJobs.first()->start();
+        d->jobRef();
+    }
 }
 
 void PostCompositeJob::onLikesJobFinished(KJob *job)
 {
     Q_D(PostCompositeJob);
+
+    d->jobDeref();
 
     LikesJob *likesJob = qobject_cast<LikesJob*>(job);
     if (!likesJob) {
@@ -172,14 +186,15 @@ void PostCompositeJob::onLikesJobFinished(KJob *job)
         LikesJob *newLikesJob = d->likeJobs.takeFirst();
         connect(newLikesJob, &KFbAPI::LikesJob::finished, this, &KFbAPI::PostCompositeJob::onLikesJobFinished);
         newLikesJob->start();
+        d->jobRef();
     }
-
-    d->jobDeref();
 }
 
 void PostCompositeJob::onPostListJobFinished(KJob *job)
 {
     Q_D(PostCompositeJob);
+
+    d->jobDeref();
 
     PostsListJob *postsJob = qobject_cast<PostsListJob*>(job);
     if (!postsJob) {
@@ -188,6 +203,7 @@ void PostCompositeJob::onPostListJobFinished(KJob *job)
     }
 
     bool shouldStartLikesJob = (d->options & PostInfo::FetchLikesCountOnly || d->options & PostInfo::FetchAllLikes);
+    bool shouldStartCommentsJob = (d->options & PostInfo::FetchCommentsCountOnly || d->options & PostInfo::FetchAllComments);
 
     Q_FOREACH (const PostInfo &post, postsJob->posts()) {
         QString postId = post.id();
@@ -196,13 +212,48 @@ void PostCompositeJob::onPostListJobFinished(KJob *job)
         if (shouldStartLikesJob) {
             d->likeJobs << new LikesJob(postId, d->options, d->accessToken, this);
             d->likeJobs.last()->setProperty("postId", postId);
-            d->jobRef();
+        }
+
+        if (shouldStartCommentsJob) {
+            d->commentJobs << new CommentsJob(postId, d->options, d->accessToken, this);
+            d->commentJobs.last()->setProperty("postId", postId);
         }
     }
 
-    connect(d->likeJobs.first(), &KFbAPI::LikesJob::finished, this, &KFbAPI::PostCompositeJob::onLikesJobFinished);
-    d->likeJobs.takeFirst()->start();
+    if (!d->likeJobs.isEmpty()) {
+        connect(d->likeJobs.first(), &KFbAPI::LikesJob::finished, this, &KFbAPI::PostCompositeJob::onLikesJobFinished);
+        d->likeJobs.takeFirst()->start();
+        d->jobRef();
+    }
+
+    if (!d->commentJobs.isEmpty()) {
+        connect(d->commentJobs.first(), &KFbAPI::CommentsJob::finished, this, &KFbAPI::PostCompositeJob::onCommentsJobFinished);
+        d->commentJobs.takeFirst()->start();
+        d->jobRef();
+    }
+}
+
+void PostCompositeJob::onCommentsJobFinished(KJob *job)
+{
+    Q_D(PostCompositeJob);
+
     d->jobDeref();
+
+    CommentsJob *commentsJob = qobject_cast<CommentsJob*>(job);
+    if (!commentsJob) {
+        qWarning() << "Unable to cast job to CommentsJob";
+        return;
+    }
+
+    const QString postId = commentsJob->property("postId").toString();
+    d->posts[postId].setComments(commentsJob->commentInfo());
+
+    if (!d->commentJobs.isEmpty()) {
+        CommentsJob *newCommentsJob = d->commentJobs.takeFirst();
+        connect(newCommentsJob, &KFbAPI::CommentsJob::finished, this, &KFbAPI::PostCompositeJob::onCommentsJobFinished);
+        newCommentsJob->start();
+        d->jobRef();
+    }
 }
 
 QList<PostInfo> PostCompositeJob::posts() const

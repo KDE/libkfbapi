@@ -24,7 +24,7 @@
 #include "userinfo.h"
 #include "propertyinfo.h"
 #include "appinfo.h"
-// #include "commentinfo.h"
+#include "commentinfo.h"
 #include "likeinfo.h"
 
 #include <QDateTime>
@@ -158,8 +158,7 @@ private:
     friend class PostCompositeJob;
     friend class PostJob;
     void setLikes(const LikeInfo &likes);
-//     void setComments(const Comme
-
+    void setComments(const CommentInfo &comments);
 
     class PostInfoPrivate;
     QSharedDataPointer<PostInfoPrivate> d;
