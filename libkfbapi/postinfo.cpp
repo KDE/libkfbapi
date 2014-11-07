@@ -133,10 +133,10 @@ QString PostInfo::story() const
     return d->jsonData.value(QStringLiteral("story")).toString();
 }
 
-// CommentInfo PostInfo::comments() const
-// {
-//     return d->comments;
-// }
+CommentInfo PostInfo::comments() const
+{
+    return d->comments;
+}
 
 AppInfo PostInfo::application() const
 {

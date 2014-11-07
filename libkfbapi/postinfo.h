@@ -125,10 +125,10 @@ public:
      */
     QString story() const;
 
-//     /**
-//      * Returns comments of the post
-//      */
-//     CommentInfo comments() const;
+    /**
+     * Returns comments of the post
+     */
+    CommentInfo comments() const;
 
     /**
      * Returns the creator app of the post
