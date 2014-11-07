@@ -128,8 +128,6 @@ void PostCompositeJob::onPostJobFinished(KJob *job)
 {
     Q_D(PostCompositeJob);
 
-    d->jobDeref();
-
     PostJob *postJob = qobject_cast<PostJob*>(job);
     if (!postJob) {
         qWarning() << "Unable to cast job to PostJob";
@@ -165,13 +163,14 @@ void PostCompositeJob::onPostJobFinished(KJob *job)
         d->commentJobs.first()->start();
         d->jobRef();
     }
+
+    // this needs to happen only at the end as whenever it reaches 0, it emits "finished()"
+    d->jobDeref();
 }
 
 void PostCompositeJob::onLikesJobFinished(KJob *job)
 {
     Q_D(PostCompositeJob);
-
-    d->jobDeref();
 
     LikesJob *likesJob = qobject_cast<LikesJob*>(job);
     if (!likesJob) {
@@ -188,13 +187,13 @@ void PostCompositeJob::onLikesJobFinished(KJob *job)
         newLikesJob->start();
         d->jobRef();
     }
+
+    d->jobDeref();
 }
 
 void PostCompositeJob::onPostListJobFinished(KJob *job)
 {
     Q_D(PostCompositeJob);
-
-    d->jobDeref();
 
     PostsListJob *postsJob = qobject_cast<PostsListJob*>(job);
     if (!postsJob) {
@@ -231,13 +230,13 @@ void PostCompositeJob::onPostListJobFinished(KJob *job)
         d->commentJobs.takeFirst()->start();
         d->jobRef();
     }
+
+    d->jobDeref();
 }
 
 void PostCompositeJob::onCommentsJobFinished(KJob *job)
 {
     Q_D(PostCompositeJob);
-
-    d->jobDeref();
 
     CommentsJob *commentsJob = qobject_cast<CommentsJob*>(job);
     if (!commentsJob) {
@@ -254,6 +253,8 @@ void PostCompositeJob::onCommentsJobFinished(KJob *job)
         newCommentsJob->start();
         d->jobRef();
     }
+
+    d->jobDeref();
 }
 
 QList<PostInfo> PostCompositeJob::posts() const
