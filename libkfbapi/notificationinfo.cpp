@@ -108,6 +108,11 @@ QString NotificationInfo::title() const
     return d->jsonData.value(QStringLiteral("title")).toString();
 }
 
+QString NotificationInfo::message() const
+{
+    return d->jsonData.value(QStringLiteral("message")).toString();
+}
+
 QUrl NotificationInfo::link() const
 {
     return QUrl::fromUserInput(d->jsonData.value(QStringLiteral("link")).toString());
