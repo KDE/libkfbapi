@@ -91,6 +91,10 @@ ListJobBase* AllEventsListJob::createJob(const QUrl &prev, const QUrl &next)
         if (!since.isEmpty()) {
             job->addQueryItem(QStringLiteral("since"), since);
         }
+    } else {
+        //add default values for the first job
+        job->addQueryItem(QStringLiteral("since"), d->lowerLimit.toString(Qt::ISODate));
+        job->addQueryItem(QStringLiteral("limit"), QString::number(100));
     }
 
     return job;
