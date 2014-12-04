@@ -25,6 +25,7 @@
 
 #include <QDateTime>
 #include <QJsonObject>
+#include <QSharedPointer>
 
 // #include <KCalCore/Event>
 // #include <KCalCore/Attendee>
