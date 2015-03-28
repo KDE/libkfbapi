@@ -22,7 +22,6 @@
 #include "facebookjobs.h"
 #include "facebookjobs_p.h"
 
-#include <qjson/parser.h>
 
 #include <KJob>
 #include <KLocalizedString>
