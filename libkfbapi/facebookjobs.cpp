@@ -125,13 +125,13 @@ void FacebookAddJob::jobFinished(KJob *job)
         setErrorText(KIO::buildErrorString(error(), addJob->errorText()));
         qWarning() << "Job error: " << addJob->errorString();
     } else {
-        QJsonParseError *error;
-        QJsonDocument response = QJsonDocument::fromJson(addJob->data(), error);
+        QJsonParseError error;
+        QJsonDocument response = QJsonDocument::fromJson(addJob->data(), &error);
         const QVariant result = response.toVariant();
-        if (error->error == QJsonParseError::NoError) {
+        if (error.error == QJsonParseError::NoError) {
             qWarning() << "Unable to parse JSON data: " << addJob->data();
             setError(KJob::UserDefinedError);
-            setErrorText(i18n("Unable to parse data returned by the Facebook server: %1", error->errorString()));
+            setErrorText(i18n("Unable to parse data returned by the Facebook server: %1", error.errorString()));
         } else {
             const QVariant errorData = result.toMap()[QStringLiteral("error")];
             if (errorData.isValid()) {
@@ -277,11 +277,11 @@ void FacebookGetJob::jobFinished(KJob *job)
         qWarning() << "Job error: " << transferJob->errorString();
     } else {
 
-        QJsonParseError *error;
-        QJsonDocument response = QJsonDocument::fromJson(transferJob->data(), error);
+        QJsonParseError error;
+        QJsonDocument response = QJsonDocument::fromJson(transferJob->data(), &error);
         const QVariant data = response.toVariant();
 
-        if (error->error == QJsonParseError::NoError) {
+        if (error.error == QJsonParseError::NoError) {
             const QVariant errorData = data.toMap()[QStringLiteral("error")];
             if (errorData.isValid()) {
                 handleError(errorData);
@@ -289,10 +289,10 @@ void FacebookGetJob::jobFinished(KJob *job)
                 handleData(response);
             }
         } else {
-            qWarning() << "Unable to parse JSON data: " << error->errorString();
+            qWarning() << "Unable to parse JSON data: " << error.errorString();
             qDebug() << "Received data:" << transferJob->data();
             setError(KJob::UserDefinedError);
-            setErrorText(i18n("Unable to parse data returned by the Facebook server: %1", error->errorString()));
+            setErrorText(i18n("Unable to parse data returned by the Facebook server: %1", error.errorString()));
         }
     }
 
