@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef KFBAPI_LIKEINFOPARSER_H
-#define KFBAPI_LIKEINFOPARSER_H
+#ifndef KFBAPI_LIKEINFOPARSER_P_H
+#define KFBAPI_LIKEINFOPARSER_P_H
 
 #include "likeinfo.h"
 

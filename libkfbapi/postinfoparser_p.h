@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef KFBAPI_POSTINFOPARSER_H
-#define KFBAPI_POSTINFOPARSER_H
+#ifndef KFBAPI_POSTINFOPARSER_P_H
+#define KFBAPI_POSTINFOPARSER_P_H
 
 #include "postinfo.h"
 

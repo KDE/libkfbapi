@@ -40,9 +40,9 @@ class LIBKFBAPI_EXPORT PhotoJob : public FacebookGetJob
     Q_OBJECT
 public:
     /**
-    * @brief Create a PhotoJob that will retrieve the large pphoto of a person.
+    * @brief Create a PhotoJob that will retrieve the large photo of a person.
     *
-    * @param friendId The id of the person of whom we want to retrive the
+    * @param friendId The id of the person of whom we want to retrieve the
     *                 profile picture.
     * @param accessToken The facebook access token to retrieve this data.
     */

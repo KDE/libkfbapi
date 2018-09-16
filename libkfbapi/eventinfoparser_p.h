@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef KFBAPI_EVENTINFOPARSER_H
-#define KFBAPI_EVENTINFOPARSER_H
+#ifndef KFBAPI_EVENTINFOPARSER_P_H
+#define KFBAPI_EVENTINFOPARSER_P_H
 
 #include "eventinfo.h"
 

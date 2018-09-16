@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef KFBAPI_NOTEINFOPARSER_H
-#define KFBAPI_NOTEINFOPARSER_H
+#ifndef KFBAPI_NOTEINFOPARSER_P_H
+#define KFBAPI_NOTEINFOPARSER_P_H
 
 #include "noteinfo.h"
 

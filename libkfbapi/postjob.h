@@ -44,10 +44,10 @@ public:
     PostJob(const QStringList &postIds, const QString &accessToken, QObject *parent = 0);
 
     /**
-    * @brief Contrust a postjob to retrieve a single post from facebook.
+    * @brief Construct a postjob to retrieve a single post from facebook.
     *
     * @param postId The id of the post to retrieve.
-    * @param accessToken The token to accesss data on facebook.
+    * @param accessToken The token to access data on facebook.
     */
     PostJob(const QString &postId, const QString &accessToken, QObject *parent = 0);
 

@@ -159,7 +159,7 @@ EventPtr EventInfo::asEvent() const
     //       picture?
     foreach (const AttendeeInfoPtr &attendeeInfo, attendees()) {
         AttendeePtr attendee(new Attendee(attendeeInfo->name(),
-                                    "facebook@unkown.invalid",
+                                    "facebook@unknown.invalid",
                                     false,
                                     attendeeInfo->status(),
                                     Attendee::OptParticipant,

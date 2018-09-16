@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef KFBAPI_APPINFOPARSER_H
-#define KFBAPI_APPINFOPARSER_H
+#ifndef KFBAPI_APPINFOPARSER_P_H
+#define KFBAPI_APPINFOPARSER_P_H
 
 #include "appinfo.h"
 

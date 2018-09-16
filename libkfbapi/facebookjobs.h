@@ -60,7 +60,7 @@ protected:
     /** Kill the currentjobs and its subjobs */
     virtual bool doKill();
 
-    /** Check for a return error and set the appropiate error messags */
+    /** Check for a return error and set the appropriate error messages */
     void handleError(const QVariant &data);
 
     FacebookJob(FacebookJobPrivate &dd, const QString &path, const QString &accessToken, QObject *parent = 0);
@@ -175,7 +175,7 @@ public:
 protected:
     /**
      * @brief Parse a single item that is returned by the FacebookGetJob and
-     *        add it to the interl list of elements.
+     *        add it to the internal list of elements.
      */
     virtual void handleSingleData(const QVariant &data) = 0;
 
